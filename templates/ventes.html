@@ -1,0 +1,640 @@
+{% extends 'base.html' %}
+
+{% block title %}Ventes - Soirée Clash{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+  <h1 class="page-title">💰 Ventes et Consommations</h1>
+  <p class="page-subtitle">Suivez vos ventes et consommations en temps réel</p>
+</div>
+
+<!-- Statistiques des ventes -->
+<div class="section">
+  <div class="stats-overview">
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ ventes_aujourd_hui|floatformat:0 }} FCFA</div>
+        <div class="stat-label">Ventes aujourd'hui</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ ventes_semaine|floatformat:0 }} FCFA</div>
+        <div class="stat-label">Ventes cette semaine</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ ventes_mois|floatformat:0 }} FCFA</div>
+        <div class="stat-label">Ventes ce mois</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">🍺</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ total_consommations }}</div>
+        <div class="stat-label">Total consommations</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ventes par établissement -->
+<div class="section">
+  <h2 class="section-title">Ventes par Établissement</h2>
+  
+  {% if ventes_par_etablissement %}
+    <div class="ventes-grid">
+      {% for vente in ventes_par_etablissement %}
+        <div class="vente-card">
+          <div class="vente-header">
+            <div class="etablissement-icon">
+              {% if vente.etablissement.type == 'maquis' %}🏪{% else %}🎉{% endif %}
+            </div>
+            <div class="etablissement-info">
+              <div class="etablissement-nom">{{ vente.etablissement.nom }}</div>
+              <div class="etablissement-type">{{ vente.etablissement.get_type_display }}</div>
+              <div class="etablissement-location">{{ vente.etablissement.localisation }}</div>
+            </div>
+          </div>
+          
+          <div class="vente-stats">
+            <div class="stat-item">
+              <span class="stat-label">Ventes aujourd'hui :</span>
+              <span class="stat-value">{{ vente.ventes_aujourd_hui|floatformat:0 }} FCFA</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Ventes cette semaine :</span>
+              <span class="stat-value">{{ vente.ventes_semaine|floatformat:0 }} FCFA</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Ventes ce mois :</span>
+              <span class="stat-value">{{ vente.ventes_mois|floatformat:0 }} FCFA</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Nombre de consommations :</span>
+              <span class="stat-value">{{ vente.nombre_consommations }}</span>
+            </div>
+          </div>
+          
+          <div class="vente-actions">
+            <a href="{% url 'app:gestion_consommations' %}" class="btn btn-primary btn-sm">
+              📊 Voir les consommations
+            </a>
+            <a href="{% url 'app:gestion_boissons' %}" class="btn btn-secondary btn-sm">
+              🍺 Gérer les boissons
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">💰</div>
+      <h3>Aucune vente enregistrée</h3>
+      <p>Aucune vente n'a encore été enregistrée dans vos établissements.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Top produits vendus -->
+<div class="section">
+  <h2 class="section-title">Top Produits Vendus</h2>
+  
+  {% if top_produits %}
+    <div class="produits-grid">
+      {% for produit in top_produits %}
+        <div class="produit-card">
+          <div class="produit-header">
+            <div class="produit-icon">
+              {% if produit.categorie == 'champagne' %}🍾
+              {% elif produit.categorie == 'whisky' %}🥃
+              {% elif produit.categorie == 'brakina' %}🍺
+              {% elif produit.categorie == 'sobbra' %}🍺
+              {% elif produit.categorie == 'liqueur' %}🍸
+              {% elif produit.categorie == 'g_guiness' %}🍺
+              {% elif produit.categorie == 'p_guiness' %}🍺
+              {% elif produit.categorie == 'soft' %}🥤
+              {% else %}🍷
+              {% endif %}
+            </div>
+            <div class="produit-info">
+              <div class="produit-categorie">{{ produit.get_categorie_display }}</div>
+              <div class="produit-prix">{{ produit.prix_vente|floatformat:0 }} FCFA</div>
+            </div>
+            <div class="produit-rank">
+              <span class="rank-badge">{{ forloop.counter }}</span>
+            </div>
+          </div>
+          
+          <div class="produit-stats">
+            <div class="stat-item">
+              <span class="stat-label">Quantité vendue :</span>
+              <span class="stat-value">{{ produit.quantite_vendue }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Chiffre d'affaires :</span>
+              <span class="stat-value">{{ produit.ca_total|floatformat:0 }} FCFA</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Pourcentage des ventes :</span>
+              <span class="stat-value">{{ produit.pourcentage_ventes|floatformat:1 }}%</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🍺</div>
+      <h3>Aucun produit vendu</h3>
+      <p>Aucun produit n'a encore été vendu dans vos établissements.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Évolution des ventes -->
+<div class="section">
+  <h2 class="section-title">Évolution des Ventes</h2>
+  
+  <div class="evolution-chart">
+    <div class="chart-container">
+      <canvas id="ventesChart" width="400" height="200"></canvas>
+    </div>
+    
+    <div class="chart-legend">
+      <div class="legend-item">
+        <span class="legend-color" style="background: #FFD700;"></span>
+        <span class="legend-label">Ventes quotidiennes</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #00FF00;"></span>
+        <span class="legend-label">Objectif quotidien</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Informations importantes -->
+<div class="section info-section">
+  <h2 class="section-title">Informations sur les Ventes</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-icon">⏰</div>
+      <h3>Période de calcul</h3>
+      <p>Les ventes sont calculées sur la période de 17h30 de la veille à 11h00 du jour.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📊</div>
+      <h3>Mise à jour</h3>
+      <p>Les statistiques sont mises à jour en temps réel à chaque nouvelle consommation.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">💰</div>
+      <h3>Calcul des ventes</h3>
+      <p>Les ventes correspondent au montant total des consommations des participants.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🏆</div>
+      <h3>Classements</h3>
+      <p>Les classements se basent sur le total des ventes de chaque établissement.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.hero-section {
+  text-align: center;
+  padding: 3rem 0;
+  background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #FF004D, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  color: #FFD700;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  color: #FFD700;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #7B2CBF;
+  padding-bottom: 1rem;
+}
+
+.stats-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  margin-right: 1rem;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-number {
+  color: #FFD700;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.ventes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+}
+
+.vente-card {
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+}
+
+.vente-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3);
+}
+
+.vente-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(123, 44, 191, 0.3);
+}
+
+.etablissement-icon {
+  font-size: 3rem;
+  margin-right: 1rem;
+}
+
+.etablissement-info {
+  flex: 1;
+}
+
+.etablissement-nom {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+}
+
+.etablissement-type {
+  color: #00C2FF;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.etablissement-location {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.vente-stats {
+  margin-bottom: 1.5rem;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  color: #fff;
+  font-weight: 500;
+}
+
+.vente-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.produits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.produit-card {
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+}
+
+.produit-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3);
+}
+
+.produit-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(123, 44, 191, 0.3);
+}
+
+.produit-icon {
+  font-size: 2.5rem;
+  margin-right: 1rem;
+}
+
+.produit-info {
+  flex: 1;
+}
+
+.produit-categorie {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+}
+
+.produit-prix {
+  color: #00FF00;
+  font-weight: 600;
+}
+
+.produit-rank {
+  margin-left: 1rem;
+}
+
+.rank-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #FF004D, #FFD700);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.produit-stats {
+  margin-bottom: 1rem;
+}
+
+.evolution-chart {
+  background: rgba(26, 18, 58, 0.5);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 2px solid #7B2CBF;
+}
+
+.chart-container {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 0.25rem;
+}
+
+.legend-label {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #7B2CBF;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.info-section {
+  background: rgba(26, 18, 58, 0.3);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.info-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.info-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.info-card h3 {
+  color: #FFD700;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .stats-overview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .ventes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .produits-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .vente-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .etablissement-icon {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .vente-actions {
+    flex-direction: column;
+  }
+  
+  .vente-actions .btn {
+    width: 100%;
+  }
+  
+  .produit-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .produit-icon {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .produit-rank {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+  
+  .chart-legend {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+</style>
+
+<script>
+// Graphique d'évolution des ventes
+document.addEventListener('DOMContentLoaded', function() {
+  const ctx = document.getElementById('ventesChart');
+  if (ctx) {
+    // Données d'exemple - à remplacer par les vraies données
+    const data = {
+      labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+      datasets: [{
+        label: 'Ventes quotidiennes',
+        data: [12000, 15000, 18000, 22000, 25000, 30000, 28000],
+        borderColor: '#FFD700',
+        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+        tension: 0.4
+      }, {
+        label: 'Objectif quotidien',
+        data: [20000, 20000, 20000, 20000, 20000, 20000, 20000],
+        borderColor: '#00FF00',
+        backgroundColor: 'rgba(0, 255, 0, 0.1)',
+        borderDash: [5, 5],
+        tension: 0
+      }]
+    };
+    
+    const config = {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(123, 44, 191, 0.3)'
+            },
+            ticks: {
+              color: '#7B2CBF'
+            }
+          },
+          x: {
+            grid: {
+              color: 'rgba(123, 44, 191, 0.3)'
+            },
+            ticks: {
+              color: '#7B2CBF'
+            }
+          }
+        }
+      }
+    };
+    
+    new Chart(ctx, config);
+  }
+});
+</script>
+{% endblock %}

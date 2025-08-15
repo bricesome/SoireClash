@@ -1,0 +1,506 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestion des Boissons - Soirée Clash{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+  <h1 class="page-title">🍺 Gestion des Boissons</h1>
+  <p class="page-subtitle">Enregistrez vos types de boissons et leurs prix de vente</p>
+</div>
+
+<!-- Statut de l'établissement -->
+<div class="section">
+  <div class="status-card {% if service.types_boissons_enregistres %}status-active{% else %}status-warning{% endif %}">
+    <div class="status-icon">
+      {% if service.types_boissons_enregistres %}
+        ✅
+      {% else %}
+        ⚠️
+      {% endif %}
+    </div>
+    <div class="status-content">
+      <h3>Statut de votre établissement</h3>
+      {% if service.types_boissons_enregistres %}
+        <p class="status-message success">
+          Votre établissement <strong>{{ service.nom }}</strong> est visible aux participants.
+          Dernière mise à jour : {{ service.derniere_mise_a_jour_boissons|date:"d/m/Y à H:i" }}
+        </p>
+      {% else %}
+        <p class="status-message warning">
+          <strong>Attention !</strong> Votre établissement <strong>{{ service.nom }}</strong> ne sera visible aux participants 
+          que lorsque vous aurez enregistré vos types de boissons et leurs prix.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Formulaire d'ajout de boisson -->
+<div class="section">
+  <h2 class="section-title">Ajouter un Type de Boisson</h2>
+  <div class="form-container">
+    <form method="post" class="boisson-form">
+      {% csrf_token %}
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="{{ form.categorie.id_for_label }}">Catégorie de boisson</label>
+          {{ form.categorie }}
+          <small class="form-help">Sélectionnez le type de boisson</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="{{ form.prix_vente.id_for_label }}">Prix de vente (FCFA)</label>
+          {{ form.prix_vente }}
+          <small class="form-help">Prix de vente au public</small>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Ajouter la Boisson</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Types de boissons existants -->
+<div class="section">
+  <h2 class="section-title">Types de Boissons Enregistrés</h2>
+  
+  {% if types_boissons %}
+    <div class="boissons-grid">
+      {% for boisson in types_boissons %}
+        <div class="boisson-card">
+          <div class="boisson-header">
+            <div class="boisson-icon">
+              {% if boisson.categorie == 'champagne' %}🍾
+              {% elif boisson.categorie == 'whisky' %}🥃
+              {% elif boisson.categorie == 'brakina' %}🍺
+              {% elif boisson.categorie == 'sobbra' %}🍺
+              {% elif boisson.categorie == 'liqueur' %}🍸
+              {% elif boisson.categorie == 'g_guiness' %}🍺
+              {% elif boisson.categorie == 'p_guiness' %}🍺
+              {% elif boisson.categorie == 'soft' %}🥤
+              {% else %}🍷
+              {% endif %}
+            </div>
+            <div class="boisson-info">
+              <div class="boisson-categorie">{{ boisson.get_categorie_display }}</div>
+              <div class="boisson-date">Ajouté le {{ boisson.date_creation|date:"d/m/Y" }}</div>
+            </div>
+          </div>
+          <div class="boisson-price">
+            <span class="price-label">Prix de vente :</span>
+            <span class="price-value">{{ boisson.prix_vente|floatformat:0 }} FCFA</span>
+          </div>
+          <div class="boisson-status">
+            {% if boisson.actif %}
+              <span class="status-active">Actif</span>
+            {% else %}
+              <span class="status-inactive">Inactif</span>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    
+    <div class="summary-card">
+      <div class="summary-header">
+        <h3>Résumé</h3>
+      </div>
+      <div class="summary-content">
+        <div class="summary-item">
+          <span class="summary-label">Total des types :</span>
+          <span class="summary-value">{{ types_boissons.count }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Prix moyen :</span>
+          <span class="summary-value">
+            {% with total_price=types_boissons|length %}
+              {% if total_price > 0 %}
+                {% with avg_price=types_boissons|length|add:0 %}
+                  {% for boisson in types_boissons %}
+                    {% if forloop.first %}
+                      {% with total=boisson.prix_vente %}
+                        {% for b in types_boissons %}
+                          {% if not forloop.first %}
+                            {% with total=total|add:b.prix_vente %}{% endwith %}
+                          {% endif %}
+                        {% endfor %}
+                        {{ total|divisibleby:total_price|floatformat:0 }} FCFA
+                      {% endwith %}
+                    {% endif %}
+                  {% endfor %}
+                {% endwith %}
+              {% else %}
+                0 FCFA
+              {% endif %}
+            {% endwith %}
+          </span>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🍺</div>
+      <h3>Aucun type de boisson enregistré</h3>
+      <p>Commencez par ajouter vos premiers types de boissons pour rendre votre établissement visible aux participants.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Informations importantes -->
+<div class="section info-section">
+  <h2 class="section-title">Informations Importantes</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-icon">👥</div>
+      <h3>Visibilité</h3>
+      <p>Votre établissement n'est visible aux participants que lorsque vous avez enregistré au moins un type de boisson.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">💰</div>
+      <h3>Prix</h3>
+      <p>Les prix doivent être réalistes et correspondre à vos tarifs de vente au public.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📊</div>
+      <h3>Classements</h3>
+      <p>Les classements se basent sur les montants dépensés par les participants dans votre établissement.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">⏰</div>
+      <h3>Mise à jour</h3>
+      <p>Vous pouvez modifier vos prix à tout moment, mais cela affectera les futurs classements.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.hero-section {
+  text-align: center;
+  padding: 3rem 0;
+  background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #FF004D, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  color: #FFD700;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  color: #FFD700;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #7B2CBF;
+  padding-bottom: 1rem;
+}
+
+.status-card {
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.status-card.status-active {
+  background: rgba(0, 255, 0, 0.1);
+  border: 2px solid #00FF00;
+}
+
+.status-card.status-warning {
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid #FFD700;
+}
+
+.status-icon {
+  font-size: 3rem;
+  margin-right: 2rem;
+}
+
+.status-content h3 {
+  color: #FFD700;
+  margin-bottom: 1rem;
+}
+
+.status-message.success {
+  color: #00FF00;
+}
+
+.status-message.warning {
+  color: #FFD700;
+}
+
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.boisson-form {
+  background: rgba(26, 18, 58, 0.8);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 2px solid #7B2CBF;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #FFD700;
+  font-weight: 600;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #7B2CBF;
+  border-radius: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #FFD700;
+  box-shadow: 0 0 10px rgba(255,215,0,0.3);
+}
+
+.form-help {
+  display: block;
+  margin-top: 0.5rem;
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.form-actions {
+  text-align: center;
+}
+
+.boissons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.boisson-card {
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+}
+
+.boisson-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3);
+}
+
+.boisson-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(123, 44, 191, 0.3);
+}
+
+.boisson-icon {
+  font-size: 2.5rem;
+  margin-right: 1rem;
+}
+
+.boisson-info {
+  flex: 1;
+}
+
+.boisson-categorie {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+}
+
+.boisson-date {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.boisson-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.price-label {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.price-value {
+  color: #00FF00;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.boisson-status {
+  text-align: center;
+}
+
+.status-active {
+  background: rgba(0, 255, 0, 0.2);
+  color: #00FF00;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.status-inactive {
+  background: rgba(255, 0, 0, 0.2);
+  color: #FF0000;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.summary-card {
+  background: rgba(26, 18, 58, 0.8);
+  border-radius: 1rem;
+  padding: 2rem;
+  border: 2px solid #FFD700;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.summary-header h3 {
+  color: #FFD700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.summary-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.summary-item {
+  text-align: center;
+}
+
+.summary-label {
+  display: block;
+  color: #7B2CBF;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.summary-value {
+  color: #FFD700;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #7B2CBF;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.info-section {
+  background: rgba(26, 18, 58, 0.3);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.info-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.info-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.info-card h3 {
+  color: #FFD700;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .boissons-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .summary-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .status-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .status-icon {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+}
+</style>
+{% endblock %}

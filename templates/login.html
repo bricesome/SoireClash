@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Connexion - Soirée Clash</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0F0A2F 0%, #1A123A 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-container {
+      background: rgba(26, 18, 58, 0.9);
+      padding: 3rem;
+      border-radius: 1rem;
+      border: 2px solid #7B2CBF;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 400px;
+    }
+    .logo {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #FF004D, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #FFD700;
+      font-weight: 600;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #7B2CBF;
+      border-radius: 0.5rem;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #FFD700;
+      box-shadow: 0 0 10px rgba(255,215,0,0.3);
+    }
+    .btn-login {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(45deg, #FF004D, #FF6B00);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    .links {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    .links a {
+      color: #FFD700;
+      text-decoration: none;
+      margin: 0 1rem;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+    .error-message {
+      background: rgba(255,0,77,0.2);
+      border: 1px solid #FF004D;
+      color: #FF6B6B;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">SOIRÉE CLASH</div>
+    
+    {% if form.errors %}
+    <div class="error-message">
+      Nom d'utilisateur ou mot de passe incorrect.
+    </div>
+    {% endif %}
+    
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="id_username">Nom d'utilisateur</label>
+        <input type="text" name="username" id="id_username" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="id_password">Mot de passe</label>
+        <input type="password" name="password" id="id_password" required>
+      </div>
+      
+      <button type="submit" class="btn-login">Se Connecter</button>
+    </form>
+    
+    <div class="links">
+      <a href="{% url 'app:register' %}">Créer un compte</a>
+      <a href="{% url 'app:index' %}">Retour à l'accueil</a>
+    </div>
+  </div>
+</body>
+</html>

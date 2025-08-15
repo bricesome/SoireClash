@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Soirée Clash - Accueil</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0F0A2F 0%, #1A123A 100%);
+      color: #fff;
+      min-height: 100vh;
+    }
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
+    }
+    .logo {
+      font-size: 4rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #FF004D, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+    .tagline {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      color: #FFD700;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+    .stat-card {
+      background: rgba(26, 18, 58, 0.8);
+      padding: 2rem;
+      border-radius: 1rem;
+      text-align: center;
+      border: 2px solid #7B2CBF;
+    }
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #FFD700;
+      margin-bottom: 0.5rem;
+    }
+    .stat-label {
+      color: #fff;
+      font-size: 1.1rem;
+    }
+    .cta-buttons {
+      margin: 3rem 0;
+    }
+    .btn {
+      display: inline-block;
+      padding: 1rem 2rem;
+      margin: 0 1rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, #FF004D, #FF6B00);
+      color: white;
+    }
+    .btn-secondary {
+      background: linear-gradient(45deg, #7B2CBF, #00C2FF);
+      color: white;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    
+    /* Section demande d'adhésion */
+    .adhesion-section {
+      padding: 4rem 2rem;
+      background: rgba(26, 18, 58, 0.5);
+    }
+    .adhesion-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .adhesion-title {
+      text-align: center;
+      color: #FFD700;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #FFD700;
+      font-weight: 600;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #7B2CBF;
+      border-radius: 0.5rem;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: #FFD700;
+      box-shadow: 0 0 10px rgba(255,215,0,0.3);
+    }
+    .submit-btn {
+      background: linear-gradient(45deg, #FF004D, #FF6B00);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      grid-column: 1 / -1;
+      justify-self: center;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    
+    /* Section classements */
+    .classements-section {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .classements-title {
+      color: #FFD700;
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+    }
+    .classements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .classement-card {
+      background: rgba(26, 18, 58, 0.8);
+      padding: 2rem;
+      border-radius: 1rem;
+      border: 2px solid #7B2CBF;
+    }
+    .classement-type {
+      color: #FFD700;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .ranking-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(123, 44, 191, 0.3);
+    }
+    .ranking-item:last-child {
+      border-bottom: none;
+    }
+    .ranking-position {
+      background: linear-gradient(45deg, #FF004D, #FF6B00);
+      color: white;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .ranking-name {
+      flex: 1;
+      text-align: left;
+      margin-left: 1rem;
+    }
+    .ranking-amount {
+      color: #FFD700;
+      font-weight: 600;
+    }
+    
+    /* Section trophées */
+    .trophees-section {
+      padding: 4rem 2rem;
+      background: rgba(26, 18, 58, 0.3);
+      text-align: center;
+    }
+    .trophees-title {
+      color: #FFD700;
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+    }
+    .trophees-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .trophee-card {
+      background: rgba(26, 18, 58, 0.8);
+      padding: 2rem;
+      border-radius: 1rem;
+      border: 2px solid #FFD700;
+      position: relative;
+      overflow: hidden;
+    }
+    .trophee-card::before {
+      content: '🏆';
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-size: 3rem;
+      opacity: 0.3;
+    }
+    .trophee-type {
+      color: #FFD700;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .trophee-winner {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .trophee-pseudo {
+      color: #FF6B00;
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+    .trophee-etablissement {
+      color: #00C2FF;
+      font-weight: 500;
+    }
+    
+    .features {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    .feature-card {
+      background: rgba(26, 18, 58, 0.8);
+      padding: 2rem;
+      border-radius: 1rem;
+      border: 1px solid #7B2CBF;
+    }
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .feature-title {
+      color: #FFD700;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .classements-grid {
+        grid-template-columns: 1fr;
+      }
+      .trophees-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="logo">SOIRÉE CLASH</div>
+    <p class="tagline">La compétition ultime entre établissements de nuit !</p>
+    
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number">{{ total_etablissements }}</div>
+        <div class="stat-label">Établissements</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ total_participants }}</div>
+        <div class="stat-label">Participants</div>
+      </div>
+      {% if user.is_authenticated and consommations_aujourd_hui > 0 %}
+      <div class="stat-card">
+        <div class="stat-number">{{ consommations_aujourd_hui|floatformat:0 }}</div>
+        <div class="stat-label">Vos ventes aujourd'hui</div>
+      </div>
+      {% endif %}
+    </div>
+    
+    {% if user.is_authenticated %}
+      <div class="cta-buttons">
+        <a href="{% url 'app:dashboard' %}" class="btn btn-primary">Mon Dashboard</a>
+        <a href="{% url 'app:classements' %}" class="btn btn-secondary">Voir les classements</a>
+      </div>
+      {% if etablissements %}
+      <div class="user-info" style="margin-top: 2rem; padding: 1rem; background: rgba(255,215,0,0.1); border-radius: 1rem; border: 1px solid #FFD700;">
+        <h3 style="color: #FFD700; margin-bottom: 1rem;">Vos établissements</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+          {% for etablissement in etablissements %}
+          <div style="background: rgba(26,18,58,0.8); padding: 1rem; border-radius: 0.5rem; border: 1px solid #7B2CBF;">
+            <h4 style="color: #FFD700; margin-bottom: 0.5rem;">{{ etablissement.nom }}</h4>
+            <p style="margin: 0.25rem 0;">Type: {{ etablissement.get_type_display }}</p>
+            <p style="margin: 0.25rem 0;">Localisation: {{ etablissement.localisation }}</p>
+            <p style="margin: 0.25rem 0;">Statut: 
+              {% if etablissement.actif %}
+                <span style="color: #00FF00;">Actif</span>
+              {% else %}
+                <span style="color: #FF0000;">Inactif</span>
+              {% endif %}
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    {% else %}
+      <div class="cta-buttons">
+        <a href="{% url 'app:login' %}" class="btn btn-primary">Se Connecter</a>
+        <a href="{% url 'app:register' %}" class="btn btn-secondary">S'inscrire</a>
+      </div>
+    {% endif %}
+  </div>
+  
+  <!-- Section demande d'adhésion -->
+  <div class="adhesion-section">
+    <div class="adhesion-container">
+      <h2 class="adhesion-title">Rejoignez la Compétition !</h2>
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="{{ form.pseudo.id_for_label }}">{{ form.pseudo.label }}</label>
+            {{ form.pseudo }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.nom_etablissement.id_for_label }}">{{ form.nom_etablissement.label }}</label>
+            {{ form.nom_etablissement }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.type_etablissement.id_for_label }}">{{ form.type_etablissement.label }}</label>
+            {{ form.type_etablissement }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.quartier.id_for_label }}">{{ form.quartier.label }}</label>
+            {{ form.quartier }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.ville.id_for_label }}">{{ form.ville.label }}</label>
+            {{ form.ville }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.nom_gestionnaire.id_for_label }}">{{ form.nom_gestionnaire.label }}</label>
+            {{ form.nom_gestionnaire }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.prenom_gestionnaire.id_for_label }}">{{ form.prenom_gestionnaire.label }}</label>
+            {{ form.prenom_gestionnaire }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.telephone_gestionnaire.id_for_label }}">{{ form.telephone_gestionnaire.label }}</label>
+            {{ form.telephone_gestionnaire }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.email_gestionnaire.id_for_label }}">{{ form.email_gestionnaire.label }}</label>
+            {{ form.email_gestionnaire }}
+          </div>
+          <button type="submit" class="submit-btn">Envoyer ma demande d'adhésion</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Section classements -->
+  <div class="classements-section">
+    <h2 class="classements-title">Classements du Jour</h2>
+    <div class="classements-grid">
+      <!-- Classement des maquis -->
+      <div class="classement-card">
+        <h3 class="classement-type">🏪 Top Maquis</h3>
+        {% if top_maquis %}
+          {% for maquis in top_maquis %}
+            <div class="ranking-item">
+              <div class="ranking-position">{{ forloop.counter }}</div>
+              <div class="ranking-name">{{ maquis.nom }}</div>
+              <div class="ranking-amount">{{ maquis.total_ventes|default:0|floatformat:0 }} FCFA</div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>Aucun classement disponible pour le moment.</p>
+        {% endif %}
+      </div>
+      
+      <!-- Classement des boîtes de nuit -->
+      <div class="classement-card">
+        <h3 class="classement-type">🎉 Top Boîtes de Nuit</h3>
+        {% if top_boites %}
+          {% for boite in top_boites %}
+            <div class="ranking-item">
+              <div class="ranking-position">{{ forloop.counter }}</div>
+              <div class="ranking-name">{{ boite.nom }}</div>
+              <div class="ranking-amount">{{ boite.total_ventes|default:0|floatformat:0 }} FCFA</div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>Aucun classement disponible pour le moment.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <!-- Section trophées -->
+  <div class="trophees-section">
+    <h2 class="trophees-title">🏆 Trophées Récents</h2>
+    <div class="trophees-grid">
+      {% if trophees_recents %}
+        {% for trophee in trophees_recents %}
+          <div class="trophee-card">
+            <div class="trophee-type">{{ trophee.get_type_trophee_display }}</div>
+            <div class="trophee-winner">{{ trophee.gagnant.participant.nom }} {{ trophee.gagnant.participant.prenom }}</div>
+            <div class="trophee-pseudo">dit "{{ trophee.gagnant.participant.pseudo }}"</div>
+            <div class="trophee-etablissement">{{ trophee.etablissement.nom }}</div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>Aucun trophée attribué pour le moment.</p>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="features">
+    <h2>Fonctionnalités Principales</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-title">Classements</div>
+        <p>Suivez en temps réel le classement des maquis et boîtes de nuit</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">Trophées</div>
+        <p>Gagnez des récompenses et devenez l'empereur de la nuit</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <div class="feature-title">Paris</div>
+        <p>Placez des paris sur vos participants favoris</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Statistiques</div>
+        <p>Analysez vos performances et consommations en détail</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

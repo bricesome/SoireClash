@@ -1,0 +1,685 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Soirée Clash{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+  <h1 class="page-title">📊 Dashboard</h1>
+  <p class="page-subtitle">Bienvenue sur votre tableau de bord personnel</p>
+</div>
+
+<!-- Statistiques rapides -->
+<div class="section">
+  <div class="stats-overview">
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ consommations_aujourd_hui|floatformat:0 }} FCFA</div>
+        <div class="stat-label">Ventes aujourd'hui</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ consommations_semaine|floatformat:0 }} FCFA</div>
+        <div class="stat-label">Ventes cette semaine</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ consommations_mois|floatformat:0 }} FCFA</div>
+        <div class="stat-label">Ventes ce mois</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">🏪</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ etablissements.count }}</div>
+        <div class="stat-label">Établissements</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Établissements -->
+<div class="section">
+  <h2 class="section-title">Vos Établissements</h2>
+  
+  {% if etablissements %}
+    <div class="etablissements-grid">
+      {% for etablissement in etablissements %}
+        <div class="etablissement-card">
+          <div class="etablissement-header">
+            <div class="etablissement-icon">
+              {% if etablissement.type == 'maquis' %}🏪{% else %}🎉{% endif %}
+            </div>
+            <div class="etablissement-info">
+              <div class="etablissement-nom">{{ etablissement.nom }}</div>
+              <div class="etablissement-type">{{ etablissement.get_type_display }}</div>
+              <div class="etablissement-location">{{ etablissement.localisation }}</div>
+            </div>
+            <div class="etablissement-status">
+              {% if etablissement.actif %}
+                <span class="status-badge active">✅ Actif</span>
+              {% else %}
+                <span class="status-badge inactive">❌ Inactif</span>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="etablissement-details">
+            <div class="detail-item">
+              <span class="detail-label">Types de boissons :</span>
+              <span class="detail-value {% if etablissement.types_boissons_enregistres %}success{% else %}warning{% endif %}">
+                {% if etablissement.types_boissons_enregistres %}
+                  ✅ Enregistrés
+                {% else %}
+                  ⚠️ Non enregistrés
+                {% endif %}
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Participants :</span>
+              <span class="detail-value">{{ etablissement.participant_set.count }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Ventes aujourd'hui :</span>
+              <span class="detail-value">{{ etablissement.total_ventes_aujourd_hui|floatformat:0 }} FCFA</span>
+            </div>
+          </div>
+          
+          <div class="etablissement-actions">
+            <a href="{% url 'app:gestion_boissons' %}" class="btn btn-secondary btn-sm">
+              🍺 Gérer les boissons
+            </a>
+            <a href="{% url 'app:gestion_consommations' %}" class="btn btn-primary btn-sm">
+              📊 Gérer les consommations
+            </a>
+            <a href="{% url 'app:participants' %}" class="btn btn-warning btn-sm">
+              👥 Gérer les participants
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🏪</div>
+      <h3>Aucun établissement</h3>
+      <p>Vous n'avez pas encore d'établissement enregistré.</p>
+      <p>Les établissements sont créés automatiquement lors de l'approbation des demandes d'adhésion.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Top participants -->
+<div class="section">
+  <h2 class="section-title">Top Participants</h2>
+  
+  {% if top_participants %}
+    <div class="participants-grid">
+      {% for participant in top_participants %}
+        <div class="participant-card">
+          <div class="participant-header">
+            <div class="participant-avatar">
+              {% if participant.user.profile.avatar %}
+                <img src="{{ participant.user.profile.avatar.url }}" alt="Avatar de {{ participant.pseudo }}">
+              {% else %}
+                <div class="avatar-placeholder">{{ participant.pseudo|first|upper }}</div>
+              {% endif %}
+            </div>
+            <div class="participant-info">
+              <div class="participant-pseudo">{{ participant.pseudo }}</div>
+              <div class="participant-name">{{ participant.nom }} {{ participant.prenom }}</div>
+              <div class="participant-etablissement">{{ participant.service.nom }}</div>
+            </div>
+            <div class="participant-rank">
+              <span class="rank-badge">{{ forloop.counter }}</span>
+            </div>
+          </div>
+          
+          <div class="participant-stats">
+            <div class="stat-item">
+              <span class="stat-label">Total dépenses :</span>
+              <span class="stat-value">{{ participant.total_depenses_jour|floatformat:0 }} FCFA</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Type établissement :</span>
+              <span class="stat-value">{{ participant.service.get_type_display }}</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">👥</div>
+      <h3>Aucun participant</h3>
+      <p>Aucun participant n'a encore été enregistré dans vos établissements.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Actions rapides -->
+<div class="section">
+  <h2 class="section-title">Actions Rapides</h2>
+  <div class="actions-grid">
+    <a href="{% url 'app:gestion_boissons' %}" class="action-card">
+      <div class="action-icon">🍺</div>
+      <div class="action-title">Gérer les Boissons</div>
+      <div class="action-description">Enregistrez vos types de boissons et leurs prix</div>
+    </a>
+    
+    <a href="{% url 'app:gestion_consommations' %}" class="action-card">
+      <div class="action-icon">📊</div>
+      <div class="action-title">Gérer les Consommations</div>
+      <div class="action-description">Enregistrez les consommations des participants</div>
+    </a>
+    
+    <a href="{% url 'app:participants' %}" class="action-card">
+      <div class="action-icon">👥</div>
+      <div class="action-title">Gérer les Participants</div>
+      <div class="action-description">Ajoutez et gérez vos participants</div>
+    </a>
+    
+    <a href="{% url 'app:classements' %}" class="action-card">
+      <div class="action-icon">🏆</div>
+      <div class="action-title">Voir les Classements</div>
+      <div class="action-description">Consultez les classements en temps réel</div>
+    </a>
+    
+    <a href="{% url 'app:trophees' %}" class="action-card">
+      <div class="action-icon">🎖️</div>
+      <div class="action-title">Voir les Trophées</div>
+      <div class="action-description">Découvrez les gagnants et leurs récompenses</div>
+    </a>
+    
+    <a href="{% url 'app:paris' %}" class="action-card">
+      <div class="action-icon">💰</div>
+      <div class="action-title">Placer des Paris</div>
+      <div class="action-description">Pariez sur vos participants favoris</div>
+    </a>
+  </div>
+</div>
+
+<!-- Informations importantes -->
+<div class="section info-section">
+  <h2 class="section-title">Informations Importantes</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-icon">⏰</div>
+      <h3>Délai de saisie</h3>
+      <p>Les consommations doivent être saisies avant 12h00 pour le classement du jour.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">👥</div>
+      <h3>Visibilité</h3>
+      <p>Vos établissements ne sont visibles aux participants que lorsque vous avez enregistré vos types de boissons.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📊</div>
+      <h3>Classements</h3>
+      <p>Les classements se basent sur le montant total dépensé par chaque participant.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🏆</div>
+      <h3>Trophées</h3>
+      <p>Les trophées sont attribués aux participants qui dépensent le plus dans chaque type d'établissement.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.hero-section {
+  text-align: center;
+  padding: 3rem 0;
+  background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #FF004D, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  color: #FFD700;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  color: #FFD700;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #7B2CBF;
+  padding-bottom: 1rem;
+}
+
+.stats-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  margin-right: 1rem;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-number {
+  color: #FFD700;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.etablissements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.etablissement-card {
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+}
+
+.etablissement-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3);
+}
+
+.etablissement-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(123, 44, 191, 0.3);
+}
+
+.etablissement-icon {
+  font-size: 3rem;
+  margin-right: 1rem;
+}
+
+.etablissement-info {
+  flex: 1;
+}
+
+.etablissement-nom {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+}
+
+.etablissement-type {
+  color: #00C2FF;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.etablissement-location {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.etablissement-status {
+  margin-left: 1rem;
+}
+
+.status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.status-badge.active {
+  background: rgba(0, 255, 0, 0.2);
+  color: #00FF00;
+}
+
+.status-badge.inactive {
+  background: rgba(255, 0, 0, 0.2);
+  color: #FF0000;
+}
+
+.etablissement-details {
+  margin-bottom: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.detail-label {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.detail-value {
+  color: #fff;
+  font-weight: 500;
+}
+
+.detail-value.success {
+  color: #00FF00;
+}
+
+.detail-value.warning {
+  color: #FFD700;
+}
+
+.etablissement-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.participants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.participant-card {
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+}
+
+.participant-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3);
+}
+
+.participant-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(123, 44, 191, 0.3);
+}
+
+.participant-avatar {
+  margin-right: 1rem;
+}
+
+.participant-avatar img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #FF004D, #FFD700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.participant-info {
+  flex: 1;
+}
+
+.participant-pseudo {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+}
+
+.participant-name {
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.participant-etablissement {
+  color: #00C2FF;
+  font-size: 0.9rem;
+}
+
+.participant-rank {
+  margin-left: 1rem;
+}
+
+.rank-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #FF004D, #FFD700);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.participant-stats {
+  margin-bottom: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  color: #fff;
+  font-weight: 500;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.action-card {
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  padding: 2rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+}
+
+.action-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(123, 44, 191, 0.3);
+  border-color: #FFD700;
+}
+
+.action-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.action-title {
+  color: #FFD700;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.action-description {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #7B2CBF;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.info-section {
+  background: rgba(26, 18, 58, 0.3);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.info-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.info-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.info-card h3 {
+  color: #FFD700;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .stats-overview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .etablissements-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .participants-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .etablissement-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .etablissement-icon {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .etablissement-status {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+  
+  .etablissement-actions {
+    flex-direction: column;
+  }
+  
+  .etablissement-actions .btn {
+    width: 100%;
+  }
+  
+  .participant-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .participant-avatar {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .participant-rank {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,522 @@
+{% extends 'base.html' %}
+
+{% block title %}Paris - Soirée Clash{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+  <h1 class="page-title">💰 Paris et Compétitions</h1>
+  <p class="page-subtitle">Placez vos paris sur vos participants favoris et suivez vos gains</p>
+</div>
+
+<!-- Formulaire de pari -->
+<div class="section">
+  <h2 class="section-title">Placer un Pari</h2>
+  <div class="pari-form-container">
+    <form method="post" class="pari-form">
+      {% csrf_token %}
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="{{ form.participant.id_for_label }}">Participant</label>
+          {{ form.participant }}
+          <small class="form-help">Choisissez le participant sur lequel vous voulez parier</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="{{ form.evenement.id_for_label }}">Événement</label>
+          {{ form.evenement }}
+          <small class="form-help">Prédisez si le participant va gagner ou perdre</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="{{ form.date_evenement.id_for_label }}">Date de l'événement</label>
+          {{ form.date_evenement }}
+          <small class="form-help">Date à laquelle le participant va concourir</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="{{ form.montant.id_for_label }}">Montant du pari (FCFA)</label>
+          {{ form.montant }}
+          <small class="form-help">Montant minimum : 100 FCFA</small>
+        </div>
+      </div>
+      
+      <div class="pari-info">
+        <div class="info-item">
+          <span class="info-label">Cote fixe :</span>
+          <span class="info-value">2.00</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Gains potentiels :</span>
+          <span class="info-value gains-calculator">--</span>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Placer le Pari</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Paris actifs -->
+<div class="section">
+  <h2 class="section-title">Paris Actifs</h2>
+  <div class="paris-grid">
+    {% if paris_actifs %}
+      {% for pari in paris_actifs %}
+        <div class="pari-card">
+          <div class="pari-header">
+            <div class="pari-participant">{{ pari.participant.pseudo }}</div>
+            <div class="pari-etablissement">{{ pari.participant.service.nom }}</div>
+          </div>
+          <div class="pari-details">
+            <div class="pari-event">
+              <span class="event-label">Événement :</span>
+              <span class="event-value {% if pari.evenement == 'GAIN' %}gain{% else %}perte{% endif %}">
+                {{ pari.get_evenement_display }}
+              </span>
+            </div>
+            <div class="pari-date">
+              <span class="date-label">Date :</span>
+              <span class="date-value">{{ pari.date_evenement|date:"d/m/Y" }}</span>
+            </div>
+            <div class="pari-amount">
+              <span class="amount-label">Montant :</span>
+              <span class="amount-value">{{ pari.montant|floatformat:0 }} FCFA</span>
+            </div>
+          </div>
+          <div class="pari-status">
+            {% if pari.peut_parler %}
+              <span class="status-open">Paris ouvert</span>
+            {% else %}
+              <span class="status-closed">Paris fermé</span>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">💰</div>
+        <h3>Aucun pari actif</h3>
+        <p>Placez le premier pari pour commencer la compétition !</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Historique des paris -->
+<div class="section">
+  <h2 class="section-title">Vos Paris</h2>
+  <div class="paris-grid">
+    {% if paris_utilisateur %}
+      {% for pari in paris_utilisateur %}
+        <div class="pari-card {% if pari.gagne is not None %}{% if pari.gagne %}won{% else %}lost{% endif %}{% endif %}">
+          <div class="pari-header">
+            <div class="pari-participant">{{ pari.participant.pseudo }}</div>
+            <div class="pari-etablissement">{{ pari.participant.service.nom }}</div>
+          </div>
+          <div class="pari-details">
+            <div class="pari-event">
+              <span class="event-label">Événement :</span>
+              <span class="event-value {% if pari.evenement == 'GAIN' %}gain{% else %}perte{% endif %}">
+                {{ pari.get_evenement_display }}
+              </span>
+            </div>
+            <div class="pari-date">
+              <span class="date-label">Date :</span>
+              <span class="date-value">{{ pari.date_evenement|date:"d/m/Y" }}</span>
+            </div>
+            <div class="pari-amount">
+              <span class="amount-label">Montant :</span>
+              <span class="amount-value">{{ pari.montant|floatformat:0 }} FCFA</span>
+            </div>
+            {% if pari.gagne is not None %}
+              <div class="pari-result">
+                <span class="result-label">Résultat :</span>
+                <span class="result-value {% if pari.gagne %}won{% else %}lost{% endif %}">
+                  {% if pari.gagne %}Gagné{% else %}Perdu{% endif %}
+                </span>
+              </div>
+              {% if pari.gagne and pari.montant_gains %}
+                <div class="pari-gains">
+                  <span class="gains-label">Gains :</span>
+                  <span class="gains-value">{{ pari.montant_gains|floatformat:0 }} FCFA</span>
+                </div>
+              {% endif %}
+            {% else %}
+              <div class="pari-result">
+                <span class="result-label">Statut :</span>
+                <span class="result-value pending">En attente</span>
+              </div>
+            {% endif %}
+          </div>
+          <div class="pari-date-pari">
+            Pari placé le {{ pari.date_pari|date:"d/m/Y à H:i" }}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">📊</div>
+        <h3>Aucun pari placé</h3>
+        <p>Commencez par placer votre premier pari !</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Informations sur les paris -->
+<div class="section info-section">
+  <h2 class="section-title">Règles des Paris</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-icon">⏰</div>
+      <h3>Horaires</h3>
+      <p>Les paris sont fermés à partir de 17h00 pour les événements du jour.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📊</div>
+      <h3>Cote fixe</h3>
+      <p>Tous les paris ont une cote fixe de 2.00, peu importe l'événement.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">💰</div>
+      <h3>Gains</h3>
+      <p>Si vous gagnez, vous récupérez votre mise + (mise × cote).</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📅</div>
+      <h3>Résultats</h3>
+      <p>Les résultats sont disponibles le lendemain à 15h00 au plus tard.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.hero-section {
+  text-align: center;
+  padding: 3rem 0;
+  background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #FF004D, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  color: #FFD700;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  color: #FFD700;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #7B2CBF;
+  padding-bottom: 1rem;
+}
+
+.pari-form-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.pari-form {
+  background: rgba(26, 18, 58, 0.8);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 2px solid #7B2CBF;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #FFD700;
+  font-weight: 600;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #7B2CBF;
+  border-radius: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #FFD700;
+  box-shadow: 0 0 10px rgba(255,215,0,0.3);
+}
+
+.form-help {
+  display: block;
+  margin-top: 0.5rem;
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.pari-info {
+  background: rgba(123, 44, 191, 0.2);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+.info-item {
+  text-align: center;
+}
+
+.info-label {
+  display: block;
+  color: #7B2CBF;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.info-value {
+  color: #FFD700;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.form-actions {
+  text-align: center;
+}
+
+.paris-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.pari-card {
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+}
+
+.pari-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3);
+}
+
+.pari-card.won {
+  border-color: #00FF00;
+}
+
+.pari-card.lost {
+  border-color: #FF0000;
+}
+
+.pari-header {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(123, 44, 191, 0.3);
+}
+
+.pari-participant {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+}
+
+.pari-etablissement {
+  color: #00C2FF;
+  font-size: 0.9rem;
+}
+
+.pari-details {
+  margin-bottom: 1rem;
+}
+
+.pari-event, .pari-date, .pari-amount, .pari-result, .pari-gains {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.event-label, .date-label, .amount-label, .result-label, .gains-label {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+}
+
+.event-value, .date-value, .amount-value, .result-value, .gains-value {
+  font-weight: 600;
+}
+
+.event-value.gain {
+  color: #00FF00;
+}
+
+.event-value.perte {
+  color: #FF0000;
+}
+
+.result-value.won {
+  color: #00FF00;
+}
+
+.result-value.lost {
+  color: #FF0000;
+}
+
+.result-value.pending {
+  color: #FFD700;
+}
+
+.pari-status {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.status-open {
+  background: rgba(0, 255, 0, 0.2);
+  color: #00FF00;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.status-closed {
+  background: rgba(255, 0, 0, 0.2);
+  color: #FF0000;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.pari-date-pari {
+  text-align: center;
+  color: #7B2CBF;
+  font-size: 0.8rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(123, 44, 191, 0.3);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #7B2CBF;
+  grid-column: 1 / -1;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.info-section {
+  background: rgba(26, 18, 58, 0.3);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.info-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.info-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.info-card h3 {
+  color: #FFD700;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .paris-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pari-info {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<script>
+// Calculateur de gains en temps réel
+document.addEventListener('DOMContentLoaded', function() {
+  const montantInput = document.getElementById('{{ form.montant.id_for_label }}');
+  const gainsCalculator = document.querySelector('.gains-calculator');
+  
+  if (montantInput && gainsCalculator) {
+    montantInput.addEventListener('input', function() {
+      const montant = parseFloat(this.value) || 0;
+      const cote = 2.00;
+      const gains = montant * cote;
+      
+      if (montant > 0) {
+        gainsCalculator.textContent = gains.toFixed(0) + ' FCFA';
+        gainsCalculator.style.color = '#FFD700';
+      } else {
+        gainsCalculator.textContent = '--';
+        gainsCalculator.style.color = '#7B2CBF';
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

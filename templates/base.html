@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Soirée Clash{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  {% block extra_css %}{% endblock %}
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #0F0A2F;
+      color: #fff;
+    }
+    header {
+      padding: 1rem 2rem;
+      background-color: #0F0A2F;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #7B2CBF;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #FF004D, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    nav a {
+      margin-left: 1.5rem;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+    }
+    nav a:hover {
+      color: #FFD700;
+      background: rgba(255, 215, 0, 0.1);
+    }
+    .container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      background-color: #1A123A;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px #7B2CBF;
+      margin-bottom: 1.5rem;
+    }
+    .btn {
+      display: inline-block;
+      background: linear-gradient(45deg, #FF004D, #FF6B00);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    .btn-secondary {
+      background: linear-gradient(45deg, #7B2CBF, #00C2FF);
+    }
+    .btn-warning {
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      color: #000;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #FFD700;
+      font-weight: 600;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #7B2CBF;
+      border-radius: 0.5rem;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: #FFD700;
+      box-shadow: 0 0 10px rgba(255,215,0,0.3);
+    }
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .alert-success {
+      background: rgba(0, 255, 0, 0.2);
+      border: 1px solid #00FF00;
+      color: #90EE90;
+    }
+    .alert-error {
+      background: rgba(255, 0, 0, 0.2);
+      border: 1px solid #FF0000;
+      color: #FFB6C1;
+    }
+    .alert-warning {
+      background: rgba(255, 215, 0, 0.2);
+      border: 1px solid #FFD700;
+      color: #FFD700;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: rgba(26, 18, 58, 0.8);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      text-align: center;
+      border: 2px solid #7B2CBF;
+    }
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #FFD700;
+      margin-bottom: 0.5rem;
+    }
+    .stat-label {
+      color: #fff;
+      font-size: 1rem;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+    .table th,
+    .table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #7B2CBF;
+    }
+    .table th {
+      background-color: rgba(123, 44, 191, 0.3);
+      color: #FFD700;
+      font-weight: 600;
+    }
+    .table tr:hover {
+      background-color: rgba(123, 44, 191, 0.1);
+    }
+    
+    /* Styles pour les zones déroulantes (select dropdowns) */
+    select, select.form-control {
+      background-color: #1A123A !important;
+      color: #FFD700 !important;
+      border: 1px solid #7B2CBF !important;
+      border-radius: 0.5rem !important;
+      padding: 0.8rem !important;
+      font-size: 1rem !important;
+      cursor: pointer !important;
+    }
+    
+    select:hover, select.form-control:hover {
+      border-color: #FFD700 !important;
+      box-shadow: 0 0 10px rgba(255,215,0,0.3) !important;
+    }
+    
+    select:focus, select.form-control:focus {
+      outline: none !important;
+      border-color: #FFD700 !important;
+      box-shadow: 0 0 15px rgba(255,215,0,0.5) !important;
+    }
+    
+    /* Options des dropdowns */
+    select option, select.form-control option {
+      background-color: #1A123A !important;
+      color: #FFD700 !important;
+      padding: 0.5rem !important;
+    }
+    
+    select option:hover, select.form-control option:hover {
+      background-color: #7B2CBF !important;
+      color: #FFD700 !important;
+    }
+    
+    select option:checked, select.form-control option:checked {
+      background-color: #FF004D !important;
+      color: #fff !important;
+    }
+    
+    /* Correction pour l'interface admin Django */
+    .form-row select,
+    .aligned select,
+    .form-row .form-control,
+    .aligned .form-control {
+      background-color: #1A123A !important;
+      color: #FFD700 !important;
+      border: 1px solid #7B2CBF !important;
+    }
+    
+    .form-row select option,
+    .aligned select option {
+      background-color: #1A123A !important;
+      color: #FFD700 !important;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">SOIRÉE CLASH</div>
+    <nav>
+      {% if user.is_authenticated %}
+        <a href="{% url 'app:index' %}">Accueil</a>
+        <a href="{% url 'app:dashboard' %}">Dashboard</a>
+        <a href="{% url 'app:classements' %}">Classements</a>
+        <a href="{% url 'app:trophees' %}">Trophées</a>
+        <a href="{% url 'app:paris' %}">Paris</a>
+        {% if user.gestionnaire %}
+          <a href="{% url 'app:gestion_boissons' %}">Gestion Boissons</a>
+          <a href="{% url 'app:gestion_consommations' %}">Gestion Consommations</a>
+        {% endif %}
+        {% if user.is_superuser %}
+          <a href="{% url 'app:admin_demandes_adhesion' %}">Demandes Adhésion</a>
+        {% endif %}
+        <a href="{% url 'app:logout' %}">Déconnexion</a>
+      {% else %}
+        <a href="{% url 'app:login' %}">Connexion</a>
+        <a href="{% url 'app:register' %}">Inscription</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <div class="container">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </div>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+
+{% block title %}Trophées - Soirée Clash{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+  <h1 class="page-title">🏆 Trophées et Récompenses</h1>
+  <p class="page-subtitle">Découvrez les champions de la nuit et leurs récompenses</p>
+</div>
+
+<!-- Trophées récents -->
+<div class="section">
+  <h2 class="section-title">Trophées Récents</h2>
+  <div class="trophees-grid">
+    {% if trophees_recents %}
+      {% for trophee in trophees_recents %}
+        <div class="trophee-card">
+          <div class="trophee-header">
+            <div class="trophee-icon">🏆</div>
+            <div class="trophee-type">{{ trophee.get_type_trophee_display }}</div>
+          </div>
+          <div class="trophee-content">
+            <div class="trophee-winner">
+              {{ trophee.gagnant.nom }} {{ trophee.gagnant.prenom }}
+            </div>
+            <div class="trophee-pseudo">dit "{{ trophee.gagnant.pseudo }}"</div>
+            <div class="trophee-etablissement">{{ trophee.etablissement.nom }}</div>
+            <div class="trophee-date">{{ trophee.date_attribution|date:"d/m/Y" }}</div>
+            <div class="trophee-amount">{{ trophee.montant_total|floatformat:0 }} FCFA</div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">🏆</div>
+        <h3>Aucun trophée attribué</h3>
+        <p>Les premiers trophées seront attribués après la première compétition.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Trophées par catégorie -->
+<div class="section">
+  <h2 class="section-title">Trophées par Catégorie</h2>
+  
+  <!-- Trophées Maquis -->
+  <div class="category-section">
+    <h3 class="category-title">🏪 Trophées Maquis</h3>
+    <div class="trophees-grid">
+      {% if trophees_maquis %}
+        {% for trophee in trophees_maquis %}
+          <div class="trophee-card maquis">
+            <div class="trophee-header">
+              <div class="trophee-icon">🏪</div>
+              <div class="trophee-type">{{ trophee.get_type_trophee_display }}</div>
+            </div>
+            <div class="trophee-content">
+              <div class="trophee-winner">{{ trophee.gagnant.nom }} {{ trophee.gagnant.prenom }}</div>
+              <div class="trophee-pseudo">dit "{{ trophee.gagnant.pseudo }}"</div>
+              <div class="trophee-etablissement">{{ trophee.etablissement.nom }}</div>
+              <div class="trophee-date">{{ trophee.date_attribution|date:"d/m/Y" }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <p>Aucun trophée maquis attribué pour le moment.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <!-- Trophées Boîtes de Nuit -->
+  <div class="category-section">
+    <h3 class="category-title">🎉 Trophées Boîtes de Nuit</h3>
+    <div class="trophees-grid">
+      {% if trophees_boite %}
+        {% for trophee in trophees_boite %}
+          <div class="trophee-card boite">
+            <div class="trophee-header">
+              <div class="trophee-icon">🎉</div>
+              <div class="trophee-type">{{ trophee.get_type_trophee_display }}</div>
+            </div>
+            <div class="trophee-content">
+              <div class="trophee-winner">{{ trophee.gagnant.nom }} {{ trophee.gagnant.prenom }}</div>
+              <div class="trophee-pseudo">dit "{{ trophee.gagnant.pseudo }}"</div>
+              <div class="trophee-etablissement">{{ trophee.etablissement.nom }}</div>
+              <div class="trophee-date">{{ trophee.date_attribution|date:"d/m/Y" }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <p>Aucun trophée boîte de nuit attribué pour le moment.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Informations sur les trophées -->
+<div class="section info-section">
+  <h2 class="section-title">Comment gagner un trophée ?</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-icon">💰</div>
+      <h3>Dépensez plus</h3>
+      <p>Le participant qui dépense le plus dans son établissement remporte le trophée du jour.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📅</div>
+      <h3>Compétition quotidienne</h3>
+      <p>Les classements sont recalculés chaque jour à partir de 12h00.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🏆</div>
+      <h3>Types de trophées</h3>
+      <p>Différents trophées selon le type d'établissement et la performance.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.hero-section {
+  text-align: center;
+  padding: 3rem 0;
+  background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #FF004D, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  color: #FFD700;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  color: #FFD700;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #7B2CBF;
+  padding-bottom: 1rem;
+}
+
+.trophees-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.trophee-card {
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.trophee-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(123, 44, 191, 0.3);
+}
+
+.trophee-card.maquis {
+  border-color: #FFD700;
+}
+
+.trophee-card.boite {
+  border-color: #FF004D;
+}
+
+.trophee-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(123, 44, 191, 0.3);
+}
+
+.trophee-icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.trophee-type {
+  color: #FFD700;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.trophee-content {
+  text-align: center;
+}
+
+.trophee-winner {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.trophee-pseudo {
+  color: #FF6B00;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.trophee-etablissement {
+  color: #00C2FF;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.trophee-date {
+  color: #7B2CBF;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.trophee-amount {
+  color: #FFD700;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.category-section {
+  margin-bottom: 3rem;
+}
+
+.category-title {
+  color: #FFD700;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #7B2CBF;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.info-section {
+  background: rgba(26, 18, 58, 0.3);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.info-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.info-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.info-card h3 {
+  color: #FFD700;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .trophees-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+{% endblock %}

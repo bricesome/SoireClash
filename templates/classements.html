@@ -1,0 +1,551 @@
+{% extends 'base.html' %}
+
+{% block title %}Classements - Soirée Clash{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+  <h1 class="page-title">🏆 Classements</h1>
+  <p class="page-subtitle">Découvrez qui mène la compétition en temps réel</p>
+</div>
+
+<!-- Classement des établissements -->
+<div class="section">
+  <h2 class="section-title">Classement des Établissements</h2>
+  
+  <!-- Classement des maquis -->
+  <div class="classement-category">
+    <h3 class="category-title">🏪 Top Maquis</h3>
+    <div class="classement-grid">
+      {% if maquis %}
+        {% for maquis in maquis %}
+          <div class="classement-card {% if forloop.counter <= 3 %}top-{{ forloop.counter }}{% endif %}">
+            <div class="classement-rank">
+              <span class="rank-number">{{ forloop.counter }}</span>
+              {% if forloop.counter == 1 %}
+                <div class="rank-trophy">🥇</div>
+              {% elif forloop.counter == 2 %}
+                <div class="rank-trophy">🥈</div>
+              {% elif forloop.counter == 3 %}
+                <div class="rank-trophy">🥉</div>
+              {% endif %}
+            </div>
+            <div class="classement-info">
+              <div class="etablissement-nom">{{ maquis.nom }}</div>
+              <div class="etablissement-location">{{ maquis.localisation }}</div>
+              <div class="etablissement-type">{{ maquis.get_type_display }}</div>
+            </div>
+            <div class="classement-score">
+              <div class="score-amount">{{ maquis.total_ventes|default:0|floatformat:0 }} FCFA</div>
+              <div class="score-label">Total des ventes</div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">🏪</div>
+          <h3>Aucun maquis classé</h3>
+          <p>Aucun maquis n'a encore de ventes enregistrées.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <!-- Classement des boîtes de nuit -->
+  <div class="classement-category">
+    <h3 class="category-title">🎉 Top Boîtes de Nuit</h3>
+    <div class="classement-grid">
+      {% if boites %}
+        {% for boite in boites %}
+          <div class="classement-card {% if forloop.counter <= 3 %}top-{{ forloop.counter }}{% endif %}">
+            <div class="classement-rank">
+              <span class="rank-number">{{ forloop.counter }}</span>
+              {% if forloop.counter == 1 %}
+                <div class="rank-trophy">🥇</div>
+              {% elif forloop.counter == 2 %}
+                <div class="rank-trophy">🥈</div>
+              {% elif forloop.counter == 3 %}
+                <div class="rank-trophy">🥉</div>
+              {% endif %}
+            </div>
+            <div class="classement-info">
+              <div class="etablissement-nom">{{ boite.nom }}</div>
+              <div class="etablissement-location">{{ boite.localisation }}</div>
+              <div class="etablissement-type">{{ boite.get_type_display }}</div>
+            </div>
+            <div class="classement-score">
+              <div class="score-amount">{{ boite.total_ventes|default:0|floatformat:0 }} FCFA</div>
+              <div class="score-label">Total des ventes</div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">🎉</div>
+          <h3>Aucune boîte de nuit classée</h3>
+          <p>Aucune boîte de nuit n'a encore de ventes enregistrées.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Classement des participants -->
+<div class="section">
+  <h2 class="section-title">Classement des Participants</h2>
+  
+  <!-- Top participants maquis -->
+  <div class="classement-category">
+    <h3 class="category-title">👥 Top Participants - Maquis</h3>
+    <div class="participants-grid">
+      {% if top_participants_maquis %}
+        {% for participant in top_participants_maquis %}
+          <div class="participant-card {% if forloop.counter <= 3 %}top-{{ forloop.counter }}{% endif %}">
+            <div class="participant-rank">
+              <span class="rank-number">{{ forloop.counter }}</span>
+              {% if forloop.counter == 1 %}
+                <div class="rank-trophy">🥇</div>
+              {% elif forloop.counter == 2 %}
+                <div class="rank-trophy">🥈</div>
+              {% elif forloop.counter == 3 %}
+                <div class="rank-trophy">🥉</div>
+              {% endif %}
+            </div>
+            <div class="participant-avatar">
+              {% if participant.user.profile.avatar %}
+                <img src="{{ participant.user.profile.avatar.url }}" alt="Avatar de {{ participant.pseudo }}">
+              {% else %}
+                <div class="avatar-placeholder">{{ participant.pseudo|first|upper }}</div>
+              {% endif %}
+            </div>
+            <div class="participant-info">
+              <div class="participant-pseudo">{{ participant.pseudo }}</div>
+              <div class="participant-name">{{ participant.nom }} {{ participant.prenom }}</div>
+              <div class="participant-etablissement">{{ participant.service.nom }}</div>
+            </div>
+            <div class="participant-score">
+              <div class="score-amount">{{ participant.total_depenses|default:0|floatformat:0 }} FCFA</div>
+              <div class="score-label">Total dépenses</div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">👥</div>
+          <h3>Aucun participant maquis classé</h3>
+          <p>Aucun participant de maquis n'a encore de consommations enregistrées.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <!-- Top participants boîtes de nuit -->
+  <div class="classement-category">
+    <h3 class="category-title">👥 Top Participants - Boîtes de Nuit</h3>
+    <div class="participants-grid">
+      {% if top_participants_boites %}
+        {% for participant in top_participants_boites %}
+          <div class="participant-card {% if forloop.counter <= 3 %}top-{{ forloop.counter }}{% endif %}">
+            <div class="participant-rank">
+              <span class="rank-number">{{ forloop.counter }}</span>
+              {% if forloop.counter == 1 %}
+                <div class="rank-trophy">🥇</div>
+              {% elif forloop.counter == 2 %}
+                <div class="rank-trophy">🥈</div>
+              {% elif forloop.counter == 3 %}
+                <div class="rank-trophy">🥉</div>
+              {% endif %}
+            </div>
+            <div class="participant-avatar">
+              {% if participant.user.profile.avatar %}
+                <img src="{{ participant.user.profile.avatar.url }}" alt="Avatar de {{ participant.pseudo }}">
+              {% else %}
+                <div class="avatar-placeholder">{{ participant.pseudo|first|upper }}</div>
+              {% endif %}
+            </div>
+            <div class="participant-info">
+              <div class="participant-pseudo">{{ participant.pseudo }}</div>
+              <div class="participant-name">{{ participant.nom }} {{ participant.prenom }}</div>
+              <div class="participant-etablissement">{{ participant.service.nom }}</div>
+            </div>
+            <div class="participant-score">
+              <div class="score-amount">{{ participant.total_depenses|default:0|floatformat:0 }} FCFA</div>
+              <div class="score-label">Total dépenses</div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">👥</div>
+          <h3>Aucun participant boîte de nuit classé</h3>
+          <p>Aucun participant de boîte de nuit n'a encore de consommations enregistrées.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Informations sur les classements -->
+<div class="section info-section">
+  <h2 class="section-title">Comment fonctionnent les classements ?</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-icon">📊</div>
+      <h3>Calcul des scores</h3>
+      <p>Les classements se basent sur le montant total des consommations des participants.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">⏰</div>
+      <h3>Mise à jour</h3>
+      <p>Les classements sont mis à jour en temps réel et recalculés chaque jour à 12h00.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🏆</div>
+      <h3>Trophées</h3>
+      <p>Les 3 premiers de chaque catégorie reçoivent des trophées et des récompenses.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📅</div>
+      <h3>Période de classement</h3>
+      <p>Les classements se basent sur les consommations entre 17h30 de la veille et 11h00 du jour.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.hero-section {
+  text-align: center;
+  padding: 3rem 0;
+  background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #FF004D, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  color: #FFD700;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  color: #FFD700;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #7B2CBF;
+  padding-bottom: 1rem;
+}
+
+.classement-category {
+  margin-bottom: 3rem;
+}
+
+.category-title {
+  color: #FFD700;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(123, 44, 191, 0.2);
+  border-radius: 1rem;
+  border: 2px solid #7B2CBF;
+}
+
+.classement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.classement-card {
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.classement-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3);
+}
+
+.classement-card.top-1 {
+  border-color: #FFD700;
+  background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(26,18,58,0.9) 100%);
+}
+
+.classement-card.top-2 {
+  border-color: #C0C0C0;
+  background: linear-gradient(135deg, rgba(192,192,192,0.1) 0%, rgba(26,18,58,0.9) 100%);
+}
+
+.classement-card.top-3 {
+  border-color: #CD7F32;
+  background: linear-gradient(135deg, rgba(205,127,50,0.1) 0%, rgba(26,18,58,0.9) 100%);
+}
+
+.classement-rank {
+  position: relative;
+  margin-right: 1.5rem;
+  text-align: center;
+}
+
+.rank-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #FFD700;
+  display: block;
+}
+
+.rank-trophy {
+  font-size: 2rem;
+  margin-top: 0.5rem;
+}
+
+.classement-info {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.etablissement-nom {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+}
+
+.etablissement-location {
+  color: #00C2FF;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.etablissement-type {
+  color: #7B2CBF;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.classement-score {
+  text-align: right;
+}
+
+.score-amount {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #00FF00;
+  margin-bottom: 0.5rem;
+}
+
+.score-label {
+  color: #7B2CBF;
+  font-size: 0.8rem;
+}
+
+.participants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+}
+
+.participant-card {
+  background: rgba(26, 18, 58, 0.9);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #7B2CBF;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.participant-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3);
+}
+
+.participant-card.top-1 {
+  border-color: #FFD700;
+  background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(26,18,58,0.9) 100%);
+}
+
+.participant-card.top-2 {
+  border-color: #C0C0C0;
+  background: linear-gradient(135deg, rgba(192,192,192,0.1) 0%, rgba(26,18,58,0.9) 100%);
+}
+
+.participant-card.top-3 {
+  border-color: #CD7F32;
+  background: linear-gradient(135deg, rgba(205,127,50,0.1) 0%, rgba(26,18,58,0.9) 100%);
+}
+
+.participant-rank {
+  position: relative;
+  margin-right: 1.5rem;
+  text-align: center;
+}
+
+.participant-avatar {
+  margin-right: 1rem;
+}
+
+.participant-avatar img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #FF004D, #FFD700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.participant-info {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.participant-pseudo {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+}
+
+.participant-name {
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.participant-etablissement {
+  color: #00C2FF;
+  font-size: 0.9rem;
+}
+
+.participant-score {
+  text-align: right;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #7B2CBF;
+  grid-column: 1 / -1;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.info-section {
+  background: rgba(26, 18, 58, 0.3);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.info-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.info-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.info-card h3 {
+  color: #FFD700;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .classement-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .participants-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .classement-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .classement-rank {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .classement-info {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .classement-score {
+    text-align: center;
+  }
+  
+  .participant-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .participant-rank {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .participant-avatar {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .participant-info {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .participant-score {
+    text-align: center;
+  }
+}
+</style>
+{% endblock %}

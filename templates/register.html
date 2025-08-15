@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Inscription - Soirée Clash</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0F0A2F 0%, #1A123A 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .register-container {
+      background: rgba(26, 18, 58, 0.9);
+      padding: 3rem;
+      border-radius: 1rem;
+      border: 2px solid #7B2CBF;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 500px;
+    }
+    .logo {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #FF004D, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #FFD700;
+      font-weight: 600;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #7B2CBF;
+      border-radius: 0.5rem;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #FFD700;
+      box-shadow: 0 0 10px rgba(255,215,0,0.3);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .btn-register {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(45deg, #7B2CBF, #00C2FF);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    .links {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    .links a {
+      color: #FFD700;
+      text-decoration: none;
+      margin: 0 1rem;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+    .error-message {
+      background: rgba(255,0,77,0.2);
+      border: 1px solid #FF004D;
+      color: #FF6B6B;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .help-text {
+      font-size: 0.9rem;
+      color: #ccc;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <div class="logo">SOIRÉE CLASH</div>
+    
+    {% if form.errors %}
+    <div class="error-message">
+      {% for field, errors in form.errors.items %}
+        {% for error in errors %}
+          {{ error }}<br>
+        {% endfor %}
+      {% endfor %}
+    </div>
+    {% endif %}
+    
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="id_username">Nom d'utilisateur</label>
+        {{ form.username }}
+        <div class="help-text">150 caractères maximum. Lettres, chiffres et @/./+/-/_ uniquement.</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="id_password1">Mot de passe</label>
+        {{ form.password1 }}
+        <div class="help-text">
+          Votre mot de passe ne peut pas être trop similaire à vos autres informations personnelles.<br>
+          Votre mot de passe doit contenir au moins 8 caractères.<br>
+          Votre mot de passe ne peut pas être un mot de passe couramment utilisé.<br>
+          Votre mot de passe ne peut pas être entièrement numérique.
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="id_password2">Confirmation du mot de passe</label>
+        {{ form.password2 }}
+        <div class="help-text">Entrez le même mot de passe que précédemment, pour vérification.</div>
+      </div>
+      
+      <button type="submit" class="btn-register">Créer mon compte</button>
+    </form>
+    
+    <div class="links">
+      <a href="{% url 'app:login' %}">Déjà un compte ? Se connecter</a>
+      <a href="{% url 'app:index' %}">Retour à l'accueil</a>
+    </div>
+  </div>
+</body>
+</html>
