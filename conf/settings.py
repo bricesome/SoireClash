@@ -134,3 +134,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # This is now a string
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'app:dashboard'
 LOGIN_URL = 'app:login'
+
+# Configuration Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'votre_email@gmail.com'  # Remplacez par votre email Gmail
+EMAIL_HOST_PASSWORD = 'votre_mot_de_passe_app'  # Remplacez par votre mot de passe d'application Gmail
+DEFAULT_FROM_EMAIL = 'votre_email@gmail.com'  # Remplacez par votre email Gmail

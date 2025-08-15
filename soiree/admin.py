@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from django.contrib.auth.models import User
+import uuid
 from .models import (
     Service, TypeBoisson, Profile, Gestionnaire, Participant, 
     ConsommationParticipant, Trophee, Pari, DemandeAdhesion,
@@ -17,9 +19,106 @@ class DemandeAdhesionAdmin(admin.ModelAdmin):
     
     def approuver_demandes(self, request, queryset):
         for demande in queryset.filter(statut='en_attente'):
-            demande.statut = 'approuvee'
-            demande.save()
-        self.message_user(request, f"{queryset.count()} demande(s) approuvée(s).")
+            try:
+                # Créer l'établissement
+                service = Service.objects.create(
+                    nom=demande.nom_etablissement,
+                    type=demande.type_etablissement,
+                    localisation=demande.quartier,
+                    adresse=f"{demande.quartier}, {demande.ville}",
+                    proprietaire=request.user,  # L'admin devient propriétaire temporaire
+                    actif=True
+                )
+                
+                # Créer le compte utilisateur
+                user = User.objects.create_user(
+                    username=demande.pseudo,
+                    email=demande.email_gestionnaire,
+                    password=str(uuid.uuid4()),  # Mot de passe temporaire
+                    first_name=demande.prenom_gestionnaire,
+                    last_name=demande.nom_gestionnaire
+                )
+                
+                # Créer le profil utilisateur
+                profile = Profile.objects.create(
+                    user=user,
+                    pseudo=demande.pseudo,
+                    nom=demande.nom_gestionnaire,
+                    prenom=demande.prenom_gestionnaire,
+                    tel=demande.telephone_gestionnaire
+                )
+                
+                # Créer le gestionnaire
+                gestionnaire = Gestionnaire.objects.create(
+                    user=user,
+                    pseudo=demande.pseudo,
+                    nom=demande.nom_gestionnaire,
+                    prenom=demande.prenom_gestionnaire,
+                    tel=demande.telephone_gestionnaire,
+                    service=service,
+                    fonction='gerant',
+                    mot_de_passe_reinitialise=False
+                )
+                
+                # Marquer la demande comme approuvée
+                demande.statut = 'approuvee'
+                demande.save()
+                
+                # Envoyer un email de réinitialisation de mot de passe
+                try:
+                    from django.contrib.auth.tokens import default_token_generator
+                    from django.utils.http import urlsafe_base64_encode
+                    from django.utils.encoding import force_bytes
+                    from django.urls import reverse
+                    from django.core.mail import send_mail
+                    from django.conf import settings
+                    
+                    # Générer le token de réinitialisation
+                    token = default_token_generator.make_token(user)
+                    uid = urlsafe_base64_encode(force_bytes(user.pk))
+                    
+                    # Construire l'URL de réinitialisation
+                    reset_url = f"{request.scheme}://{request.get_host()}/reset/{uid}/{token}/"
+                    
+                    # Envoyer l'email
+                    subject = 'Soirée Clash - Réinitialisation de votre mot de passe'
+                    message = f"""
+                    Bonjour {demande.prenom_gestionnaire} {demande.nom_gestionnaire},
+
+                    Votre demande d'adhésion pour l'établissement "{demande.nom_etablissement}" a été approuvée !
+
+                    Votre compte a été créé avec succès :
+                    - Nom d'utilisateur : {demande.pseudo}
+                    - Email : {demande.email_gestionnaire}
+
+                    Pour activer votre compte, veuillez réinitialiser votre mot de passe en cliquant sur le lien suivant :
+                    {reset_url}
+
+                    Ce lien est valable pendant 24 heures.
+
+                    Cordialement,
+                    L'équipe Soirée Clash
+                    """
+                    
+                    send_mail(
+                        subject=subject,
+                        message=message,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[demande.email_gestionnaire],
+                        fail_silently=False,
+                    )
+                    
+                except Exception as e:
+                    # Si l'email échoue, on continue mais on affiche un avertissement
+                    pass
+                    
+            except Exception as e:
+                # En cas d'erreur, on marque la demande comme rejetée
+                demande.statut = 'rejetee'
+                demande.save()
+                continue
+                
+        self.message_user(request, f"{queryset.count()} demande(s) approuvée(s) et compte(s) créé(s).")
     approuver_demandes.short_description = "Approuver les demandes sélectionnées"
     
     def rejeter_demandes(self, request, queryset):
@@ -58,18 +157,76 @@ class TypeBoissonAdmin(admin.ModelAdmin):
     list_editable = ['prix_vente', 'actif']
 
 
+# Inline pour Profile
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    extra = 1
+    fields = ['pseudo', 'tel', 'avatar']
+    exclude = ['nom', 'prenom']  # Exclure les champs dupliqués
+
+# Inline pour Gestionnaire
+class GestionnaireInline(admin.StackedInline):
+    model = Gestionnaire
+    extra = 1
+    fields = ['pseudo', 'service', 'fonction', 'tel', 'avatar', 'mot_de_passe_reinitialise']
+    exclude = ['nom', 'prenom']  # Exclure les champs dupliqués
+
+# Inline pour Participant
+class ParticipantInline(admin.StackedInline):
+    model = Participant
+    extra = 1
+    fields = ['pseudo', 'service', 'actif']
+    exclude = ['nom', 'prenom']  # Exclure les champs dupliqués
+
+# Configuration de l'admin User personnalisé
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ['username', 'email', 'first_name', 'last_name', 'is_active', 'date_joined']
+    list_filter = ['is_active', 'is_staff', 'is_superuser', 'date_joined']
+    search_fields = ['username', 'first_name', 'last_name', 'email']
+    ordering = ['-date_joined']
+    
+    # Ajouter les inlines pour créer les profils en même temps
+    inlines = [ProfileInline, GestionnaireInline, ParticipantInline]
+    
+    # Champs à afficher dans le formulaire
+    fieldsets = (
+        (None, {
+            'fields': ('username', 'password')
+        }),
+        ('Informations personnelles', {
+            'fields': ('first_name', 'last_name', 'email')
+        }),
+        ('Permissions', {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+        }),
+        ('Dates importantes', {
+            'fields': ('last_login', 'date_joined'),
+        }),
+    )
+
+# Désenregistrer l'admin User par défaut et enregistrer le nôtre
+from django.contrib.auth.admin import UserAdmin
+admin.site.unregister(User)
+
+# Enregistrer notre CustomUserAdmin
+admin.site.register(User, CustomUserAdmin)
+
+# Enregistrer les modèles avec les inlines
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'pseudo', 'nom', 'prenom', 'tel']
-    search_fields = ['user__username', 'pseudo', 'nom', 'prenom', 'tel']
+    list_display = ['user', 'pseudo', 'tel']
+    search_fields = ['user__username', 'pseudo', 'tel']
     list_filter = ['user__is_active']
+    exclude = ['nom', 'prenom']  # Masquer les champs dupliqués
+    readonly_fields = ['user']
 
 
 @admin.register(Gestionnaire)
 class GestionnaireAdmin(admin.ModelAdmin):
     list_display = ['user', 'pseudo', 'service', 'fonction', 'tel', 'mot_de_passe_reinitialise']
     list_filter = ['fonction', 'service__type', 'mot_de_passe_reinitialise']
-    search_fields = ['user__username', 'pseudo', 'nom', 'prenom', 'tel', 'service__nom']
+    search_fields = ['user__username', 'pseudo', 'tel', 'service__nom']
+    exclude = ['nom', 'prenom']  # Masquer les champs dupliqués
     actions = ['reinitialiser_mots_de_passe']
     
     def reinitialiser_mots_de_passe(self, request, queryset):
@@ -86,6 +243,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     list_filter = ['actif', 'service__type', 'date_inscription']
     search_fields = ['user__username', 'pseudo', 'service__nom']
     readonly_fields = ['date_inscription']
+    exclude = ['nom', 'prenom']  # Masquer les champs dupliqués
     actions = ['activer_participants', 'desactiver_participants']
     
     def activer_participants(self, request, queryset):

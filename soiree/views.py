@@ -428,43 +428,103 @@ def admin_demandes_adhesion(request):
             demande = get_object_or_404(DemandeAdhesion, id=demande_id)
             
             if action == 'approuver':
-                # Créer l'établissement
-                service = Service.objects.create(
-                    nom=demande.nom_etablissement,
-                    type=demande.type_etablissement,
-                    localisation=demande.quartier,
-                    adresse=f"{demande.quartier}, {demande.ville}",
-                    proprietaire=request.user,  # L'admin devient propriétaire temporaire
-                    actif=True
-                )
-                
-                # Créer le compte gestionnaire
-                user = User.objects.create_user(
-                    username=demande.pseudo,
-                    email=demande.email_gestionnaire,
-                    password=str(uuid.uuid4()),  # Mot de passe temporaire
-                    first_name=demande.prenom_gestionnaire,
-                    last_name=demande.nom_gestionnaire
-                )
-                
-                gestionnaire = Gestionnaire.objects.create(
-                    user=user,
-                    pseudo=demande.pseudo,
-                    nom=demande.nom_gestionnaire,
-                    prenom=demande.prenom_gestionnaire,
-                    tel=demande.telephone_gestionnaire,
-                    service=service,
-                    fonction='gerant'
-                )
-                
-                # Marquer la demande comme approuvée
-                demande.statut = 'approuvee'
-                demande.save()
-                
-                # Envoyer un mail de réinitialisation
-                # gestionnaire.envoyer_mail_reinitialisation()
-                
-                messages.success(request, f'Demande approuvée. Compte gestionnaire créé pour {demande.pseudo}.')
+                try:
+                    # Créer l'établissement
+                    service = Service.objects.create(
+                        nom=demande.nom_etablissement,
+                        type=demande.type_etablissement,
+                        localisation=demande.quartier,
+                        adresse=f"{demande.quartier}, {demande.ville}",
+                        proprietaire=request.user,  # L'admin devient propriétaire temporaire
+                        actif=True
+                    )
+                    
+                    # Créer le compte utilisateur
+                    user = User.objects.create_user(
+                        username=demande.pseudo,
+                        email=demande.email_gestionnaire,
+                        password=str(uuid.uuid4()),  # Mot de passe temporaire
+                        first_name=demande.prenom_gestionnaire,
+                        last_name=demande.nom_gestionnaire
+                    )
+                    
+                    # Créer le profil utilisateur
+                    profile = Profile.objects.create(
+                        user=user,
+                        pseudo=demande.pseudo,
+                        nom=demande.nom_gestionnaire,
+                        prenom=demande.prenom_gestionnaire,
+                        tel=demande.telephone_gestionnaire
+                    )
+                    
+                    # Créer le gestionnaire
+                    gestionnaire = Gestionnaire.objects.create(
+                        user=user,
+                        pseudo=demande.pseudo,
+                        nom=demande.nom_gestionnaire,
+                        prenom=demande.prenom_gestionnaire,
+                        tel=demande.telephone_gestionnaire,
+                        service=service,
+                        fonction='gerant',
+                        mot_de_passe_reinitialise=False
+                    )
+                    
+                    # Marquer la demande comme approuvée
+                    demande.statut = 'approuvee'
+                    demande.save()
+                    
+                    # Envoyer un email de réinitialisation de mot de passe
+                    try:
+                        from django.contrib.auth.tokens import default_token_generator
+                        from django.utils.http import urlsafe_base64_encode
+                        from django.utils.encoding import force_bytes
+                        from django.urls import reverse
+                        
+                        # Générer le token de réinitialisation
+                        token = default_token_generator.make_token(user)
+                        uid = urlsafe_base64_encode(force_bytes(user.pk))
+                        
+                        # Construire l'URL de réinitialisation
+                        reset_url = request.build_absolute_uri(
+                            reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
+                        )
+                        
+                        # Envoyer l'email
+                        subject = 'Soirée Clash - Réinitialisation de votre mot de passe'
+                        message = f"""
+                        Bonjour {demande.prenom_gestionnaire} {demande.nom_gestionnaire},
+
+                        Votre demande d'adhésion pour l'établissement "{demande.nom_etablissement}" a été approuvée !
+
+                        Votre compte a été créé avec succès :
+                        - Nom d'utilisateur : {demande.pseudo}
+                        - Email : {demande.email_gestionnaire}
+
+                        Pour activer votre compte, veuillez réinitialiser votre mot de passe en cliquant sur le lien suivant :
+                        {reset_url}
+
+                        Ce lien est valable pendant 24 heures.
+
+                        Cordialement,
+                        L'équipe Soirée Clash
+                        """
+                        
+                        send_mail(
+                            subject=subject,
+                            message=message,
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[demande.email_gestionnaire],
+                            fail_silently=False,
+                        )
+                        
+                        messages.success(request, f'Demande approuvée. Compte gestionnaire créé pour {demande.pseudo}. Email de réinitialisation envoyé.')
+                        
+                    except Exception as e:
+                        messages.warning(request, f'Demande approuvée et compte créé, mais erreur lors de l\'envoi de l\'email : {str(e)}')
+                    
+                except Exception as e:
+                    messages.error(request, f'Erreur lors de la création du compte : {str(e)}')
+                    return redirect('app:admin_demandes_adhesion')
                 
             elif action == 'rejeter':
                 demande.statut = 'rejetee'

@@ -1,0 +1,729 @@
+/* ===== ANIMATIONS EXTRAORDINAIRES SOIRÉE CLASH ===== */
+
+/* ===== 1. ANIMATION CRISTAL ÉLECTRIQUE (Classements) ===== */
+.crystal-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.crystal-shards {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(45deg, transparent 40%, #00C2FF 40%, #00C2FF 60%, transparent 60%),
+    linear-gradient(-45deg, transparent 40%, #FFD700 40%, #FFD700 60%, transparent 60%);
+  background-size: 50px 50px;
+  animation: shards-rotate 10s linear infinite;
+}
+
+@keyframes shards-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.electric-arcs {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  transform: translate(-50%, -50%);
+}
+
+.electric-arcs::before,
+.electric-arcs::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  animation: electric-pulse 2s ease-in-out infinite;
+}
+
+.electric-arcs::before {
+  border-top-color: #FF004D;
+  border-right-color: #00C2FF;
+  animation-delay: 0s;
+}
+
+.electric-arcs::after {
+  border-bottom-color: #FFD700;
+  border-left-color: #7B2CBF;
+  animation-delay: 1s;
+}
+
+@keyframes electric-pulse {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg); 
+    opacity: 0.3;
+    filter: drop-shadow(0 0 10px currentColor);
+  }
+  50% { 
+    transform: scale(1.2) rotate(180deg); 
+    opacity: 1;
+    filter: drop-shadow(0 0 30px currentColor);
+  }
+}
+
+.crystal-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, #FFD700 0%, #FF004D 30%, #00C2FF 70%, transparent 100%);
+  border-radius: 50%;
+  animation: core-vibrate 0.5s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+}
+
+@keyframes core-vibrate {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.energy-pulses {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.energy-pulses::before,
+.energy-pulses::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #FFD700;
+  border-radius: 50%;
+  animation: energy-bounce 4s ease-in-out infinite;
+}
+
+.energy-pulses::before {
+  top: 25%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.energy-pulses::after {
+  top: 75%;
+  left: 80%;
+  animation-delay: 2s;
+}
+
+@keyframes energy-bounce {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+  50% { transform: translateY(-30px) scale(1.8); opacity: 1; }
+}
+
+/* Titre cristal */
+.crystal-title {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.crystal-char {
+  display: inline-block;
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #FF004D, #FFD700, #00C2FF, #7B2CBF);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: char-crystal 3s ease-in-out infinite, gradient-shift 4s ease infinite;
+  transform-origin: center;
+}
+
+.crystal-char:nth-child(1) { animation-delay: 0s; }
+.crystal-char:nth-child(2) { animation-delay: 0.1s; }
+.crystal-char:nth-child(3) { animation-delay: 0.2s; }
+.crystal-char:nth-child(4) { animation-delay: 0.3s; }
+.crystal-char:nth-child(5) { animation-delay: 0.4s; }
+.crystal-char:nth-child(6) { animation-delay: 0.5s; }
+.crystal-char:nth-child(7) { animation-delay: 0.6s; }
+.crystal-char:nth-child(8) { animation-delay: 0.7s; }
+.crystal-char:nth-child(9) { animation-delay: 0.8s; }
+.crystal-char:nth-child(10) { animation-delay: 0.9s; }
+.crystal-char:nth-child(11) { animation-delay: 1.0s; }
+.crystal-char:nth-child(12) { animation-delay: 1.1s; }
+
+@keyframes char-crystal {
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  50% { transform: translateY(-6px) scale(1.1) rotate(2deg); }
+}
+
+/* Sous-titre cristal */
+.crystal-subtitle {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.subtitle-crystal {
+  display: inline-block;
+  font-size: 1.2rem;
+  color: #FFD700;
+  opacity: 0;
+  animation: crystal-appear 0.8s ease-out forwards;
+  transform: translateY(15px) scale(0.8);
+}
+
+.subtitle-crystal:nth-child(1) { animation-delay: 0.2s; }
+.subtitle-crystal:nth-child(2) { animation-delay: 0.4s; }
+.subtitle-crystal:nth-child(3) { animation-delay: 0.6s; }
+.subtitle-crystal:nth-child(4) { animation-delay: 0.8s; }
+.subtitle-crystal:nth-child(5) { animation-delay: 1.0s; }
+.subtitle-crystal:nth-child(6) { animation-delay: 1.2s; }
+.subtitle-crystal:nth-child(7) { animation-delay: 1.4s; }
+.subtitle-crystal:nth-child(8) { animation-delay: 1.6s; }
+
+@keyframes crystal-appear {
+  0% { 
+    opacity: 0; 
+    transform: translateY(15px) scale(0.8) rotate(-8deg); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1) rotate(0deg); 
+  }
+}
+
+/* ===== 2. ANIMATION ONDE SONORE (Trophées) ===== */
+.soundwave-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.wave-line {
+  position: absolute;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #FFD700, #00C2FF, transparent);
+  border-radius: 50%;
+  animation: wave-move 3s ease-in-out infinite;
+}
+
+.wave-1 {
+  top: 20%;
+  left: -100%;
+  width: 200%;
+  animation-delay: 0s;
+  animation-duration: 2s;
+}
+
+.wave-2 {
+  top: 40%;
+  left: -100%;
+  width: 200%;
+  animation-delay: 0.5s;
+  animation-duration: 2.5s;
+}
+
+.wave-3 {
+  top: 60%;
+  left: -100%;
+  width: 200%;
+  animation-delay: 1s;
+  animation-duration: 3s;
+}
+
+.wave-4 {
+  top: 80%;
+  left: -100%;
+  width: 200%;
+  animation-delay: 1.5s;
+  animation-duration: 2.8s;
+}
+
+.wave-5 {
+  top: 30%;
+  left: -100%;
+  width: 200%;
+  animation-delay: 0.8s;
+  animation-duration: 2.2s;
+}
+
+@keyframes wave-move {
+  0% { transform: translateX(0) scaleY(1); opacity: 0; }
+  50% { transform: translateX(100%) scaleY(2); opacity: 1; }
+  100% { transform: translateX(200%) scaleY(1); opacity: 0; }
+}
+
+.bass-drop {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, #FF004D 0%, transparent 70%);
+  border-radius: 50%;
+  animation: bass-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes bass-pulse {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.6; }
+  50% { transform: translateX(-50%) scale(1.5); opacity: 1; }
+}
+
+.treble-sparkles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.treble-sparkles::before,
+.treble-sparkles::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #00C2FF;
+  border-radius: 50%;
+  animation: sparkle-float 4s ease-in-out infinite;
+}
+
+.treble-sparkles::before {
+  top: 15%;
+  left: 25%;
+  animation-delay: 0s;
+}
+
+.treble-sparkles::after {
+  top: 85%;
+  left: 75%;
+  animation-delay: 2s;
+}
+
+@keyframes sparkle-float {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+  50% { transform: translateY(-25px) scale(1.6); opacity: 1; }
+}
+
+/* Titre onde sonore */
+.soundwave-title {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.sound-char {
+  display: inline-block;
+  font-size: 2.8rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #FFD700, #00C2FF, #FF004D, #7B2CBF);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: char-sound 2.5s ease-in-out infinite, gradient-wave 3s ease infinite;
+  transform-origin: center;
+}
+
+.sound-char:nth-child(1) { animation-delay: 0s; }
+.sound-char:nth-child(2) { animation-delay: 0.1s; }
+.sound-char:nth-child(3) { animation-delay: 0.2s; }
+.sound-char:nth-child(4) { animation-delay: 0.3s; }
+.sound-char:nth-child(5) { animation-delay: 0.4s; }
+.sound-char:nth-child(6) { animation-delay: 0.5s; }
+.sound-char:nth-child(7) { animation-delay: 0.6s; }
+.sound-char:nth-child(8) { animation-delay: 0.7s; }
+.sound-char:nth-child(9) { animation-delay: 0.8s; }
+.sound-char:nth-child(10) { animation-delay: 0.9s; }
+.sound-char:nth-child(11) { animation-delay: 1.0s; }
+.sound-char:nth-child(12) { animation-delay: 1.1s; }
+.sound-char:nth-child(13) { animation-delay: 1.2s; }
+.sound-char:nth-child(14) { animation-delay: 1.3s; }
+.sound-char:nth-child(15) { animation-delay: 1.4s; }
+.sound-char:nth-child(16) { animation-delay: 1.5s; }
+.sound-char:nth-child(17) { animation-delay: 1.6s; }
+.sound-char:nth-child(18) { animation-delay: 1.7s; }
+.sound-char:nth-child(19) { animation-delay: 1.8s; }
+.sound-char:nth-child(20) { animation-delay: 1.9s; }
+.sound-char:nth-child(21) { animation-delay: 2.0s; }
+.sound-char:nth-child(22) { animation-delay: 2.1s; }
+
+@keyframes char-sound {
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  50% { transform: translateY(-5px) scale(1.05) rotate(1deg); }
+}
+
+@keyframes gradient-wave {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Sous-titre onde sonore */
+.soundwave-subtitle {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.subtitle-wave {
+  display: inline-block;
+  font-size: 1.2rem;
+  color: #FFD700;
+  opacity: 0;
+  animation: wave-appear 0.7s ease-out forwards;
+  transform: translateY(12px) scale(0.85);
+}
+
+.subtitle-wave:nth-child(1) { animation-delay: 0.2s; }
+.subtitle-wave:nth-child(2) { animation-delay: 0.4s; }
+.subtitle-wave:nth-child(3) { animation-delay: 0.6s; }
+.subtitle-wave:nth-child(4) { animation-delay: 0.8s; }
+.subtitle-wave:nth-child(5) { animation-delay: 1.0s; }
+.subtitle-wave:nth-child(6) { animation-delay: 1.2s; }
+.subtitle-wave:nth-child(7) { animation-delay: 1.4s; }
+.subtitle-wave:nth-child(8) { animation-delay: 1.6s; }
+.subtitle-wave:nth-child(9) { animation-delay: 1.8s; }
+
+@keyframes wave-appear {
+  0% { 
+    opacity: 0; 
+    transform: translateY(12px) scale(0.85) rotate(-3deg); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1) rotate(0deg); 
+  }
+}
+
+/* ===== 3. ANIMATION FEU D'ARTIFICE (Paris) ===== */
+.fireworks-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.firework {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: firework-explode 4s ease-out infinite;
+}
+
+.firework-1 {
+  top: 30%;
+  left: 25%;
+  background: #FF004D;
+  animation-delay: 0s;
+}
+
+.firework-2 {
+  top: 20%;
+  left: 75%;
+  background: #FFD700;
+  animation-delay: 1.5s;
+}
+
+.firework-3 {
+  top: 70%;
+  left: 50%;
+  background: #00C2FF;
+  animation-delay: 3s;
+}
+
+@keyframes firework-explode {
+  0% { 
+    transform: scale(1); 
+    opacity: 1;
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  50% { 
+    transform: scale(0.1); 
+    opacity: 0.8;
+    box-shadow: 0 0 20px 10px currentColor;
+  }
+  100% { 
+    transform: scale(3); 
+    opacity: 0;
+    box-shadow: 0 0 40px 20px currentColor;
+  }
+}
+
+.sparkles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.sparkles::before,
+.sparkles::after,
+.sparkles {
+  content: '';
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #FFD700;
+  border-radius: 50%;
+  animation: sparkle-fall 3s linear infinite;
+}
+
+.sparkles::before {
+  top: -10px;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.sparkles::after {
+  top: -10px;
+  left: 80%;
+  animation-delay: 1.5s;
+}
+
+.sparkles {
+  top: -10px;
+  left: 60%;
+  animation-delay: 0.8s;
+}
+
+@keyframes sparkle-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+.smoke-trails {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.smoke-trails::before,
+.smoke-trails::after {
+  content: '';
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(ellipse, rgba(128, 128, 128, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: smoke-rise 6s ease-out infinite;
+}
+
+.smoke-trails::before {
+  bottom: 20%;
+  left: 30%;
+  animation-delay: 0s;
+}
+
+.smoke-trails::after {
+  bottom: 30%;
+  left: 70%;
+  animation-delay: 3s;
+}
+
+@keyframes smoke-rise {
+  0% { 
+    transform: translateY(0) scale(1); 
+    opacity: 0.8; 
+  }
+  100% { 
+    transform: translateY(-100px) scale(2); 
+    opacity: 0; 
+  }
+}
+
+/* Titre feu d'artifice */
+.fireworks-title {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.firework-char {
+  display: inline-block;
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #FFD700, #FF004D, #00C2FF, #7B2CBF);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: char-firework 3.5s ease-in-out infinite, gradient-explode 4s ease infinite;
+  transform-origin: center;
+}
+
+.firework-char:nth-child(1) { animation-delay: 0s; }
+.firework-char:nth-child(2) { animation-delay: 0.1s; }
+.firework-char:nth-child(3) { animation-delay: 0.2s; }
+.firework-char:nth-child(4) { animation-delay: 0.3s; }
+.firework-char:nth-child(5) { animation-delay: 0.4s; }
+.firework-char:nth-child(6) { animation-delay: 0.5s; }
+.firework-char:nth-child(7) { animation-delay: 0.6s; }
+.firework-char:nth-child(8) { animation-delay: 0.7s; }
+.firework-char:nth-child(9) { animation-delay: 0.8s; }
+.firework-char:nth-child(10) { animation-delay: 0.9s; }
+.firework-char:nth-child(11) { animation-delay: 1.0s; }
+.firework-char:nth-child(12) { animation-delay: 1.1s; }
+.firework-char:nth-child(13) { animation-delay: 1.2s; }
+.firework-char:nth-child(14) { animation-delay: 1.3s; }
+.firework-char:nth-child(15) { animation-delay: 1.4s; }
+.firework-char:nth-child(16) { animation-delay: 1.5s; }
+.firework-char:nth-child(17) { animation-delay: 1.6s; }
+.firework-char:nth-child(18) { animation-delay: 1.7s; }
+.firework-char:nth-child(19) { animation-delay: 1.8s; }
+.firework-char:nth-child(20) { animation-delay: 1.9s; }
+.firework-char:nth-child(21) { animation-delay: 2.0s; }
+
+@keyframes char-firework {
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  50% { transform: translateY(-7px) scale(1.08) rotate(2deg); }
+}
+
+@keyframes gradient-explode {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Sous-titre feu d'artifice */
+.fireworks-subtitle {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.subtitle-firework {
+  display: inline-block;
+  font-size: 1.2rem;
+  color: #FFD700;
+  opacity: 0;
+  animation: firework-appear 0.9s ease-out forwards;
+  transform: translateY(18px) scale(0.8);
+}
+
+.subtitle-firework:nth-child(1) { animation-delay: 0.2s; }
+.subtitle-firework:nth-child(2) { animation-delay: 0.4s; }
+.subtitle-firework:nth-child(3) { animation-delay: 0.6s; }
+.subtitle-firework:nth-child(4) { animation-delay: 0.8s; }
+.subtitle-firework:nth-child(5) { animation-delay: 1.0s; }
+.subtitle-firework:nth-child(6) { animation-delay: 1.2s; }
+.subtitle-firework:nth-child(7) { animation-delay: 1.4s; }
+.subtitle-firework:nth-child(8) { animation-delay: 1.6s; }
+.subtitle-firework:nth-child(9) { animation-delay: 1.8s; }
+.subtitle-firework:nth-child(10) { animation-delay: 2.0s; }
+.subtitle-firework:nth-child(11) { animation-delay: 2.2s; }
+
+@keyframes firework-appear {
+  0% { 
+    opacity: 0; 
+    transform: translateY(18px) scale(0.8) rotate(-5deg); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1) rotate(0deg); 
+  }
+}
+
+/* ===== HOVER EFFECTS GÉNÉRAUX ===== */
+.crystal-char:hover,
+.sound-char:hover,
+.firework-char:hover {
+  animation: char-explode 0.8s ease-out;
+  filter: drop-shadow(0 0 25px currentColor);
+}
+
+@keyframes char-explode {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.4) rotate(180deg); filter: blur(3px); }
+  100% { transform: scale(1) rotate(360deg); filter: blur(0px); }
+}
+
+.subtitle-crystal:hover,
+.subtitle-wave:hover,
+.subtitle-firework:hover {
+  animation: subtitle-bounce 0.6s ease-out;
+  color: #00C2FF;
+  text-shadow: 0 0 20px #00C2FF;
+}
+
+@keyframes subtitle-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-15px) scale(1.2); }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .crystal-char,
+  .sound-char,
+  .firework-char {
+    font-size: 2rem;
+  }
+  
+  .subtitle-crystal,
+  .subtitle-wave,
+  .subtitle-firework {
+    font-size: 1rem;
+  }
+  
+  .crystal-rings,
+  .electric-arcs,
+  .portal-rings {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .firework {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .crystal-char,
+  .sound-char,
+  .firework-char {
+    font-size: 1.5rem;
+  }
+  
+  .subtitle-crystal,
+  .subtitle-wave,
+  .subtitle-firework {
+    font-size: 0.9rem;
+  }
+}

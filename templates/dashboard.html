@@ -4,8 +4,35 @@
 
 {% block content %}
 <div class="hero-section">
-  <h1 class="page-title">📊 Dashboard</h1>
-  <p class="page-subtitle">Bienvenue sur votre tableau de bord personnel</p>
+  <div class="portal-container">
+    <div class="portal-rings"></div>
+    <div class="portal-energy"></div>
+    <div class="portal-particles"></div>
+    <div class="portal-core"></div>
+  </div>
+  
+  <h1 class="page-title portal-title">
+    <span class="portal-char" data-char="📊">📊</span>
+    <span class="portal-char" data-char="D">D</span>
+    <span class="portal-char" data-char="a">a</span>
+    <span class="portal-char" data-char="s">s</span>
+    <span class="portal-char" data-char="h">h</span>
+    <span class="portal-char" data-char="b">b</span>
+    <span class="portal-char" data-char="o">o</span>
+    <span class="portal-char" data-char="a">a</span>
+    <span class="portal-char" data-char="r">r</span>
+    <span class="portal-char" data-char="d">d</span>
+  </h1>
+  
+  <p class="page-subtitle portal-subtitle">
+    <span class="subtitle-fragment">Bienvenue</span>
+    <span class="subtitle-fragment">sur</span>
+    <span class="subtitle-fragment">votre</span>
+    <span class="subtitle-fragment">tableau</span>
+    <span class="subtitle-fragment">de</span>
+    <span class="subtitle-fragment">bord</span>
+    <span class="subtitle-fragment">personnel</span>
+  </p>
 </div>
 
 <!-- Statistiques rapides -->
@@ -234,26 +261,252 @@
 </div>
 
 <style>
+/* ===== ANIMATION PORTAL DIMENSIONNEL ===== */
 .hero-section {
+  position: relative;
   text-align: center;
   padding: 3rem 0;
   background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
   border-radius: 1rem;
   margin-bottom: 2rem;
+  overflow: hidden;
+  min-height: 40vh;
 }
 
-.page-title {
-  font-size: 3rem;
-  font-weight: 800;
-  background: linear-gradient(to right, #FF004D, #FFD700);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Container du portail */
+.portal-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Anneaux du portail */
+.portal-rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+}
+
+.portal-rings::before,
+.portal-rings::after {
+  content: '';
+  position: absolute;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  animation: portal-spin 8s linear infinite;
+}
+
+.portal-rings::before {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-top-color: #FF004D;
+  border-right-color: #00C2FF;
+  animation-duration: 8s;
+}
+
+.portal-rings::after {
+  top: 25px;
+  left: 25px;
+  width: calc(100% - 50px);
+  height: calc(100% - 50px);
+  border-bottom-color: #FFD700;
+  border-left-color: #7B2CBF;
+  animation-duration: 6s;
+  animation-direction: reverse;
+}
+
+@keyframes portal-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Énergie du portail */
+.portal-energy {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 0, 77, 0.4) 0%, rgba(0, 194, 255, 0.3) 50%, transparent 70%);
+  border-radius: 50%;
+  animation: portal-pulse 4s ease-in-out infinite;
+}
+
+@keyframes portal-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.6; }
+  50% { transform: translate(-50%, -50%) scale(1.3) rotate(180deg); opacity: 1; }
+}
+
+/* Particules du portail */
+.portal-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.portal-particles::before,
+.portal-particles::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #FFD700;
+  border-radius: 50%;
+  animation: particle-float 6s ease-in-out infinite;
+}
+
+.portal-particles::before {
+  top: 20%;
+  left: 30%;
+  animation-delay: 0s;
+}
+
+.portal-particles::after {
+  top: 70%;
+  left: 70%;
+  animation-delay: 3s;
+}
+
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+  50% { transform: translateY(-20px) scale(1.5); opacity: 1; }
+}
+
+/* Cœur du portail */
+.portal-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, #FFD700 0%, #FF004D 50%, #00C2FF 100%);
+  border-radius: 50%;
+  animation: core-rotate 3s linear infinite;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+}
+
+@keyframes core-rotate {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Titre du portail */
+.portal-title {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
   margin-bottom: 1rem;
 }
 
-.page-subtitle {
+.portal-char {
+  display: inline-block;
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #FF004D, #FFD700, #00C2FF, #7B2CBF);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: char-portal 4s ease-in-out infinite, gradient-flow 3s ease infinite;
+  transform-origin: center;
+}
+
+.portal-char:nth-child(1) { animation-delay: 0s; }
+.portal-char:nth-child(2) { animation-delay: 0.1s; }
+.portal-char:nth-child(3) { animation-delay: 0.2s; }
+.portal-char:nth-child(4) { animation-delay: 0.3s; }
+.portal-char:nth-child(5) { animation-delay: 0.4s; }
+.portal-char:nth-child(6) { animation-delay: 0.5s; }
+.portal-char:nth-child(7) { animation-delay: 0.6s; }
+.portal-char:nth-child(8) { animation-delay: 0.7s; }
+.portal-char:nth-child(9) { animation-delay: 0.8s; }
+.portal-char:nth-child(10) { animation-delay: 0.9s; }
+
+@keyframes char-portal {
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  50% { transform: translateY(-8px) scale(1.1) rotate(3deg); }
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Sous-titre du portail */
+.portal-subtitle {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.subtitle-fragment {
+  display: inline-block;
   font-size: 1.2rem;
   color: #FFD700;
+  opacity: 0;
+  animation: fragment-appear 1s ease-out forwards;
+  transform: translateY(15px) scale(0.9);
+}
+
+.subtitle-fragment:nth-child(1) { animation-delay: 0.3s; }
+.subtitle-fragment:nth-child(2) { animation-delay: 0.5s; }
+.subtitle-fragment:nth-child(3) { animation-delay: 0.7s; }
+.subtitle-fragment:nth-child(4) { animation-delay: 0.9s; }
+.subtitle-fragment:nth-child(5) { animation-delay: 1.1s; }
+.subtitle-fragment:nth-child(6) { animation-delay: 1.3s; }
+.subtitle-fragment:nth-child(7) { animation-delay: 1.5s; }
+
+@keyframes fragment-appear {
+  0% { 
+    opacity: 0; 
+    transform: translateY(15px) scale(0.9) rotate(-5deg); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1) rotate(0deg); 
+  }
+}
+
+/* Hover effects */
+.portal-char:hover {
+  animation: char-teleport 0.8s ease-out;
+  filter: drop-shadow(0 0 25px currentColor);
+}
+
+@keyframes char-teleport {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.4) rotate(180deg); filter: blur(2px); }
+  100% { transform: scale(1) rotate(360deg); filter: blur(0px); }
+}
+
+.subtitle-fragment:hover {
+  animation: fragment-bounce 0.6s ease-out;
+  color: #00C2FF;
+  text-shadow: 0 0 20px #00C2FF;
+}
+
+@keyframes fragment-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-12px) scale(1.15); }
 }
 
 .section {

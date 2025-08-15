@@ -12,30 +12,367 @@
       color: #fff;
       min-height: 100vh;
     }
-    .hero {
-      text-align: center;
-      padding: 4rem 2rem;
-      background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
+    
+    /* Menu de navigation */
+    .nav-menu {
+      background: rgba(26, 18, 58, 0.9);
+      padding: 1rem 2rem;
+      border-bottom: 2px solid #7B2CBF;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
-    .logo {
-      font-size: 4rem;
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .nav-logo {
+      font-size: 1.5rem;
       font-weight: 800;
       background: linear-gradient(to right, #FF004D, #FFD700);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 1rem;
     }
-    .tagline {
-      font-size: 1.5rem;
+    
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .nav-btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    
+    .nav-btn-primary {
+      background: linear-gradient(45deg, #FF004D, #FF6B00);
+      color: white;
+    }
+    
+    .nav-btn-secondary {
+      background: linear-gradient(45deg, #7B2CBF, #00C2FF);
+      color: white;
+    }
+    
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .hero {
+      position: relative;
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
+      min-height: 60vh;
+      overflow: hidden;
+    }
+    
+    /* ===== ANIMATIONS GALAXIQUES EXTRAORDINAIRES ===== */
+    
+    /* Container galactique */
+    .galaxy-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    
+    /* Étoiles scintillantes */
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, #FFD700, transparent),
+        radial-gradient(2px 2px at 40px 70px, #00C2FF, transparent),
+        radial-gradient(1px 1px at 90px 40px, #FF004D, transparent),
+        radial-gradient(1px 1px at 130px 80px, #7B2CBF, transparent),
+        radial-gradient(2px 2px at 160px 30px, #FFD700, transparent);
+      background-repeat: repeat;
+      background-size: 200px 100px;
+      animation: twinkle 4s infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    
+    /* Nébuleuse colorée */
+    .nebula {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(255, 0, 77, 0.3) 0%, rgba(123, 44, 191, 0.2) 50%, transparent 70%);
+      transform: translate(-50%, -50%);
+      animation: nebula-pulse 8s ease-in-out infinite;
+    }
+    
+    @keyframes nebula-pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+      50% { transform: translate(-50%, -50%) scale(1.2) rotate(180deg); }
+    }
+    
+    /* Comète traversante */
+    .comet {
+      position: absolute;
+      top: 20%;
+      left: -100px;
+      width: 4px;
+      height: 4px;
+      background: linear-gradient(to right, #FFD700, #00C2FF, transparent);
+      border-radius: 50%;
+      animation: comet-traverse 6s linear infinite;
+    }
+    
+    .comet::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(to right, #FFD700, transparent);
+      transform: translateX(-100px);
+    }
+    
+    @keyframes comet-traverse {
+      0% { transform: translateX(0) rotate(0deg); }
+      100% { transform: translateX(calc(100vw + 200px)) rotate(360deg); }
+    }
+    
+    /* Pluie de météores */
+    .meteor-shower {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .meteor-shower::before,
+    .meteor-shower::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #FFD700;
+      border-radius: 50%;
+      animation: meteor-fall 3s linear infinite;
+    }
+    
+    .meteor-shower::before {
+      top: -10px;
+      left: 20%;
+      animation-delay: 0s;
+    }
+    
+    .meteor-shower::after {
+      top: -10px;
+      left: 80%;
+      animation-delay: 1.5s;
+    }
+    
+    @keyframes meteor-fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+    
+    /* Anneaux cosmiques */
+    .cosmic-rings {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 400px;
+      height: 400px;
+      transform: translate(-50%, -50%);
+    }
+    
+    .cosmic-rings::before,
+    .cosmic-rings::after {
+      content: '';
+      position: absolute;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      animation: rings-rotate 12s linear infinite;
+    }
+    
+    .cosmic-rings::before {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-top-color: #FFD700;
+      border-right-color: #00C2FF;
+    }
+    
+    .cosmic-rings::after {
+      top: 50px;
+      left: 50px;
+      width: calc(100% - 100px);
+      height: calc(100% - 100px);
+      border-bottom-color: #FF004D;
+      border-left-color: #7B2CBF;
+      animation-direction: reverse;
+      animation-duration: 8s;
+    }
+    
+    @keyframes rings-rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Titre principal animé */
+    .galaxy-title {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
       margin-bottom: 2rem;
-      color: #FFD700;
     }
+    
+    .title-char {
+      display: inline-block;
+      font-size: 4rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, #FF004D, #FFD700, #00C2FF, #7B2CBF);
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: char-float 3s ease-in-out infinite, gradient-shift 4s ease infinite;
+      transform-origin: center;
+    }
+    
+    .title-char:nth-child(1) { animation-delay: 0s; }
+    .title-char:nth-child(2) { animation-delay: 0.1s; }
+    .title-char:nth-child(3) { animation-delay: 0.2s; }
+    .title-char:nth-child(4) { animation-delay: 0.3s; }
+    .title-char:nth-child(5) { animation-delay: 0.4s; }
+    .title-char:nth-child(6) { animation-delay: 0.5s; }
+    .title-char:nth-child(7) { animation-delay: 0.6s; }
+    .title-char:nth-child(8) { animation-delay: 0.7s; }
+    .title-char:nth-child(9) { animation-delay: 0.8s; }
+    .title-char:nth-child(10) { animation-delay: 0.9s; }
+    .title-char:nth-child(11) { animation-delay: 1s; }
+    .title-char:nth-child(12) { animation-delay: 1.1s; }
+    
+    @keyframes char-float {
+      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+      50% { transform: translateY(-10px) rotate(5deg) scale(1.1); }
+    }
+    
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* Sous-titre cosmique */
+    .cosmic-subtitle {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .subtitle-word {
+      display: inline-block;
+      font-size: 1.5rem;
+      color: #FFD700;
+      opacity: 0;
+      animation: word-appear 0.8s ease-out forwards;
+      transform: translateY(20px) scale(0.8);
+    }
+    
+    .subtitle-word:nth-child(1) { animation-delay: 0.2s; }
+    .subtitle-word:nth-child(2) { animation-delay: 0.4s; }
+    .subtitle-word:nth-child(3) { animation-delay: 0.6s; }
+    .subtitle-word:nth-child(4) { animation-delay: 0.8s; }
+    .subtitle-word:nth-child(5) { animation-delay: 1.0s; }
+    .subtitle-word:nth-child(6) { animation-delay: 1.2s; }
+    .subtitle-word:nth-child(7) { animation-delay: 1.4s; }
+    .subtitle-word:nth-child(8) { animation-delay: 1.6s; }
+    
+    @keyframes word-appear {
+      0% { 
+        opacity: 0; 
+        transform: translateY(20px) scale(0.8) rotate(-10deg); 
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1) rotate(0deg); 
+      }
+    }
+    
+    /* Hover effects sur les caractères */
+    .title-char:hover {
+      animation: char-explode 0.6s ease-out;
+      filter: drop-shadow(0 0 20px currentColor);
+    }
+    
+    @keyframes char-explode {
+      0% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.3) rotate(180deg); }
+      100% { transform: scale(1) rotate(360deg); }
+    }
+    
+    /* Hover effects sur les mots */
+    .subtitle-word:hover {
+      animation: word-bounce 0.5s ease-out;
+      color: #00C2FF;
+      text-shadow: 0 0 15px #00C2FF;
+    }
+    
+    @keyframes word-bounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-15px) scale(1.2); }
+    }
+    
+    /* Responsive design pour les animations */
+    @media (max-width: 768px) {
+      .title-char {
+        font-size: 2.5rem;
+      }
+      
+      .subtitle-word {
+        font-size: 1.2rem;
+      }
+      
+      .cosmic-rings {
+        width: 300px;
+        height: 300px;
+      }
+    }
+    
     .stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 2rem;
       margin: 3rem 0;
     }
+    
     .stat-card {
       background: rgba(26, 18, 58, 0.8);
       padding: 2rem;
@@ -43,19 +380,23 @@
       text-align: center;
       border: 2px solid #7B2CBF;
     }
+    
     .stat-number {
       font-size: 3rem;
       font-weight: 800;
       color: #FFD700;
       margin-bottom: 0.5rem;
     }
+    
     .stat-label {
       color: #fff;
       font-size: 1.1rem;
     }
+    
     .cta-buttons {
       margin: 3rem 0;
     }
+    
     .btn {
       display: inline-block;
       padding: 1rem 2rem;
@@ -65,14 +406,17 @@
       font-weight: 600;
       transition: all 0.3s ease;
     }
+    
     .btn-primary {
       background: linear-gradient(45deg, #FF004D, #FF6B00);
       color: white;
     }
+    
     .btn-secondary {
       background: linear-gradient(45deg, #7B2CBF, #00C2FF);
       color: white;
     }
+    
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.3);
@@ -82,35 +426,44 @@
     .adhesion-section {
       padding: 4rem 2rem;
       background: rgba(26, 18, 58, 0.5);
+      display: none; /* Caché par défaut */
     }
+    
+    .adhesion-section.visible {
+      display: block; /* Visible quand la classe 'visible' est ajoutée */
+    }
+    
     .adhesion-container {
       max-width: 800px;
       margin: 0 auto;
     }
+    
     .adhesion-title {
       text-align: center;
       color: #FFD700;
       font-size: 2rem;
       margin-bottom: 2rem;
     }
+    
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
     }
+    
     .form-group {
       margin-bottom: 1.5rem;
     }
-    .form-group.full-width {
-      grid-column: 1 / -1;
-    }
+    
     .form-group label {
       display: block;
       margin-bottom: 0.5rem;
       color: #FFD700;
       font-weight: 600;
     }
-    .form-control {
+    
+    .form-group input,
+    .form-group select {
       width: 100%;
       padding: 0.8rem;
       border: 1px solid #7B2CBF;
@@ -120,14 +473,18 @@
       font-size: 1rem;
       box-sizing: border-box;
     }
-    .form-control:focus {
+    
+    .form-group input:focus,
+    .form-group select:focus {
       outline: none;
       border-color: #FFD700;
       box-shadow: 0 0 10px rgba(255,215,0,0.3);
     }
+    
     .submit-btn {
-      background: linear-gradient(45deg, #FF004D, #FF6B00);
-      color: white;
+      grid-column: 1 / -1;
+      background: linear-gradient(45deg, #FF004D, #FFD700);
+      color: #000;
       padding: 1rem 2rem;
       border: none;
       border-radius: 2rem;
@@ -135,9 +492,8 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      grid-column: 1 / -1;
-      justify-self: center;
     }
+    
     .submit-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.3);
@@ -146,58 +502,67 @@
     /* Section classements */
     .classements-section {
       padding: 4rem 2rem;
+      background: rgba(26, 18, 58, 0.3);
       text-align: center;
     }
+    
     .classements-title {
       color: #FFD700;
       font-size: 2.5rem;
       margin-bottom: 3rem;
     }
+    
     .classements-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-      gap: 3rem;
-      margin-bottom: 3rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
+    
     .classement-card {
       background: rgba(26, 18, 58, 0.8);
       padding: 2rem;
       border-radius: 1rem;
       border: 2px solid #7B2CBF;
     }
+    
     .classement-type {
       color: #FFD700;
       font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
+    
     .ranking-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid rgba(123, 44, 191, 0.3);
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      background: rgba(123, 44, 191, 0.2);
+      border-radius: 0.5rem;
     }
-    .ranking-item:last-child {
-      border-bottom: none;
-    }
+    
     .ranking-position {
-      background: linear-gradient(45deg, #FF004D, #FF6B00);
-      color: white;
+      background: linear-gradient(45deg, #FF004D, #FFD700);
+      color: #000;
       width: 2rem;
       height: 2rem;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
+      font-weight: bold;
       font-size: 0.9rem;
     }
+    
     .ranking-name {
       flex: 1;
       text-align: left;
       margin-left: 1rem;
+      font-weight: 500;
     }
+    
     .ranking-amount {
       color: #FFD700;
       font-weight: 600;
@@ -209,16 +574,21 @@
       background: rgba(26, 18, 58, 0.3);
       text-align: center;
     }
+    
     .trophees-title {
       color: #FFD700;
       font-size: 2.5rem;
       margin-bottom: 3rem;
     }
+    
     .trophees-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
+    
     .trophee-card {
       background: rgba(26, 18, 58, 0.8);
       padding: 2rem;
@@ -227,6 +597,7 @@
       position: relative;
       overflow: hidden;
     }
+    
     .trophee-card::before {
       content: '🏆';
       position: absolute;
@@ -235,22 +606,26 @@
       font-size: 3rem;
       opacity: 0.3;
     }
+    
     .trophee-type {
       color: #FFD700;
       font-size: 1.2rem;
       font-weight: 600;
       margin-bottom: 1rem;
     }
+    
     .trophee-winner {
       font-size: 1.5rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
     }
+    
     .trophee-pseudo {
       color: #FF6B00;
       font-style: italic;
       margin-bottom: 1rem;
     }
+    
     .trophee-etablissement {
       color: #00C2FF;
       font-weight: 500;
@@ -260,22 +635,26 @@
       padding: 4rem 2rem;
       text-align: center;
     }
+    
     .feature-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 2rem;
       margin-top: 3rem;
     }
+    
     .feature-card {
       background: rgba(26, 18, 58, 0.8);
       padding: 2rem;
       border-radius: 1rem;
       border: 1px solid #7B2CBF;
     }
+    
     .feature-icon {
       font-size: 3rem;
       margin-bottom: 1rem;
     }
+    
     .feature-title {
       color: #FFD700;
       font-size: 1.5rem;
@@ -292,13 +671,69 @@
       .trophees-grid {
         grid-template-columns: 1fr;
       }
+      .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .nav-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Menu de navigation -->
+  <div class="nav-menu">
+    <div class="nav-container">
+      <div class="nav-logo">SOIRÉE CLASH</div>
+      <div class="nav-buttons">
+        {% if user.is_authenticated %}
+          <a href="{% url 'app:dashboard' %}" class="nav-btn nav-btn-primary">Mon Dashboard</a>
+          <a href="{% url 'app:classements' %}" class="nav-btn nav-btn-secondary">Voir les classements</a>
+        {% else %}
+          <a href="{% url 'app:login' %}" class="nav-btn nav-btn-primary">Se Connecter</a>
+          <a href="{% url 'app:register' %}" class="nav-btn nav-btn-secondary">S'inscrire</a>
+        {% endif %}
+        <button onclick="toggleAdhesion()" class="nav-btn nav-btn-secondary">Adhésion</button>
+      </div>
+    </div>
+  </div>
+
   <div class="hero">
-    <div class="logo">SOIRÉE CLASH</div>
-    <p class="tagline">La compétition ultime entre établissements de nuit !</p>
+    <div class="galaxy-container">
+      <div class="stars"></div>
+      <div class="nebula"></div>
+      <div class="comet"></div>
+      <div class="meteor-shower"></div>
+      <div class="cosmic-rings"></div>
+    </div>
+    
+    <div class="logo galaxy-title">
+      <span class="title-char" data-char="S">S</span>
+      <span class="title-char" data-char="O">O</span>
+      <span class="title-char" data-char="I">I</span>
+      <span class="title-char" data-char="R">R</span>
+      <span class="title-char" data-char="É">É</span>
+      <span class="title-char" data-char="E">E</span>
+      <span class="title-char" data-char=" "> </span>
+      <span class="title-char" data-char="C">C</span>
+      <span class="title-char" data-char="L">L</span>
+      <span class="title-char" data-char="A">A</span>
+      <span class="title-char" data-char="S">S</span>
+      <span class="title-char" data-char="H">H</span>
+    </div>
+    
+    <p class="tagline cosmic-subtitle">
+      <span class="subtitle-word">La</span>
+      <span class="subtitle-word">compétition</span>
+      <span class="subtitle-word">ultime</span>
+      <span class="subtitle-word">entre</span>
+      <span class="subtitle-word">établissements</span>
+      <span class="subtitle-word">de</span>
+      <span class="subtitle-word">nuit</span>
+      <span class="subtitle-word">!</span>
+    </p>
     
     <div class="stats">
       <div class="stat-card">
@@ -317,42 +752,88 @@
       {% endif %}
     </div>
     
-    {% if user.is_authenticated %}
-      <div class="cta-buttons">
-        <a href="{% url 'app:dashboard' %}" class="btn btn-primary">Mon Dashboard</a>
-        <a href="{% url 'app:classements' %}" class="btn btn-secondary">Voir les classements</a>
-      </div>
-      {% if etablissements %}
-      <div class="user-info" style="margin-top: 2rem; padding: 1rem; background: rgba(255,215,0,0.1); border-radius: 1rem; border: 1px solid #FFD700;">
-        <h3 style="color: #FFD700; margin-bottom: 1rem;">Vos établissements</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-          {% for etablissement in etablissements %}
-          <div style="background: rgba(26,18,58,0.8); padding: 1rem; border-radius: 0.5rem; border: 1px solid #7B2CBF;">
-            <h4 style="color: #FFD700; margin-bottom: 0.5rem;">{{ etablissement.nom }}</h4>
-            <p style="margin: 0.25rem 0;">Type: {{ etablissement.get_type_display }}</p>
-            <p style="margin: 0.25rem 0;">Localisation: {{ etablissement.localisation }}</p>
-            <p style="margin: 0.25rem 0;">Statut: 
-              {% if etablissement.actif %}
-                <span style="color: #00FF00;">Actif</span>
-              {% else %}
-                <span style="color: #FF0000;">Inactif</span>
-              {% endif %}
-            </p>
-          </div>
-          {% endfor %}
+    {% if user.is_authenticated and etablissements %}
+    <div class="user-info" style="margin-top: 2rem; padding: 1rem; background: rgba(255,215,0,0.1); border-radius: 1rem; border: 1px solid #FFD700;">
+      <h3 style="color: #FFD700; margin-bottom: 1rem;">Vos établissements</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+        {% for etablissement in etablissements %}
+        <div style="background: rgba(26,18,58,0.8); padding: 1rem; border-radius: 0.5rem; border: 1px solid #7B2CBF;">
+          <h4 style="color: #FFD700; margin-bottom: 0.5rem;">{{ etablissement.nom }}</h4>
+          <p style="margin: 0.25rem 0;">Type: {{ etablissement.get_type_display }}</p>
+          <p style="margin: 0.25rem 0;">Localisation: {{ etablissement.localisation }}</p>
+          <p style="margin: 0.25rem 0;">Statut: 
+            {% if etablissement.actif %}
+              <span style="color: #00FF00;">Actif</span>
+            {% else %}
+              <span style="color: #FF0000;">Inactif</span>
+            {% endif %}
+          </p>
         </div>
+        {% endfor %}
       </div>
-      {% endif %}
-    {% else %}
-      <div class="cta-buttons">
-        <a href="{% url 'app:login' %}" class="btn btn-primary">Se Connecter</a>
-        <a href="{% url 'app:register' %}" class="btn btn-secondary">S'inscrire</a>
-      </div>
+    </div>
     {% endif %}
   </div>
   
+  <!-- Section classements (en première position) -->
+  <div class="classements-section">
+    <h2 class="classements-title">Classements du Jour</h2>
+    <div class="classements-grid">
+      <!-- Classement des maquis -->
+      <div class="classement-card">
+        <h3 class="classement-type">🏪 Top Maquis</h3>
+        {% if top_maquis %}
+          {% for maquis in top_maquis %}
+            <div class="ranking-item">
+              <div class="ranking-position">{{ forloop.counter }}</div>
+              <div class="ranking-name">{{ maquis.nom }}</div>
+              <div class="ranking-amount">{{ maquis.total_ventes|default:0|floatformat:0 }} FCFA</div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>Aucun classement disponible pour le moment.</p>
+        {% endif %}
+      </div>
+      
+      <!-- Classement des boîtes de nuit -->
+      <div class="classement-card">
+        <h3 class="classement-type">🎉 Top Boîtes de Nuit</h3>
+        {% if top_boites %}
+          {% for boite in top_boites %}
+            <div class="ranking-item">
+              <div class="ranking-position">{{ forloop.counter }}</div>
+              <div class="ranking-name">{{ boite.nom }}</div>
+              <div class="ranking-amount">{{ boite.total_ventes|default:0|floatformat:0 }} FCFA</div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>Aucun classement disponible pour le moment.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <!-- Section trophées (en deuxième position) -->
+  <div class="trophees-section">
+    <h2 class="trophees-title">🏆 Trophées Récents</h2>
+    <div class="trophees-grid">
+      {% if trophees_recents %}
+        {% for trophee in trophees_recents %}
+          <div class="trophee-card">
+            <div class="trophee-type">{{ trophee.get_type_trophee_display }}</div>
+            <div class="trophee-winner">{{ trophee.gagnant.participant.nom }} {{ trophee.gagnant.participant.prenom }}</div>
+            <div class="trophee-pseudo">dit "{{ trophee.gagnant.participant.pseudo }}"</div>
+            <div class="trophee-etablissement">{{ trophee.etablissement.nom }}</div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>Aucun trophée attribué pour le moment.</p>
+      {% endif %}
+    </div>
+  </div>
+  
   <!-- Section demande d'adhésion -->
-  <div class="adhesion-section">
+  <div class="adhesion-section" id="adhesionSection">
     <div class="adhesion-container">
       <h2 class="adhesion-title">Rejoignez la Compétition !</h2>
       <form method="post">
@@ -400,63 +881,6 @@
     </div>
   </div>
   
-  <!-- Section classements -->
-  <div class="classements-section">
-    <h2 class="classements-title">Classements du Jour</h2>
-    <div class="classements-grid">
-      <!-- Classement des maquis -->
-      <div class="classement-card">
-        <h3 class="classement-type">🏪 Top Maquis</h3>
-        {% if top_maquis %}
-          {% for maquis in top_maquis %}
-            <div class="ranking-item">
-              <div class="ranking-position">{{ forloop.counter }}</div>
-              <div class="ranking-name">{{ maquis.nom }}</div>
-              <div class="ranking-amount">{{ maquis.total_ventes|default:0|floatformat:0 }} FCFA</div>
-            </div>
-          {% endfor %}
-        {% else %}
-          <p>Aucun classement disponible pour le moment.</p>
-        {% endif %}
-      </div>
-      
-      <!-- Classement des boîtes de nuit -->
-      <div class="classement-card">
-        <h3 class="classement-type">🎉 Top Boîtes de Nuit</h3>
-        {% if top_boites %}
-          {% for boite in top_boites %}
-            <div class="ranking-item">
-              <div class="ranking-position">{{ forloop.counter }}</div>
-              <div class="ranking-name">{{ boite.nom }}</div>
-              <div class="ranking-amount">{{ boite.total_ventes|default:0|floatformat:0 }} FCFA</div>
-            </div>
-          {% endfor %}
-        {% else %}
-          <p>Aucun classement disponible pour le moment.</p>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-  
-  <!-- Section trophées -->
-  <div class="trophees-section">
-    <h2 class="trophees-title">🏆 Trophées Récents</h2>
-    <div class="trophees-grid">
-      {% if trophees_recents %}
-        {% for trophee in trophees_recents %}
-          <div class="trophee-card">
-            <div class="trophee-type">{{ trophee.get_type_trophee_display }}</div>
-            <div class="trophee-winner">{{ trophee.gagnant.participant.nom }} {{ trophee.gagnant.participant.prenom }}</div>
-            <div class="trophee-pseudo">dit "{{ trophee.gagnant.participant.pseudo }}"</div>
-            <div class="trophee-etablissement">{{ trophee.etablissement.nom }}</div>
-          </div>
-        {% endfor %}
-      {% else %}
-        <p>Aucun trophée attribué pour le moment.</p>
-      {% endif %}
-    </div>
-  </div>
-  
   <div class="features">
     <h2>Fonctionnalités Principales</h2>
     <div class="feature-grid">
@@ -482,5 +906,17 @@
       </div>
     </div>
   </div>
+
+  <script>
+    function toggleAdhesion() {
+      const adhesionSection = document.getElementById('adhesionSection');
+      adhesionSection.classList.toggle('visible');
+      
+      // Scroll vers la section adhésion si elle devient visible
+      if (adhesionSection.classList.contains('visible')) {
+        adhesionSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  </script>
 </body>
 </html>
