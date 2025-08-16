@@ -59,6 +59,26 @@
                 <div class="rank-trophy">🥉</div>
               {% endif %}
             </div>
+            
+            <!-- Section vidéo de l'établissement -->
+            {% if maquis.video_etablissement %}
+              <div class="etablissement-video">
+                <div class="video-thumbnail" onclick="playVideo('{{ maquis.video_etablissement.url }}', '{{ maquis.nom }}')">
+                  {% if maquis.miniature_video %}
+                    <img src="{{ maquis.miniature_video.url }}" alt="Miniature vidéo {{ maquis.nom }}">
+                  {% else %}
+                    <div class="video-placeholder">
+                      <span class="play-icon">▶️</span>
+                      <span class="video-text">Voir la vidéo</span>
+                    </div>
+                  {% endif %}
+                  <div class="video-overlay">
+                    <span class="play-button">▶️</span>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            
             <div class="classement-info">
               <div class="etablissement-nom">{{ maquis.nom }}</div>
               <div class="etablissement-location">{{ maquis.localisation }}</div>
@@ -97,6 +117,26 @@
                 <div class="rank-trophy">🥉</div>
               {% endif %}
             </div>
+            
+            <!-- Section vidéo de l'établissement -->
+            {% if boite.video_etablissement %}
+              <div class="etablissement-video">
+                <div class="video-thumbnail" onclick="playVideo('{{ boite.video_etablissement.url }}', '{{ boite.nom }}')">
+                  {% if boite.miniature_video %}
+                    <img src="{{ boite.miniature_video.url }}" alt="Miniature vidéo {{ boite.nom }}">
+                  {% else %}
+                    <div class="video-placeholder">
+                      <span class="play-icon">▶️</span>
+                      <span class="video-text">Voir la vidéo</span>
+                    </div>
+                  {% endif %}
+                  <div class="video-overlay">
+                    <span class="play-button">▶️</span>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            
             <div class="classement-info">
               <div class="etablissement-nom">{{ boite.nom }}</div>
               <div class="etablissement-location">{{ boite.localisation }}</div>
@@ -241,39 +281,41 @@
   </div>
 </div>
 
-<style>
+  <style>
 .hero-section {
   text-align: center;
-  padding: 3rem 0;
+  padding: 2rem 0; /* Padding réduit */
   background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
   border-radius: 1rem;
   margin-bottom: 2rem;
+  position: relative; /* Pour le positionnement de l'animation */
+  min-height: 200px; /* Hauteur minimale correspondant à l'animation */
 }
 
 .page-title {
   font-size: 3rem;
-  font-weight: 800;
-  background: linear-gradient(to right, #FF004D, #FFD700);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      background: linear-gradient(to right, #FF004D, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
   margin-bottom: 1rem;
 }
 
 .page-subtitle {
   font-size: 1.2rem;
-  color: #FFD700;
-}
+      color: #FFD700;
+    }
 
-.section {
-  margin-bottom: 3rem;
-}
+    .section {
+      margin-bottom: 3rem;
+    }
 
 .section-title {
-  color: #FFD700;
+      color: #FFD700;
   font-size: 2rem;
   text-align: center;
   margin-bottom: 2rem;
-  border-bottom: 2px solid #7B2CBF;
+      border-bottom: 2px solid #7B2CBF;
   padding-bottom: 1rem;
 }
 
@@ -285,23 +327,23 @@
   color: #FFD700;
   font-size: 1.5rem;
   text-align: center;
-  margin-bottom: 2rem;
+      margin-bottom: 2rem;
   padding: 1rem;
   background: rgba(123, 44, 191, 0.2);
   border-radius: 1rem;
   border: 2px solid #7B2CBF;
-}
+    }
 
 .classement-grid {
-  display: grid;
+      display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
-}
+      gap: 2rem;
+    }
 
 .classement-card {
   background: rgba(26, 18, 58, 0.9);
   border-radius: 1rem;
-  padding: 1.5rem;
+      padding: 1.5rem;
   border: 2px solid #7B2CBF;
   transition: all 0.3s ease;
   display: flex;
@@ -336,7 +378,7 @@
 
 .rank-number {
   font-size: 2.5rem;
-  font-weight: 800;
+      font-weight: 800;
   color: #FFD700;
   display: block;
 }
@@ -347,20 +389,20 @@
 }
 
 .classement-info {
-  flex: 1;
+      flex: 1;
   margin-right: 1rem;
-}
+    }
 
 .etablissement-nom {
   font-size: 1.3rem;
-  font-weight: 600;
+      font-weight: 600;
   color: #FFD700;
   margin-bottom: 0.5rem;
-}
+    }
 
 .etablissement-location {
   color: #00C2FF;
-  font-size: 0.9rem;
+      font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 
@@ -398,9 +440,9 @@
   padding: 1.5rem;
   border: 2px solid #7B2CBF;
   transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-}
+      display: flex;
+      align-items: center;
+    }
 
 .participant-card:hover {
   transform: translateY(-3px);
@@ -428,7 +470,7 @@
   text-align: center;
 }
 
-.participant-avatar {
+    .participant-avatar {
   margin-right: 1rem;
 }
 
@@ -442,25 +484,25 @@
 .avatar-placeholder {
   width: 50px;
   height: 50px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, #FF004D, #FFD700);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #FF004D, #FFD700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
 }
 
 .participant-info {
   flex: 1;
-  margin-right: 1rem;
-}
+      margin-right: 1rem;
+    }
 
 .participant-pseudo {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #FFD700;
+      color: #FFD700;
   margin-bottom: 0.5rem;
 }
 
@@ -471,7 +513,7 @@
 
 .participant-etablissement {
   color: #00C2FF;
-  font-size: 0.9rem;
+      font-size: 0.9rem;
 }
 
 .participant-score {
@@ -577,5 +619,262 @@
     text-align: center;
   }
 }
+
+/* JavaScript pour gérer l'animation au mouvement de la souris */
+  </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const crystalContainer = document.querySelector('.crystal-container');
+  let mouseTimeout;
+  let isDiscrete = false;
+  
+  // Fonction pour activer le mode discret
+  function activateDiscreteMode() {
+    if (!isDiscrete) {
+      crystalContainer.classList.add('discrete');
+      isDiscrete = true;
+      console.log('Mode discret activé');
+    }
+  }
+  
+  // Fonction pour désactiver le mode discret
+  function deactivateDiscreteMode() {
+    if (isDiscrete) {
+      crystalContainer.classList.remove('discrete');
+      isDiscrete = false;
+      console.log('Mode discret désactivé');
+    }
+  }
+  
+  // Détecter le mouvement de la souris
+  document.addEventListener('mousemove', function() {
+    // Désactiver le mode discret immédiatement
+    deactivateDiscreteMode();
+    
+    // Réactiver le mode discret après 3 secondes d'inactivité
+    clearTimeout(mouseTimeout);
+    mouseTimeout = setTimeout(activateDiscreteMode, 3000);
+  });
+  
+  // Détecter le clic de la souris
+  document.addEventListener('click', function() {
+    deactivateDiscreteMode();
+    clearTimeout(mouseTimeout);
+    mouseTimeout = setTimeout(activateDiscreteMode, 5000);
+  });
+  
+  // Détecter le scroll
+  document.addEventListener('scroll', function() {
+    deactivateDiscreteMode();
+    clearTimeout(mouseTimeout);
+    mouseTimeout = setTimeout(activateDiscreteMode, 4000);
+  });
+  
+  // Activer le mode discret par défaut après 2 secondes
+  setTimeout(activateDiscreteMode, 2000);
+  
+  // Debug: vérifier que l'élément existe
+  if (crystalContainer) {
+    console.log('Container cristal trouvé:', crystalContainer);
+  } else {
+    console.error('Container cristal non trouvé!');
+  }
+});
+
+// Fonction pour lire les vidéos des établissements
+function playVideo(videoUrl, etablissementNom) {
+  // Créer le modal vidéo
+  const modal = document.createElement('div');
+  modal.className = 'video-modal';
+  modal.innerHTML = `
+    <div class="video-modal-content">
+      <div class="video-modal-header">
+        <h3>🎥 ${etablissementNom}</h3>
+        <span class="close-modal" onclick="closeVideoModal()">&times;</span>
+              </div>
+      <div class="video-modal-body">
+        <video controls autoplay style="width: 100%; height: auto;">
+          <source src="${videoUrl}" type="video/mp4">
+          Votre navigateur ne supporte pas la lecture de vidéos.
+        </video>
+        </div>
+      </div>
+  `;
+  
+  // Ajouter le modal au body
+  document.body.appendChild(modal);
+  
+  // Afficher le modal
+  setTimeout(() => modal.classList.add('show'), 10);
+  
+  // Fermer le modal en cliquant à l'extérieur
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      closeVideoModal();
+    }
+  });
+}
+
+// Fonction pour fermer le modal vidéo
+function closeVideoModal() {
+  const modal = document.querySelector('.video-modal');
+  if (modal) {
+    modal.classList.remove('show');
+    setTimeout(() => modal.remove(), 300);
+  }
+}
+</script>
+
+<!-- Modal vidéo -->
+<style>
+.video-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.video-modal.show {
+  opacity: 1;
+}
+
+.video-modal-content {
+  background: rgba(26, 18, 58, 0.95);
+  border-radius: 1rem;
+  padding: 0;
+  max-width: 90%;
+  max-height: 90%;
+  border: 2px solid #FFD700;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+}
+
+.video-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #7B2CBF;
+  background: linear-gradient(45deg, #FF004D, #FFD700);
+  border-radius: 1rem 1rem 0 0;
+}
+
+.video-modal-header h3 {
+  color: #000;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.close-modal {
+  color: #000;
+  font-size: 2rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+  color: #FF004D;
+}
+
+.video-modal-body {
+  padding: 1.5rem;
+}
+
+/* Styles pour les miniatures vidéo */
+.etablissement-video {
+  margin-right: 1rem;
+}
+
+.video-thumbnail {
+  position: relative;
+  width: 120px;
+  height: 80px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.video-thumbnail:hover {
+  transform: scale(1.05);
+}
+
+.video-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #7B2CBF, #00C2FF);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.play-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.video-text {
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.video-thumbnail:hover .video-overlay {
+  opacity: 1;
+}
+
+.play-button {
+  font-size: 2rem;
+  color: #FFD700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+}
+
+/* Responsive pour les vidéos */
+@media (max-width: 768px) {
+  .video-thumbnail {
+    width: 80px;
+    height: 60px;
+  }
+  
+  .video-modal-content {
+    max-width: 95%;
+    max-height: 95%;
+  }
+  
+  .video-modal-header h3 {
+    font-size: 1.1rem;
+  }
+}
 </style>
+
 {% endblock %}

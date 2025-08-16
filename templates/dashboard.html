@@ -59,9 +59,9 @@
       <div class="stat-content">
         <div class="stat-number">{{ consommations_mois|floatformat:0 }} FCFA</div>
         <div class="stat-label">Ventes ce mois</div>
-      </div>
     </div>
-    
+  </div>
+
     <div class="stat-card">
       <div class="stat-icon">🏪</div>
       <div class="stat-content">
@@ -70,7 +70,7 @@
       </div>
     </div>
   </div>
-</div>
+  </div>
 
 <!-- Établissements -->
 <div class="section">
@@ -92,10 +92,10 @@
             <div class="etablissement-status">
               {% if etablissement.actif %}
                 <span class="status-badge active">✅ Actif</span>
-              {% else %}
+          {% else %}
                 <span class="status-badge inactive">❌ Inactif</span>
-              {% endif %}
-            </div>
+          {% endif %}
+        </div>
           </div>
           
           <div class="etablissement-details">
@@ -116,9 +116,9 @@
             <div class="detail-item">
               <span class="detail-label">Ventes aujourd'hui :</span>
               <span class="detail-value">{{ etablissement.total_ventes_aujourd_hui|floatformat:0 }} FCFA</span>
-            </div>
-          </div>
-          
+    </div>
+  </div>
+
           <div class="etablissement-actions">
             <a href="{% url 'app:gestion_boissons' %}" class="btn btn-secondary btn-sm">
               🍺 Gérer les boissons
@@ -127,9 +127,9 @@
               📊 Gérer les consommations
             </a>
             <a href="{% url 'app:participants' %}" class="btn btn-warning btn-sm">
-              👥 Gérer les participants
-            </a>
-          </div>
+          👥 Gérer les participants
+        </a>
+      </div>
         </div>
       {% endfor %}
     </div>
@@ -155,7 +155,7 @@
             <div class="participant-avatar">
               {% if participant.user.profile.avatar %}
                 <img src="{{ participant.user.profile.avatar.url }}" alt="Avatar de {{ participant.pseudo }}">
-              {% else %}
+{% else %}
                 <div class="avatar-placeholder">{{ participant.pseudo|first|upper }}</div>
               {% endif %}
             </div>
@@ -166,8 +166,8 @@
             </div>
             <div class="participant-rank">
               <span class="rank-badge">{{ forloop.counter }}</span>
-            </div>
-          </div>
+    </div>
+  </div>
           
           <div class="participant-stats">
             <div class="stat-item">
@@ -179,9 +179,9 @@
               <span class="stat-value">{{ participant.service.get_type_display }}</span>
             </div>
           </div>
-        </div>
-      {% endfor %}
     </div>
+        {% endfor %}
+      </div>
   {% else %}
     <div class="empty-state">
       <div class="empty-icon">👥</div>

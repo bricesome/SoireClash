@@ -2,19 +2,101 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import (
-    Participant, Pari, Service, TypeBoisson, ConsommationParticipant, 
-    DemandeAdhesion, Profile, Gestionnaire
+    Service, TypeBoisson, Profile, Gestionnaire, Participant, 
+    ConsommationParticipant, Trophee, Pari, DemandeAdhesion
 )
+
+
+class CustomUserRegistrationForm(UserCreationForm):
+    """Formulaire d'inscription personnalisé avec email"""
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Votre adresse email'
+        })
+    )
+    first_name = forms.CharField(
+        max_length=30,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Votre prénom'
+        })
+    )
+    last_name = forms.CharField(
+        max_length=30,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Votre nom'
+        })
+    )
+    
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Personnaliser les widgets pour tous les champs
+        self.fields['username'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Nom d\'utilisateur unique'
+        })
+        self.fields['password1'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Mot de passe'
+        })
+        self.fields['password2'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Confirmer le mot de passe'
+        })
+    
+    def clean_email(self):
+        """Vérifier que l'email est unique"""
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('Cette adresse email est déjà utilisée.')
+        return email
+    
+    def save(self, commit=True):
+        """Sauvegarder l'utilisateur et créer un profil"""
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        
+        if commit:
+            user.save()
+            # Créer un profil utilisateur basique
+            Profile.objects.create(
+                user=user,
+                pseudo=user.username,
+                nom=user.last_name,
+                prenom=user.first_name,
+                tel=''  # Sera rempli plus tard
+            )
+        
+        return user
 
 
 class DemandeAdhesionForm(forms.ModelForm):
     """Formulaire de demande d'adhésion depuis la page d'accueil"""
+    # Champ caché pour la vidéo enregistrée directement
+    recorded_video_data = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput(),
+        help_text="Données de la vidéo enregistrée directement"
+    )
+    
     class Meta:
         model = DemandeAdhesion
         fields = [
             'pseudo', 'nom_etablissement', 'type_etablissement', 
             'quartier', 'ville', 'nom_gestionnaire', 'prenom_gestionnaire',
-            'telephone_gestionnaire', 'email_gestionnaire'
+            'telephone_gestionnaire', 'email_gestionnaire', 'video_etablissement',
+            'miniature_video'
         ]
         widgets = {
             'pseudo': forms.TextInput(attrs={
@@ -51,12 +133,30 @@ class DemandeAdhesionForm(forms.ModelForm):
             'email_gestionnaire': forms.EmailInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Email du gestionnaire'
+            }),
+            'video_etablissement': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'video/*',
+                'id': 'video-upload'
+            }),
+            'miniature_video': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*',
+                'id': 'miniature-upload'
             })
         }
 
 
 class ParticipantForm(forms.ModelForm):
     """Formulaire d'inscription des participants"""
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Votre adresse email'
+        })
+    )
+    
     class Meta:
         model = Participant
         fields = ['pseudo', 'nom', 'prenom', 'service']
@@ -74,16 +174,18 @@ class ParticipantForm(forms.ModelForm):
                 'placeholder': 'Votre prénom'
             }),
             'service': forms.Select(attrs={
-                'class': 'form-control'
+                'class': 'form-control',
+                'id': 'service-select'
             })
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Filtrer seulement les établissements visibles (avec types de boissons enregistrés)
+        # Pour l'inscription des participants, permettre la sélection seulement des établissements
+        # qui ont des types de boissons enregistrés et qui sont actifs
         self.fields['service'].queryset = Service.objects.filter(
-            types_boissons_enregistres=True, 
-            actif=True
+            actif=True,
+            types_boissons_enregistres=True
         )
 
 
@@ -251,7 +353,7 @@ class ServiceForm(forms.ModelForm):
     """Formulaire de service/établissement"""
     class Meta:
         model = Service
-        fields = ['nom', 'type', 'localisation', 'adresse', 'telephone']
+        fields = ['nom', 'type', 'localisation', 'adresse', 'telephone', 'video_etablissement', 'miniature_video']
         widgets = {
             'nom': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -272,6 +374,14 @@ class ServiceForm(forms.ModelForm):
             'telephone': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Numéro de téléphone'
+            }),
+            'video_etablissement': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'video/*'
+            }),
+            'miniature_video': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
             })
         }
 

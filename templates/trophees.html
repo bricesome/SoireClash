@@ -65,6 +65,26 @@
             <div class="trophee-icon">🏆</div>
             <div class="trophee-type">{{ trophee.get_type_trophee_display }}</div>
           </div>
+          
+          <!-- Section vidéo de l'établissement gagnant -->
+          {% if trophee.etablissement.video_etablissement %}
+            <div class="trophee-video">
+              <div class="video-thumbnail" onclick="playVideo('{{ trophee.etablissement.video_etablissement.url }}', '{{ trophee.etablissement.nom }} - Gagnant !')">
+                {% if trophee.etablissement.miniature_video %}
+                  <img src="{{ trophee.etablissement.miniature_video.url }}" alt="Miniature vidéo {{ trophee.etablissement.nom }}">
+                {% else %}
+                  <div class="video-placeholder">
+                    <span class="play-icon">▶️</span>
+                    <span class="video-text">Voir l'établissement</span>
+                  </div>
+                {% endif %}
+                <div class="video-overlay">
+                  <span class="play-button">▶️</span>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+          
           <div class="trophee-content">
             <div class="trophee-winner">
               {{ trophee.gagnant.nom }} {{ trophee.gagnant.prenom }}
@@ -348,6 +368,205 @@
   .info-grid {
     grid-template-columns: 1fr;
   }
+  
+  /* Styles pour les vidéos des trophées */
+  .trophee-video {
+    margin: 1rem 0;
+    text-align: center;
+  }
+  
+  .video-thumbnail {
+    position: relative;
+    width: 150px;
+    height: 100px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    margin: 0 auto;
+  }
+  
+  .video-thumbnail:hover {
+    transform: scale(1.05);
+  }
+  
+  .video-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .video-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #FF004D, #FFD700);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+  }
+  
+  .play-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.2rem;
+  }
+  
+  .video-text {
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  
+  .video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .video-thumbnail:hover .video-overlay {
+    opacity: 1;
+  }
+  
+  .play-button {
+    font-size: 2.5rem;
+    color: #FFD700;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+  }
 }
 </style>
+
+<script>
+// Fonction pour lire les vidéos des établissements gagnants
+function playVideo(videoUrl, etablissementNom) {
+  // Créer le modal vidéo
+  const modal = document.createElement('div');
+  modal.className = 'video-modal';
+  modal.innerHTML = `
+    <div class="video-modal-content">
+      <div class="video-modal-header">
+        <h3>🏆 ${etablissementNom}</h3>
+        <span class="close-modal" onclick="closeVideoModal()">&times;</span>
+      </div>
+      <div class="video-modal-body">
+        <video controls autoplay style="width: 100%; height: auto;">
+          <source src="${videoUrl}" type="video/mp4">
+          Votre navigateur ne supporte pas la lecture de vidéos.
+        </video>
+      </div>
+    </div>
+  `;
+  
+  // Ajouter le modal au body
+  document.body.appendChild(modal);
+  
+  // Afficher le modal
+  setTimeout(() => modal.classList.add('show'), 10);
+  
+  // Fermer le modal en cliquant à l'extérieur
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      closeVideoModal();
+    }
+  });
+}
+
+// Fonction pour fermer le modal vidéo
+function closeVideoModal() {
+  const modal = document.querySelector('.video-modal');
+  if (modal) {
+    modal.classList.remove('show');
+    setTimeout(() => modal.remove(), 300);
+  }
+}
+</script>
+
+<!-- Modal vidéo -->
+<style>
+.video-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.video-modal.show {
+  opacity: 1;
+}
+
+.video-modal-content {
+  background: rgba(26, 18, 58, 0.95);
+  border-radius: 1rem;
+  padding: 0;
+  max-width: 90%;
+  max-height: 90%;
+  border: 2px solid #FFD700;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+}
+
+.video-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #7B2CBF;
+  background: linear-gradient(45deg, #FF004D, #FFD700);
+  border-radius: 1rem 1rem 0 0;
+}
+
+.video-modal-header h3 {
+  color: #000;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.close-modal {
+  color: #000;
+  font-size: 2rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+  color: #FF004D;
+}
+
+.video-modal-body {
+  padding: 1.5rem;
+}
+
+/* Responsive pour les vidéos */
+@media (max-width: 768px) {
+  .video-thumbnail {
+    width: 120px;
+    height: 80px;
+  }
+  
+  .video-modal-content {
+    max-width: 95%;
+    max-height: 95%;
+  }
+  
+  .video-modal-header h3 {
+    font-size: 1.1rem;
+  }
+}
+</style>
+
 {% endblock %}

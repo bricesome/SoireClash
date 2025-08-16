@@ -1,4 +1,6 @@
 import pandas as pd
+import base64
+import os
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -9,19 +11,24 @@ from django.db.models import Sum, Count, Q
 from django.utils import timezone
 from datetime import timedelta, datetime
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
-from django.conf import settings
-import uuid
-
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.utils import timezone
+from django.db import transaction
 from .models import (
-    Service, ConsommationParticipant, Participant, Trophee, Pari, 
-    Gestionnaire, TypeBoisson, DemandeAdhesion, Profile, 
+    Service, TypeBoisson, Profile, Gestionnaire, Participant, 
+    ConsommationParticipant, Trophee, Pari, DemandeAdhesion,
     ClassementQuotidien, ClassementEtablissement
 )
 from .forms import (
+    ServiceForm, TypeBoissonForm, ProfileForm, GestionnaireForm,
     ParticipantForm, PariForm, DemandeAdhesionForm, TypeBoissonForm,
     ConsommationParticipantForm, ProfileForm, GestionnaireForm, ServiceForm
 )
+from .utils import is_pseudo_unique, generate_random_password, ensure_media_directories, copy_file_to_service, save_recorded_video
+from .forms import CustomUserRegistrationForm
 
 
 def is_admin(user):
@@ -44,11 +51,87 @@ def index(request):
     
     # Formulaire de demande d'adhésion
     if request.method == 'POST':
-        form = DemandeAdhesionForm(request.POST)
+        print("🔍 POST reçu pour la demande d'adhésion")
+        form = DemandeAdhesionForm(request.POST, request.FILES)
+        print(f"🔍 Formulaire valide: {form.is_valid()}")
+        
         if form.is_valid():
-            demande = form.save()
-            messages.success(request, 'Votre demande d\'adhésion a été envoyée avec succès ! Nous vous contacterons bientôt.')
-            return redirect('app:index')
+            # Vérifier l'unicité du pseudo
+            pseudo = form.cleaned_data.get('pseudo')
+            print(f"🔍 Pseudo saisi: {pseudo}")
+            
+            if not is_pseudo_unique(pseudo):
+                print(f"❌ Pseudo '{pseudo}' déjà utilisé")
+                messages.error(request, f'Le pseudo "{pseudo}" est déjà utilisé. Veuillez choisir un autre pseudo.')
+                # Préparer le contexte pour afficher le formulaire avec l'erreur
+                context = {
+                    'form': form,
+                    'total_etablissements': Service.objects.filter(actif=True).count(),
+                    'total_participants': Participant.objects.filter(actif=True).count(),
+                    'top_maquis': [],
+                    'top_boites': [],
+                    'trophees_recents': Trophee.objects.all().order_by('-date_attribution')[:3],
+                    'etablissements': [],
+                    'consommations_aujourd_hui': 0,
+                }
+                return render(request, 'index.html', context)
+            
+            print(f"✅ Pseudo '{pseudo}' unique, création de la demande...")
+            
+            demande = form.save(commit=False)
+            
+            # Traitement des vidéos (uploadées ou enregistrées directement)
+            print("🔍 Traitement des vidéos...")
+            
+            # 1. Vérifier s'il y a une vidéo uploadée via le formulaire
+            if 'video_etablissement' in request.FILES:
+                print("📹 Vidéo uploadée détectée")
+                demande.video_etablissement = request.FILES['video_etablissement']
+                print(f"✅ Vidéo uploadée assignée: {demande.video_etablissement.name}")
+            
+            # 2. Vérifier s'il y a une vidéo enregistrée directement
+            recorded_video_data = form.cleaned_data.get('recorded_video_data')
+            if recorded_video_data and recorded_video_data.startswith('data:video/'):
+                print("🎥 Vidéo enregistrée directement détectée")
+                try:
+                    # Utiliser l'utilitaire pour sauvegarder la vidéo
+                    video_file = save_recorded_video(recorded_video_data, "video_enregistree")
+                    if video_file:
+                        demande.video_etablissement = video_file
+                        print(f"✅ Vidéo enregistrée sauvegardée: {video_file.name}")
+                    else:
+                        print("❌ Erreur lors de la sauvegarde de la vidéo enregistrée")
+                except Exception as e:
+                    print(f"❌ Erreur lors du traitement de la vidéo enregistrée: {e}")
+                    # En cas d'erreur, on continue sans la vidéo
+            
+            # 3. Vérifier s'il y a une miniature
+            if 'miniature_video' in request.FILES:
+                print("🖼️ Miniature uploadée détectée")
+                demande.miniature_video = request.FILES['miniature_video']
+                print(f"✅ Miniature assignée: {demande.miniature_video.name}")
+            
+            print(f"🔍 État final - Vidéo: {demande.video_etablissement}, Miniature: {demande.miniature_video}")
+            
+            # S'assurer que les dossiers media existent
+            print("📁 Création des dossiers media...")
+            ensure_media_directories()
+            
+            demande.save()
+            print(f"✅ Demande sauvegardée avec l'ID: {demande.id}")
+            
+            # Ajouter le message de succès
+            success_message = f'🎉 Votre demande d\'adhésion pour "{demande.nom_etablissement}" a été envoyée avec succès ! Nous vous contacterons bientôt par email à {demande.email_gestionnaire}.'
+            print(f"📝 Ajout du message de succès: {success_message}")
+            messages.success(request, success_message)
+            
+            # Vérifier que le message a été ajouté
+            print(f"🔍 Messages dans la requête après ajout: {list(messages.get_messages(request))}")
+            
+            # Au lieu de rediriger, on recharge le formulaire vide et on affiche le message
+            form = DemandeAdhesionForm()
+            print("🔄 Formulaire réinitialisé")
+            # Le message sera affiché par le template
     else:
         form = DemandeAdhesionForm()
     
@@ -126,18 +209,219 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-def register(request):
-    """Inscription des utilisateurs"""
+def inscription_participant(request):
+    """Inscription publique des participants depuis la page d'accueil"""
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = ParticipantForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            messages.success(request, 'Compte créé avec succès ! Vous pouvez maintenant vous connecter.')
-            return redirect('app:login')
+            # Vérifier l'unicité du pseudo
+            if not is_pseudo_unique(form.cleaned_data['pseudo']):
+                messages.error(request, 'Ce pseudo est déjà utilisé. Veuillez en choisir un autre.')
+                context = {'form': form}
+                return render(request, 'inscription_participant.html', context)
+            
+            try:
+                with transaction.atomic():
+                    # Créer le compte utilisateur
+                    email = form.cleaned_data['email']
+                    pseudo = form.cleaned_data['pseudo']
+                    
+                    # Vérifier si l'email est déjà utilisé
+                    if User.objects.filter(email=email).exists():
+                        messages.error(request, 'Cette adresse email est déjà utilisée.')
+                        context = {'form': form}
+                        return render(request, 'inscription_participant.html', context)
+                    
+                    # Créer l'utilisateur avec un mot de passe temporaire
+                    password = generate_random_password()
+                    user = User.objects.create_user(
+                        username=pseudo,
+                        email=email,
+                        password=password,
+                        first_name=form.cleaned_data['prenom'],
+                        last_name=form.cleaned_data['nom']
+                    )
+                    
+                    # Créer le profil utilisateur
+                    profile = Profile.objects.create(
+                        user=user,
+                        pseudo=pseudo,
+                        nom=form.cleaned_data['nom'],
+                        prenom=form.cleaned_data['prenom'],
+                        tel=''  # Sera rempli plus tard
+                    )
+                    
+                    # Créer le participant
+                    participant = form.save(commit=False)
+                    participant.user = user
+                    participant.save()
+                    
+                    # Connecter automatiquement l'utilisateur
+                    login(request, user)
+                    
+                    # Envoyer un email de bienvenue avec le mot de passe temporaire
+                    try:
+                        from django.core.mail import send_mail
+                        from django.conf import settings
+                        
+                        subject = 'Soirée Clash - Bienvenue !'
+                        message = f"""
+                        Bonjour {form.cleaned_data['prenom']} {form.cleaned_data['nom']},
+
+                        Bienvenue sur Soirée Clash ! Votre inscription a été effectuée avec succès.
+
+                        Vos identifiants de connexion :
+                        - Nom d'utilisateur : {pseudo}
+                        - Mot de passe temporaire : {password}
+                        - Établissement : {form.cleaned_data['service'].nom}
+
+                        Pour votre sécurité, nous vous recommandons de changer votre mot de passe après votre première connexion.
+
+                        Cordialement,
+                        L'équipe Soirée Clash
+                        """
+                        
+                        send_mail(
+                            subject=subject,
+                            message=message,
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[email],
+                            fail_silently=False,
+                        )
+                        
+                    except Exception as e:
+                        # Si l'email échoue, on continue mais on affiche un avertissement
+                        messages.warning(request, 'Inscription réussie, mais l\'email de bienvenue n\'a pas pu être envoyé.')
+                    
+                    messages.success(request, f'🎉 Bienvenue {pseudo} ! Votre inscription a été effectuée avec succès.')
+                    return redirect('app:dashboard')
+                    
+            except Exception as e:
+                messages.error(request, f'Erreur lors de l\'inscription : {str(e)}')
+                context = {'form': form}
+                return render(request, 'inscription_participant.html', context)
     else:
-        form = UserCreationForm()
+        form = ParticipantForm()
     
-    return render(request, 'register.html', {'form': form})
+    # Débogage : vérifier les établissements disponibles
+    services_disponibles = Service.objects.filter(actif=True, types_boissons_enregistres=True)
+    print(f"🔍 Établissements disponibles pour inscription: {services_disponibles.count()}")
+    for service in services_disponibles:
+        print(f"  - {service.nom} ({service.type}) - Actif: {service.actif} - Types boissons: {service.types_boissons_enregistres}")
+    
+    # Récupérer tous les types de boissons par établissement pour l'affichage
+    boissons_par_etablissement = {}
+    for service in services_disponibles:
+        types_boissons = TypeBoisson.objects.filter(service=service, actif=True).order_by('categorie')
+        
+        # Différencier la logique selon le type d'établissement
+        if service.type == 'boite':
+            # Pour les boîtes de nuit : système d'enchères (pas de prix fixe)
+            boissons_par_etablissement[service.id] = {
+                'nom': service.nom,
+                'type': service.get_type_display(),
+                'type_etablissement': 'boite',
+                'boissons': list(types_boissons.values('categorie')),
+                'systeme': 'enchères'
+            }
+        else:
+            # Pour les maquis : système de prix fixes
+            boissons_par_etablissement[service.id] = {
+                'nom': service.nom,
+                'type': service.get_type_display(),
+                'type_etablissement': 'maquis',
+                'boissons': list(types_boissons.values('categorie', 'prix_vente')),
+                'systeme': 'prix_fixes'
+            }
+    
+    context = {
+        'form': form,
+        'boissons_par_etablissement': boissons_par_etablissement
+    }
+    return render(request, 'inscription_participant.html', context)
+
+
+def register(request):
+    """Inscription des utilisateurs généraux (pour paris, etc.)"""
+    print(f"DEBUG: Méthode de requête: {request.method}")
+    
+    if request.method == 'POST':
+        print("DEBUG: Traitement d'une requête POST")
+        form = CustomUserRegistrationForm(request.POST)
+        print(f"DEBUG: Formulaire valide: {form.is_valid()}")
+        
+        if form.is_valid():
+            print("DEBUG: Formulaire valide, création de l'utilisateur...")
+            try:
+                with transaction.atomic():
+                    # Créer l'utilisateur et le profil
+                    user = form.save()
+                    print(f"DEBUG: Utilisateur créé: {user.username}")
+                    
+                    # Connecter automatiquement l'utilisateur
+                    login(request, user)
+                    print("DEBUG: Utilisateur connecté automatiquement")
+                    
+                    # Envoyer un email de bienvenue
+                    try:
+                        from django.core.mail import send_mail
+                        from django.conf import settings
+                        
+                        subject = 'Soirée Clash - Bienvenue !'
+                        message = f"""
+                        Bonjour {user.first_name} {user.last_name},
+
+                        Bienvenue sur Soirée Clash ! Votre compte a été créé avec succès.
+
+                        Vos identifiants de connexion :
+                        - Nom d'utilisateur : {user.username}
+                        - Email : {user.email}
+
+                        Vous pouvez maintenant :
+                        - Placer des paris sur les participants
+                        - Suivre les classements
+                        - Participer à la compétition si vous le souhaitez
+
+                        Cordialement,
+                        L'équipe Soirée Clash
+                        """
+                        
+                        send_mail(
+                            subject=subject,
+                            message=message,
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[user.email],
+                            fail_silently=False,
+                        )
+                        print("DEBUG: Email de bienvenue envoyé")
+                        
+                    except Exception as e:
+                        print(f"DEBUG: Erreur envoi email: {e}")
+                        # Si l'email échoue, on continue mais on affiche un avertissement
+                        messages.warning(request, 'Inscription réussie, mais l\'email de bienvenue n\'a pas pu être envoyé.')
+                    
+                    messages.success(request, f'🎉 Bienvenue {user.username} ! Votre compte a été créé avec succès.')
+                    print("DEBUG: Message de succès ajouté, redirection vers dashboard")
+                    return redirect('app:dashboard')
+                    
+            except Exception as e:
+                print(f"DEBUG: Erreur lors de la création: {e}")
+                messages.error(request, f'Erreur lors de l\'inscription : {str(e)}')
+                context = {'form': form}
+                return render(request, 'register.html', context)
+        else:
+            print(f"DEBUG: Erreurs de formulaire: {form.errors}")
+            # Afficher les erreurs de validation
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Erreur dans {field}: {error}')
+    else:
+        print("DEBUG: Affichage du formulaire GET")
+        form = CustomUserRegistrationForm()
+    
+    context = {'form': form}
+    print(f"DEBUG: Contexte final: {context}")
+    return render(request, 'register.html', context)
 
 
 @login_required
@@ -418,7 +702,22 @@ def gestion_consommations(request):
 @user_passes_test(is_admin)
 def admin_demandes_adhesion(request):
     """Administration des demandes d'adhésion"""
+    # Récupérer toutes les demandes avec leur statut
     demandes = DemandeAdhesion.objects.all().order_by('-date_demande')
+    
+    # Calculer les vraies statistiques
+    total_demandes = demandes.count()
+    demandes_en_attente = demandes.filter(statut='en_attente').count()
+    demandes_approuvees = demandes.filter(statut='approuvee').count()
+    demandes_rejetees = demandes.filter(statut='rejetee').count()
+    
+    # Statistiques par type d'établissement
+    demandes_maquis = demandes.filter(type_etablissement='maquis').count()
+    demandes_boites = demandes.filter(type_etablissement='boite').count()
+    
+    # Statistiques par ville
+    demandes_ouaga = demandes.filter(ville='Ouagadougou').count()
+    demandes_autres_villes = total_demandes - demandes_ouaga
     
     if request.method == 'POST':
         demande_id = request.POST.get('demande_id')
@@ -439,100 +738,143 @@ def admin_demandes_adhesion(request):
                         actif=True
                     )
                     
-                    # Créer le compte utilisateur
+                    # Créer les dossiers de destination s'ils n'existent pas
+                    ensure_media_directories()
+                    
+                    # Copier la vidéo si elle existe
+                    if demande.video_etablissement and demande.video_etablissement.name:
+                        try:
+                            # Utiliser l'utilitaire pour copier le fichier
+                            chemin_destination_video = copy_file_to_service(
+                                demande.video_etablissement, 
+                                'videos/etablissements', 
+                                'video'
+                            )
+                            
+                            if chemin_destination_video:
+                                # Mettre à jour le chemin dans le service
+                                service.video_etablissement = chemin_destination_video
+                                print(f"Vidéo copiée: {chemin_destination_video}")
+                            else:
+                                print("Erreur lors de la copie de la vidéo")
+                        except Exception as e:
+                            print(f"Erreur lors de la copie de la vidéo: {e}")
+                    
+                    # Copier la miniature si elle existe
+                    if demande.miniature_video and demande.miniature_video.name:
+                        try:
+                            # Utiliser l'utilitaire pour copier le fichier
+                            chemin_destination_miniature = copy_file_to_service(
+                                demande.miniature_video, 
+                                'miniatures/videos', 
+                                'miniature'
+                            )
+                            
+                            if chemin_destination_miniature:
+                                # Mettre à jour le chemin dans le service
+                                service.miniature_video = chemin_destination_miniature
+                                print(f"Miniature copiée: {chemin_destination_miniature}")
+                            else:
+                                print("Erreur lors de la copie de la miniature")
+                        except Exception as e:
+                            print(f"Erreur lors de la copie de la miniature: {e}")
+                    
+                    # Sauvegarder le service avec les vidéos
+                    service.save()
+                    
+                    # Créer le compte utilisateur pour le gestionnaire
+                    username = demande.pseudo  # Utiliser directement le pseudo saisi
+                    
+                    # Vérifier si le pseudo est déjà utilisé dans auth_user
+                    if User.objects.filter(username=username).exists():
+                        # Générer un nom d'utilisateur unique en ajoutant un suffixe
+                        counter = 1
+                        while User.objects.filter(username=f"{username}_{counter}").exists():
+                            counter += 1
+                        username = f"{username}_{counter}"
+                        print(f"⚠️ Pseudo '{demande.pseudo}' déjà utilisé dans auth_user, nouveau nom d'utilisateur: {username}")
+                    
+                    password = generate_random_password()
+                    
                     user = User.objects.create_user(
-                        username=demande.pseudo,
+                        username=username,
                         email=demande.email_gestionnaire,
-                        password=str(uuid.uuid4()),  # Mot de passe temporaire
+                        password=password,
                         first_name=demande.prenom_gestionnaire,
                         last_name=demande.nom_gestionnaire
                     )
                     
-                    # Créer le profil utilisateur
-                    profile = Profile.objects.create(
-                        user=user,
-                        pseudo=demande.pseudo,
-                        nom=demande.nom_gestionnaire,
-                        prenom=demande.prenom_gestionnaire,
-                        tel=demande.telephone_gestionnaire
-                    )
-                    
-                    # Créer le gestionnaire
+                    # Créer le profil gestionnaire avec le pseudo saisi par l'utilisateur
                     gestionnaire = Gestionnaire.objects.create(
                         user=user,
+                        service=service,
+                        tel=demande.telephone_gestionnaire,
                         pseudo=demande.pseudo,
                         nom=demande.nom_gestionnaire,
                         prenom=demande.prenom_gestionnaire,
-                        tel=demande.telephone_gestionnaire,
-                        service=service,
-                        fonction='gerant',
-                        mot_de_passe_reinitialise=False
+                        fonction='gerant'
                     )
                     
-                    # Marquer la demande comme approuvée
-                    demande.statut = 'approuvee'
-                    demande.save()
-                    
-                    # Envoyer un email de réinitialisation de mot de passe
+                    # Envoyer l'email de réinitialisation de mot de passe
                     try:
                         from django.contrib.auth.tokens import default_token_generator
                         from django.utils.http import urlsafe_base64_encode
                         from django.utils.encoding import force_bytes
-                        from django.urls import reverse
                         
-                        # Générer le token de réinitialisation
                         token = default_token_generator.make_token(user)
                         uid = urlsafe_base64_encode(force_bytes(user.pk))
                         
-                        # Construire l'URL de réinitialisation
                         reset_url = request.build_absolute_uri(
-                            reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
+                            f'/password-reset/{uid}/{token}/'
                         )
                         
-                        # Envoyer l'email
-                        subject = 'Soirée Clash - Réinitialisation de votre mot de passe'
-                        message = f"""
-                        Bonjour {demande.prenom_gestionnaire} {demande.nom_gestionnaire},
-
-                        Votre demande d'adhésion pour l'établissement "{demande.nom_etablissement}" a été approuvée !
-
-                        Votre compte a été créé avec succès :
-                        - Nom d'utilisateur : {demande.pseudo}
-                        - Email : {demande.email_gestionnaire}
-
-                        Pour activer votre compte, veuillez réinitialiser votre mot de passe en cliquant sur le lien suivant :
-                        {reset_url}
-
-                        Ce lien est valable pendant 24 heures.
-
-                        Cordialement,
-                        L'équipe Soirée Clash
-                        """
-                        
                         send_mail(
-                            subject=subject,
-                            message=message,
-                            from_email=settings.DEFAULT_FROM_EMAIL,
-                            recipient_list=[demande.email_gestionnaire],
+                            'Création de votre compte gestionnaire - SoireeClash',
+                            f'''Bonjour {demande.prenom_gestionnaire} {demande.nom_gestionnaire},
+
+Votre demande d'adhésion pour l'établissement "{demande.nom_etablissement}" a été approuvée !
+
+Vos identifiants de connexion :
+- Nom d'utilisateur : {username}
+- Mot de passe temporaire : {password}
+
+Pour des raisons de sécurité, nous vous recommandons de changer votre mot de passe dès votre première connexion.
+
+Vous pouvez vous connecter ici : {request.build_absolute_uri('/login/')}
+
+Cordialement,
+L'équipe SoireeClash''',
+                            settings.DEFAULT_FROM_EMAIL,
+                            [demande.email_gestionnaire],
                             fail_silently=False,
                         )
                         
-                        messages.success(request, f'Demande approuvée. Compte gestionnaire créé pour {demande.pseudo}. Email de réinitialisation envoyé.')
+                        messages.success(request, f'Établissement "{demande.nom_etablissement}" approuvé et compte gestionnaire créé avec le pseudo "{demande.pseudo}". Email envoyé à {demande.email_gestionnaire}')
                         
                     except Exception as e:
-                        messages.warning(request, f'Demande approuvée et compte créé, mais erreur lors de l\'envoi de l\'email : {str(e)}')
+                        messages.warning(request, f'Établissement approuvé mais erreur lors de l\'envoi de l\'email: {e}')
+                    
+                    # Supprimer la demande
+                    demande.delete()
                     
                 except Exception as e:
-                    messages.error(request, f'Erreur lors de la création du compte : {str(e)}')
-                    return redirect('app:admin_demandes_adhesion')
-                
+                    messages.error(request, f'Erreur lors de l\'approbation: {e}')
+                    print(f"Erreur détaillée: {e}")
+            
             elif action == 'rejeter':
-                demande.statut = 'rejetee'
-                demande.save()
-                messages.success(request, 'Demande rejetée.')
+                demande.delete()
+                messages.success(request, 'Demande rejetée et supprimée.')
     
     context = {
         'demandes': demandes,
+        'total_demandes': total_demandes,
+        'demandes_en_attente': demandes_en_attente,
+        'demandes_approuvees': demandes_approuvees,
+        'demandes_rejetees': demandes_rejetees,
+        'demandes_maquis': demandes_maquis,
+        'demandes_boites': demandes_boites,
+        'demandes_ouaga': demandes_ouaga,
+        'demandes_autres_villes': demandes_autres_villes,
     }
     return render(request, 'admin_demandes_adhesion.html', context)
 

@@ -499,6 +499,407 @@
       box-shadow: 0 10px 20px rgba(0,0,0,0.3);
     }
     
+    /* Styles pour les messages */
+    .messages-container {
+      margin-bottom: 2rem;
+    }
+    
+    .message {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      border: 2px solid;
+      animation: slideIn 0.5s ease-out;
+    }
+    
+    .message-success {
+      background: rgba(0, 255, 0, 0.1);
+      border-color: #00FF00;
+      color: #00FF00;
+    }
+    
+    .message-error {
+      background: rgba(255, 0, 0, 0.1);
+      border-color: #FF0000;
+      color: #FF0000;
+    }
+    
+    .message-warning {
+      background: rgba(255, 215, 0, 0.1);
+      border-color: #FFD700;
+      color: #FFD700;
+    }
+    
+    .message-info {
+      background: rgba(0, 194, 255, 0.1);
+      border-color: #00C2FF;
+      color: #00C2FF;
+    }
+    
+    .message-icon {
+      font-size: 1.5rem;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .message-content {
+      flex: 1;
+      font-weight: 500;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Section vidéo */
+    .video-section {
+      grid-column: 1 / -1;
+      background: rgba(123, 44, 191, 0.1);
+      padding: 2rem;
+      border-radius: 1rem;
+      border: 2px solid #7B2CBF;
+      margin-top: 1rem;
+    }
+    
+    .video-section-title {
+      color: #FFD700;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .video-section-desc {
+      color: #00C2FF;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+    
+    .video-upload-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .upload-icon {
+      font-size: 1.5rem;
+      margin-right: 0.5rem;
+    }
+    
+    .form-help {
+      display: block;
+      margin-top: 0.5rem;
+      color: #7B2CBF;
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    
+    .video-preview {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .video-preview h4 {
+      color: #FFD700;
+      margin-bottom: 1rem;
+    }
+    
+    #videoPlayer {
+      border-radius: 0.5rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Responsive pour la section vidéo */
+    @media (max-width: 768px) {
+      .video-upload-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .video-section {
+        padding: 1rem;
+      }
+    }
+    
+    /* ===== NOUVELLE INTERFACE DE PRISE DE VIDÉO DIRECTE ===== */
+    
+    /* Choix de méthode */
+    .video-method-choice {
+      margin-bottom: 2rem;
+    }
+    
+    .method-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .method-tab {
+      padding: 1rem 2rem;
+      border: 2px solid #7B2CBF;
+      background: rgba(123, 44, 191, 0.1);
+      color: #00C2FF;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .method-tab:hover {
+      background: rgba(123, 44, 191, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .method-tab.active {
+      background: linear-gradient(45deg, #7B2CBF, #00C2FF);
+      color: white;
+      border-color: #00C2FF;
+      box-shadow: 0 5px 15px rgba(123, 44, 191, 0.5);
+    }
+    
+    .tab-icon {
+      font-size: 1.2rem;
+    }
+    
+    /* Section d'enregistrement */
+    .video-record-section {
+      text-align: center;
+    }
+    
+    .camera-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      height: 400px;
+      margin: 0 auto 2rem;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 2px solid #7B2CBF;
+    }
+    
+    #cameraPreview {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .camera-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #00C2FF;
+    }
+    
+    .camera-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
+    
+    .camera-placeholder p {
+      font-size: 1.1rem;
+      text-align: center;
+      max-width: 300px;
+    }
+    
+    /* Contrôles de la caméra */
+    .camera-controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .camera-btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 2rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+    }
+    
+    .camera-btn:not(.record-btn):not(.stop-btn) {
+      background: linear-gradient(45deg, #7B2CBF, #00C2FF);
+      color: white;
+    }
+    
+    .record-btn {
+      background: linear-gradient(45deg, #FF004D, #FF6B00);
+      color: white;
+    }
+    
+    .stop-btn {
+      background: linear-gradient(45deg, #FF6B00, #FFD700);
+      color: white;
+    }
+    
+    .camera-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn-icon {
+      font-size: 1.2rem;
+    }
+    
+    /* Statut d'enregistrement */
+    .recording-status {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: rgba(255, 0, 77, 0.1);
+      border-radius: 1rem;
+      border: 2px solid #FF004D;
+    }
+    
+    .recording-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #FF004D;
+      font-weight: 600;
+    }
+    
+    .recording-dot {
+      width: 12px;
+      height: 12px;
+      background: #FF004D;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    
+    .recording-timer {
+      color: #FFD700;
+      font-weight: 800;
+      font-size: 1.2rem;
+      font-family: monospace;
+    }
+    
+    /* Aperçu de la vidéo enregistrée */
+    .recorded-video-preview {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(0, 194, 255, 0.1);
+      border-radius: 1rem;
+      border: 2px solid #00C2FF;
+      margin-top: 2rem;
+    }
+    
+    .recorded-video-preview h4 {
+      color: #00C2FF;
+      margin-bottom: 1rem;
+    }
+    
+    #recordedVideoPlayer {
+      border-radius: 0.5rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      margin-bottom: 1rem;
+    }
+    
+    .recorded-video-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .action-btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 2rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .confirm-btn {
+      background: linear-gradient(45deg, #00C2FF, #7B2CBF);
+      color: white;
+    }
+    
+    .action-btn:not(.confirm-btn) {
+      background: linear-gradient(45deg, #7B2CBF, #00C2FF);
+      color: white;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Section de chargement */
+    .video-upload-section {
+      display: none;
+    }
+    
+    /* Responsive pour la prise de vidéo */
+    @media (max-width: 768px) {
+      .method-tabs {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .camera-container {
+        height: 300px;
+      }
+      
+      .camera-controls {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .recording-status {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .recorded-video-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    
     /* Section classements */
     .classements-section {
       padding: 4rem 2rem;
@@ -568,6 +969,69 @@
       font-weight: 600;
     }
     
+    /* Miniatures vidéo pour les classements */
+    .ranking-video {
+      margin-right: 1rem;
+    }
+    
+    .video-thumbnail-small {
+      position: relative;
+      width: 60px;
+      height: 40px;
+      border-radius: 0.3rem;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    
+    .video-thumbnail-small:hover {
+      transform: scale(1.1);
+    }
+    
+    .video-thumbnail-small img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .video-placeholder-small {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #7B2CBF, #00C2FF);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+    
+    .play-icon-small {
+      font-size: 1rem;
+    }
+    
+    .video-overlay-small {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .video-thumbnail-small:hover .video-overlay-small {
+      opacity: 1;
+    }
+    
+    .play-button-small {
+      font-size: 1.2rem;
+      color: #FFD700;
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+    }
+    
     /* Section trophées */
     .trophees-section {
       padding: 4rem 2rem;
@@ -629,6 +1093,16 @@
     .trophee-etablissement {
       color: #00C2FF;
       font-weight: 500;
+    }
+    
+    /* Vidéos pour les trophées */
+    .trophee-video {
+      margin: 1rem 0;
+      text-align: center;
+    }
+    
+    .trophee-video .video-thumbnail-small {
+      margin: 0 auto;
     }
     
     .features {
@@ -694,6 +1168,7 @@
         {% else %}
           <a href="{% url 'app:login' %}" class="nav-btn nav-btn-primary">Se Connecter</a>
           <a href="{% url 'app:register' %}" class="nav-btn nav-btn-secondary">S'inscrire</a>
+          <a href="{% url 'app:inscription_participant' %}" class="nav-btn nav-btn-secondary">Inscription Participant</a>
         {% endif %}
         <button onclick="toggleAdhesion()" class="nav-btn nav-btn-secondary">Adhésion</button>
       </div>
@@ -786,6 +1261,25 @@
           {% for maquis in top_maquis %}
             <div class="ranking-item">
               <div class="ranking-position">{{ forloop.counter }}</div>
+              
+              <!-- Section vidéo de l'établissement -->
+              {% if maquis.video_etablissement %}
+                <div class="ranking-video">
+                  <div class="video-thumbnail-small" onclick="playVideo('{{ maquis.video_etablissement.url }}', '{{ maquis.nom }}')">
+                    {% if maquis.miniature_video %}
+                      <img src="{{ maquis.miniature_video.url }}" alt="Miniature vidéo {{ maquis.nom }}">
+                    {% else %}
+                      <div class="video-placeholder-small">
+                        <span class="play-icon-small">▶️</span>
+                      </div>
+                    {% endif %}
+                    <div class="video-overlay-small">
+                      <span class="play-button-small">▶️</span>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+              
               <div class="ranking-name">{{ maquis.nom }}</div>
               <div class="ranking-amount">{{ maquis.total_ventes|default:0|floatformat:0 }} FCFA</div>
             </div>
@@ -802,6 +1296,25 @@
           {% for boite in top_boites %}
             <div class="ranking-item">
               <div class="ranking-position">{{ forloop.counter }}</div>
+              
+              <!-- Section vidéo de l'établissement -->
+              {% if boite.video_etablissement %}
+                <div class="ranking-video">
+                  <div class="video-thumbnail-small" onclick="playVideo('{{ boite.video_etablissement.url }}', '{{ boite.nom }}')">
+                    {% if boite.miniature_video %}
+                      <img src="{{ boite.miniature_video.url }}" alt="Miniature vidéo {{ boite.nom }}">
+                    {% else %}
+                      <div class="video-placeholder-small">
+                        <span class="play-icon-small">▶️</span>
+                      </div>
+                    {% endif %}
+                    <div class="video-overlay-small">
+                      <span class="play-button-small">▶️</span>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+              
               <div class="ranking-name">{{ boite.nom }}</div>
               <div class="ranking-amount">{{ boite.total_ventes|default:0|floatformat:0 }} FCFA</div>
             </div>
@@ -821,6 +1334,25 @@
         {% for trophee in trophees_recents %}
           <div class="trophee-card">
             <div class="trophee-type">{{ trophee.get_type_trophee_display }}</div>
+            
+            <!-- Section vidéo de l'établissement gagnant -->
+            {% if trophee.etablissement.video_etablissement %}
+              <div class="trophee-video">
+                <div class="video-thumbnail-small" onclick="playVideo('{{ trophee.etablissement.video_etablissement.url }}', '{{ trophee.etablissement.nom }} - Gagnant !')">
+                  {% if trophee.etablissement.miniature_video %}
+                    <img src="{{ trophee.etablissement.miniature_video.url }}" alt="Miniature vidéo {{ trophee.etablissement.nom }}">
+                  {% else %}
+                    <div class="video-placeholder-small">
+                      <span class="play-icon-small">▶️</span>
+                    </div>
+                  {% endif %}
+                  <div class="video-overlay-small">
+                    <span class="play-button-small">▶️</span>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            
             <div class="trophee-winner">{{ trophee.gagnant.participant.nom }} {{ trophee.gagnant.participant.prenom }}</div>
             <div class="trophee-pseudo">dit "{{ trophee.gagnant.participant.pseudo }}"</div>
             <div class="trophee-etablissement">{{ trophee.etablissement.nom }}</div>
@@ -836,6 +1368,22 @@
   <div class="adhesion-section" id="adhesionSection">
     <div class="adhesion-container">
       <h2 class="adhesion-title">Rejoignez la Compétition !</h2>
+      
+      <!-- Affichage des messages de confirmation/erreur -->
+      {% if messages %}
+        <div class="messages-container">
+          {% for message in messages %}
+            <div class="message message-{{ message.tags }}">
+              <div class="message-icon">
+                {% if message.tags == 'success' %}✅{% elif message.tags == 'error' %}❌{% elif message.tags == 'warning' %}⚠️{% else %}ℹ️{% endif %}
+              </div>
+              <div class="message-content">
+                {{ message }}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
       <form method="post">
         {% csrf_token %}
         <div class="form-grid">
@@ -875,6 +1423,117 @@
             <label for="{{ form.email_gestionnaire.id_for_label }}">{{ form.email_gestionnaire.label }}</label>
             {{ form.email_gestionnaire }}
           </div>
+          
+          <!-- Section vidéo -->
+          <div class="form-group video-section">
+            <h3 class="video-section-title">🎥 Vidéo de Présentation</h3>
+            <p class="video-section-desc">Filmez directement ou chargez une vidéo de votre établissement pour attirer plus de participants !</p>
+            
+            <!-- Choix de méthode d'enregistrement -->
+            <div class="video-method-choice">
+              <div class="method-tabs">
+                <button type="button" class="method-tab active" data-method="record">
+                  <span class="tab-icon">📹</span>
+                  Filmer maintenant
+                </button>
+                <button type="button" class="method-tab" data-method="upload">
+                  <span class="tab-icon">📁</span>
+                  Charger une vidéo
+                </button>
+              </div>
+            </div>
+            
+            <!-- Section d'enregistrement direct -->
+            <div class="video-record-section" id="videoRecordSection">
+              <div class="camera-container">
+                <video id="cameraPreview" autoplay muted playsinline style="display: none;">
+                  Votre navigateur ne supporte pas l'accès à la caméra.
+                </video>
+                <div class="camera-placeholder" id="cameraPlaceholder">
+                  <div class="camera-icon">📹</div>
+                  <p>Cliquez sur "Démarrer la caméra" pour commencer l'enregistrement</p>
+                </div>
+              </div>
+              
+              <div class="camera-controls">
+                <button type="button" class="camera-btn" id="startCameraBtn">
+                  <span class="btn-icon">🎥</span>
+                  Démarrer la caméra
+                </button>
+                <button type="button" class="camera-btn record-btn" id="recordBtn" style="display: none;">
+                  <span class="btn-icon">🔴</span>
+                  Commencer l'enregistrement
+                </button>
+                <button type="button" class="camera-btn stop-btn" id="stopRecordBtn" style="display: none;">
+                  <span class="btn-icon">⏹️</span>
+                  Arrêter l'enregistrement
+                </button>
+                <button type="button" class="camera-btn" id="retakeBtn" style="display: none;">
+                  <span class="btn-icon">🔄</span>
+                  Recommencer
+                </button>
+              </div>
+              
+              <div class="recording-status" id="recordingStatus" style="display: none;">
+                <div class="recording-indicator">
+                  <span class="recording-dot"></span>
+                  Enregistrement en cours...
+                </div>
+                <div class="recording-timer" id="recordingTimer">00:00</div>
+              </div>
+              
+              <div class="recorded-video-preview" id="recordedVideoPreview" style="display: none;">
+                <h4>Vidéo enregistrée</h4>
+                <video id="recordedVideoPlayer" controls style="max-width: 100%; height: auto;">
+                  Votre navigateur ne supporte pas la lecture de vidéos.
+                </video>
+                <div class="recorded-video-actions">
+                  <button type="button" class="action-btn confirm-btn" id="confirmRecordedVideoBtn">
+                    <span class="btn-icon">✅</span>
+                    Confirmer cette vidéo
+                  </button>
+                  <button type="button" class="action-btn" id="retakeRecordedVideoBtn">
+                    <span class="btn-icon">🔄</span>
+                    Recommencer
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Section de chargement de fichier -->
+            <div class="video-upload-section" id="videoUploadSection" style="display: none;">
+              <div class="video-upload-container">
+                <div class="form-group">
+                  <label for="{{ form.video_etablissement.id_for_label }}">
+                    <span class="upload-icon">📹</span>
+                    {{ form.video_etablissement.label }}
+                  </label>
+                  {{ form.video_etablissement }}
+                  <small class="form-help">Formats acceptés : MP4, AVI, MOV (max 100MB)</small>
+                </div>
+                
+                <div class="form-group">
+                  <label for="{{ form.miniature_video.id_for_label }}">
+                    <span class="upload-icon">🖼️</span>
+                    {{ form.miniature_video.label }}
+                  </label>
+                  {{ form.miniature_video }}
+                  <small class="form-help">Image de couverture pour la vidéo (16:9 recommandé)</small>
+                </div>
+              </div>
+              
+              <div class="video-preview" id="videoPreview" style="display: none;">
+                <h4>Aperçu de la vidéo</h4>
+                <video id="videoPlayer" controls style="max-width: 100%; height: auto;">
+                  Votre navigateur ne supporte pas la lecture de vidéos.
+                </video>
+              </div>
+            </div>
+            
+            <!-- Champ caché pour la vidéo enregistrée -->
+            <input type="hidden" name="recorded_video_data" id="recordedVideoData">
+          </div>
+          
           <button type="submit" class="submit-btn">Envoyer ma demande d'adhésion</button>
         </div>
       </form>
@@ -917,6 +1576,437 @@
         adhesionSection.scrollIntoView({ behavior: 'smooth' });
       }
     }
+    
+    // Gestion de la prévisualisation vidéo
+    document.addEventListener('DOMContentLoaded', function() {
+      const videoInput = document.getElementById('video-upload');
+      const videoPreview = document.getElementById('videoPreview');
+      const videoPlayer = document.getElementById('videoPlayer');
+      
+      if (videoInput) {
+        videoInput.addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (file && file.type.startsWith('video/')) {
+            const url = URL.createObjectURL(file);
+            videoPlayer.src = url;
+            videoPreview.style.display = 'block';
+            
+            // Libérer l'URL après la lecture
+            videoPlayer.onended = function() {
+              URL.revokeObjectURL(url);
+            };
+          }
+        });
+      }
+    });
+    
+    // Fonction pour lire les vidéos des établissements
+    function playVideo(videoUrl, etablissementNom) {
+      // Créer le modal vidéo
+      const modal = document.createElement('div');
+      modal.className = 'video-modal';
+      modal.innerHTML = `
+        <div class="video-modal-content">
+          <div class="video-modal-header">
+            <h3>🎥 ${etablissementNom}</h3>
+            <span class="close-modal" onclick="closeVideoModal()">&times;</span>
+          </div>
+          <div class="video-modal-body">
+            <video controls autoplay style="width: 100%; height: auto;">
+              <source src="${videoUrl}" type="video/mp4">
+              Votre navigateur ne supporte pas la lecture de vidéos.
+            </video>
+          </div>
+        </div>
+      `;
+      
+      // Ajouter le modal au body
+      document.body.appendChild(modal);
+      
+      // Afficher le modal
+      setTimeout(() => modal.classList.add('show'), 10);
+      
+      // Fermer le modal en cliquant à l'extérieur
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          closeVideoModal();
+        }
+      });
+    }
+    
+    // Fonction pour fermer le modal vidéo
+    function closeVideoModal() {
+      const modal = document.querySelector('.video-modal');
+      if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 300);
+      }
+    }
+    
+    // ===== FONCTIONNALITÉ DE PRISE DE VIDÉO DIRECTE =====
+    
+    // Variables globales pour la vidéo
+    let mediaRecorder;
+    let recordedChunks = [];
+    let stream;
+    let recordingStartTime;
+    let recordingTimer;
+    
+    // Gestion des onglets de méthode
+    document.addEventListener('DOMContentLoaded', function() {
+      const methodTabs = document.querySelectorAll('.method-tab');
+      const videoRecordSection = document.getElementById('videoRecordSection');
+      const videoUploadSection = document.getElementById('videoUploadSection');
+      
+      methodTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const method = this.dataset.method;
+          
+          // Mise à jour des onglets actifs
+          methodTabs.forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          
+          // Affichage de la section correspondante
+          if (method === 'record') {
+            videoRecordSection.style.display = 'block';
+            videoUploadSection.style.display = 'none';
+          } else {
+            videoRecordSection.style.display = 'none';
+            videoUploadSection.style.display = 'block';
+          }
+        });
+      });
+      
+      // Initialisation des événements de la caméra
+      initializeCameraEvents();
+    });
+    
+    // Initialisation des événements de la caméra
+    function initializeCameraEvents() {
+      const startCameraBtn = document.getElementById('startCameraBtn');
+      const recordBtn = document.getElementById('recordBtn');
+      const stopRecordBtn = document.getElementById('stopRecordBtn');
+      const retakeBtn = document.getElementById('retakeBtn');
+      const confirmRecordedVideoBtn = document.getElementById('confirmRecordedVideoBtn');
+      const retakeRecordedVideoBtn = document.getElementById('retakeRecordedVideoBtn');
+      
+      if (startCameraBtn) {
+        startCameraBtn.addEventListener('click', startCamera);
+      }
+      
+      if (recordBtn) {
+        recordBtn.addEventListener('click', startRecording);
+      }
+      
+      if (stopRecordBtn) {
+        stopRecordBtn.addEventListener('click', stopRecording);
+      }
+      
+      if (retakeBtn) {
+        retakeBtn.addEventListener('click', retakeRecording);
+      }
+      
+      if (confirmRecordedVideoBtn) {
+        confirmRecordedVideoBtn.addEventListener('click', confirmRecordedVideo);
+      }
+      
+      if (retakeRecordedVideoBtn) {
+        retakeRecordedVideoBtn.addEventListener('click', retakeRecordedVideo);
+      }
+    }
+    
+    // Démarrer la caméra
+    async function startCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            facingMode: 'environment'
+          }, 
+          audio: true 
+        });
+        
+        const cameraPreview = document.getElementById('cameraPreview');
+        const cameraPlaceholder = document.getElementById('cameraPlaceholder');
+        const startCameraBtn = document.getElementById('startCameraBtn');
+        const recordBtn = document.getElementById('recordBtn');
+        
+        cameraPreview.srcObject = stream;
+        cameraPreview.style.display = 'block';
+        cameraPlaceholder.style.display = 'none';
+        startCameraBtn.style.display = 'none';
+        recordBtn.style.display = 'inline-flex';
+        
+        // Réinitialiser l'interface
+        hideRecordingStatus();
+        hideRecordedVideoPreview();
+        
+      } catch (error) {
+        console.error('Erreur lors de l\'accès à la caméra:', error);
+        alert('Impossible d\'accéder à la caméra. Vérifiez les permissions et réessayez.');
+      }
+    }
+    
+    // Commencer l'enregistrement
+    function startRecording() {
+      if (!stream) return;
+      
+      recordedChunks = [];
+      recordingStartTime = Date.now();
+      
+      // Configuration du MediaRecorder
+      const options = {
+        mimeType: 'video/webm;codecs=vp9,opus',
+        videoBitsPerSecond: 2500000 // 2.5 Mbps
+      };
+      
+      try {
+        mediaRecorder = new MediaRecorder(stream, options);
+      } catch (e) {
+        // Fallback pour les navigateurs qui ne supportent pas VP9
+        try {
+          mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        } catch (e2) {
+          mediaRecorder = new MediaRecorder(stream);
+        }
+      }
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      };
+      
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        showRecordedVideoPreview(blob);
+      };
+      
+      mediaRecorder.start();
+      
+      // Mise à jour de l'interface
+      const recordBtn = document.getElementById('recordBtn');
+      const stopRecordBtn = document.getElementById('stopRecordBtn');
+      
+      recordBtn.style.display = 'none';
+      stopRecordBtn.style.display = 'inline-flex';
+      
+      showRecordingStatus();
+      startRecordingTimer();
+    }
+    
+    // Arrêter l'enregistrement
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
+      
+      // Mise à jour de l'interface
+      const recordBtn = document.getElementById('recordBtn');
+      const stopRecordBtn = document.getElementById('stopRecordBtn');
+      const retakeBtn = document.getElementById('retakeBtn');
+      
+      recordBtn.style.display = 'inline-flex';
+      stopRecordBtn.style.display = 'none';
+      retakeBtn.style.display = 'inline-flex';
+      
+      hideRecordingStatus();
+      stopRecordingTimer();
+    }
+    
+    // Recommencer l'enregistrement
+    function retakeRecording() {
+      const recordBtn = document.getElementById('recordBtn');
+      const retakeBtn = document.getElementById('retakeBtn');
+      
+      recordBtn.style.display = 'inline-flex';
+      retakeBtn.style.display = 'none';
+      
+      hideRecordedVideoPreview();
+    }
+    
+    // Afficher le statut d'enregistrement
+    function showRecordingStatus() {
+      const recordingStatus = document.getElementById('recordingStatus');
+      if (recordingStatus) {
+        recordingStatus.style.display = 'flex';
+      }
+    }
+    
+    // Masquer le statut d'enregistrement
+    function hideRecordingStatus() {
+      const recordingStatus = document.getElementById('recordingStatus');
+      if (recordingStatus) {
+        recordingStatus.style.display = 'none';
+      }
+    }
+    
+    // Démarrer le minuteur d'enregistrement
+    function startRecordingTimer() {
+      recordingTimer = setInterval(() => {
+        const elapsed = Date.now() - recordingStartTime;
+        const seconds = Math.floor(elapsed / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const displaySeconds = seconds % 60;
+        
+        const timerElement = document.getElementById('recordingTimer');
+        if (timerElement) {
+          timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${displaySeconds.toString().padStart(2, '0')}`;
+        }
+      }, 1000);
+    }
+    
+    // Arrêter le minuteur d'enregistrement
+    function stopRecordingTimer() {
+      if (recordingTimer) {
+        clearInterval(recordingTimer);
+        recordingTimer = null;
+      }
+    }
+    
+    // Afficher l'aperçu de la vidéo enregistrée
+    function showRecordedVideoPreview(blob) {
+      const recordedVideoPreview = document.getElementById('recordedVideoPreview');
+      const recordedVideoPlayer = document.getElementById('recordedVideoPlayer');
+      const recordedVideoData = document.getElementById('recordedVideoData');
+      
+      if (recordedVideoPreview && recordedVideoPlayer && recordedVideoData) {
+        const url = URL.createObjectURL(blob);
+        recordedVideoPlayer.src = url;
+        recordedVideoPreview.style.display = 'block';
+        
+        // Stocker les données de la vidéo pour l'envoi du formulaire
+        const reader = new FileReader();
+        reader.onload = function() {
+          recordedVideoData.value = reader.result;
+        };
+        reader.readAsDataURL(blob);
+      }
+    }
+    
+    // Masquer l'aperçu de la vidéo enregistrée
+    function hideRecordedVideoPreview() {
+      const recordedVideoPreview = document.getElementById('recordedVideoPreview');
+      if (recordedVideoPreview) {
+        recordedVideoPreview.style.display = 'none';
+      }
+    }
+    
+    // Confirmer la vidéo enregistrée
+    function confirmRecordedVideo() {
+      // La vidéo est déjà stockée dans le champ caché
+      // On peut maintenant soumettre le formulaire
+      alert('Vidéo confirmée ! Vous pouvez maintenant soumettre votre demande d\'adhésion.');
+    }
+    
+    // Recommencer la vidéo enregistrée
+    function retakeRecordedVideo() {
+      hideRecordedVideoPreview();
+      
+      const recordBtn = document.getElementById('recordBtn');
+      const retakeBtn = document.getElementById('retakeBtn');
+      
+      recordBtn.style.display = 'inline-flex';
+      retakeBtn.style.display = 'none';
+      
+      // Réinitialiser le champ caché
+      const recordedVideoData = document.getElementById('recordedVideoData');
+      if (recordedVideoData) {
+        recordedVideoData.value = '';
+      }
+    }
+    
+    // Nettoyer les ressources lors de la fermeture de la page
+    window.addEventListener('beforeunload', function() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      if (recordingTimer) {
+        clearInterval(recordingTimer);
+      }
+    });
   </script>
+  
+  <!-- Modal vidéo -->
+  <style>
+  .video-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .video-modal.show {
+    opacity: 1;
+  }
+  
+  .video-modal-content {
+    background: rgba(26, 18, 58, 0.95);
+    border-radius: 1rem;
+    padding: 0;
+    max-width: 90%;
+    max-height: 90%;
+    border: 2px solid #FFD700;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+  }
+  
+  .video-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #7B2CBF;
+    background: linear-gradient(45deg, #FF004D, #FFD700);
+    border-radius: 1rem 1rem 0 0;
+  }
+  
+  .video-modal-header h3 {
+    color: #000;
+    margin: 0;
+    font-size: 1.3rem;
+  }
+  
+  .close-modal {
+    color: #000;
+    font-size: 2rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+  
+  .close-modal:hover {
+    color: #FF004D;
+  }
+  
+  .video-modal-body {
+    padding: 1.5rem;
+  }
+  
+  /* Responsive pour les vidéos */
+  @media (max-width: 768px) {
+    .video-thumbnail-small {
+      width: 50px;
+      height: 35px;
+    }
+    
+    .video-modal-content {
+      max-width: 95%;
+      max-height: 95%;
+    }
+    
+    .video-modal-header h3 {
+      font-size: 1.1rem;
+    }
+  }
+  </style>
 </body>
 </html>

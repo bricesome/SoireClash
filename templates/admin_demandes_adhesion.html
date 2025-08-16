@@ -10,11 +10,14 @@
 
 <!-- Statistiques des demandes -->
 <div class="section">
+  <h2 class="section-title">📊 Statistiques des Demandes d'Adhésion</h2>
+  
+  <!-- Statistiques principales -->
   <div class="stats-overview">
     <div class="stat-card">
       <div class="stat-icon">📋</div>
       <div class="stat-content">
-        <div class="stat-number">{{ demandes.count }}</div>
+        <div class="stat-number">{{ total_demandes }}</div>
         <div class="stat-label">Total des demandes</div>
       </div>
     </div>
@@ -22,14 +25,7 @@
     <div class="stat-card">
       <div class="stat-icon">⏳</div>
       <div class="stat-content">
-        <div class="stat-number">
-          {% for demande in demandes %}
-            {% if demande.statut == 'en_attente' %}
-              {% with count=forloop.counter0|add:1 %}{% endwith %}
-            {% endif %}
-          {% endfor %}
-          {{ demandes|length }}
-        </div>
+        <div class="stat-number">{{ demandes_en_attente }}</div>
         <div class="stat-label">En attente</div>
       </div>
     </div>
@@ -37,14 +33,7 @@
     <div class="stat-card">
       <div class="stat-icon">✅</div>
       <div class="stat-content">
-        <div class="stat-number">
-          {% for demande in demandes %}
-            {% if demande.statut == 'approuvee' %}
-              {% with count=forloop.counter0|add:1 %}{% endwith %}
-            {% endif %}
-          {% endfor %}
-          {{ demandes|length }}
-        </div>
+        <div class="stat-number">{{ demandes_approuvees }}</div>
         <div class="stat-label">Approuvées</div>
       </div>
     </div>
@@ -52,15 +41,45 @@
     <div class="stat-card">
       <div class="stat-icon">❌</div>
       <div class="stat-content">
-        <div class="stat-number">
-          {% for demande in demandes %}
-            {% if demande.statut == 'rejetee' %}
-              {% with count=forloop.counter0|add:1 %}{% endwith %}
-            {% endif %}
-          {% endfor %}
-          {{ demandes|length }}
-        </div>
+        <div class="stat-number">{{ demandes_rejetees }}</div>
         <div class="stat-label">Rejetées</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Statistiques détaillées -->
+  <div class="stats-details">
+    <div class="stats-row">
+      <div class="stat-card secondary">
+        <div class="stat-icon">🏪</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ demandes_maquis }}</div>
+          <div class="stat-label">Maquis</div>
+        </div>
+      </div>
+      
+      <div class="stat-card secondary">
+        <div class="stat-icon">🎉</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ demandes_boites }}</div>
+          <div class="stat-label">Boîtes de nuit</div>
+        </div>
+      </div>
+      
+      <div class="stat-card secondary">
+        <div class="stat-icon">🏙️</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ demandes_ouaga }}</div>
+          <div class="stat-label">Ouagadougou</div>
+        </div>
+      </div>
+      
+      <div class="stat-card secondary">
+        <div class="stat-icon">🌍</div>
+        <div class="stat-content">
+          <div class="stat-number">{{ demandes_autres_villes }}</div>
+          <div class="stat-label">Autres villes</div>
+        </div>
       </div>
     </div>
   </div>
@@ -68,12 +87,22 @@
 
 <!-- Liste des demandes -->
 <div class="section">
-  <h2 class="section-title">Demandes d'Adhésion</h2>
+  <h2 class="section-title">📋 Liste des Demandes d'Adhésion</h2>
+  
+  <!-- Filtres par statut -->
+  <div class="filters-section">
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-filter="all">Toutes ({{ total_demandes }})</button>
+      <button class="filter-btn" data-filter="en_attente">En attente ({{ demandes_en_attente }})</button>
+      <button class="filter-btn" data-filter="approuvee">Approuvées ({{ demandes_approuvees }})</button>
+      <button class="filter-btn" data-filter="rejetee">Rejetées ({{ demandes_rejetees }})</button>
+    </div>
+  </div>
   
   {% if demandes %}
     <div class="demandes-grid">
       {% for demande in demandes %}
-        <div class="demande-card {% if demande.statut == 'en_attente' %}pending{% elif demande.statut == 'approuvee' %}approved{% else %}rejected{% endif %}">
+        <div class="demande-card {% if demande.statut == 'en_attente' %}pending{% elif demande.statut == 'approuvee' %}approved{% else %}rejected{% endif %}" data-statut="{{ demande.statut }}">
           <div class="demande-header">
             <div class="demande-status">
               {% if demande.statut == 'en_attente' %}
@@ -236,6 +265,65 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
+}
+
+.stats-details {
+  margin-top: 2rem;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card.secondary {
+  background: rgba(26, 18, 58, 0.7);
+  border-color: #00C2FF;
+  padding: 1rem;
+}
+
+.stat-card.secondary .stat-icon {
+  font-size: 2rem;
+}
+
+.stat-card.secondary .stat-number {
+  font-size: 1.5rem;
+  color: #00C2FF;
+}
+
+.filters-section {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #7B2CBF;
+  background: rgba(26, 18, 58, 0.9);
+  color: #FFD700;
+  border-radius: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.filter-btn:hover {
+  background: #7B2CBF;
+  transform: translateY(-2px);
+}
+
+.filter-btn.active {
+  background: #FFD700;
+  color: #000;
+  border-color: #FFD700;
 }
 
 .stat-card {
@@ -494,4 +582,43 @@
   }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fonctionnalité de filtrage des demandes
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const demandeCards = document.querySelectorAll('.demande-card');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Retirer la classe active de tous les boutons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Ajouter la classe active au bouton cliqué
+            this.classList.add('active');
+            
+            const filter = this.getAttribute('data-filter');
+            
+            // Filtrer les demandes
+            demandeCards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-statut') === filter) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeIn 0.5s ease-in';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Animation d'apparition
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
 {% endblock %}

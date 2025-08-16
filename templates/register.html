@@ -1,158 +1,590 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Inscription - Soirée Clash</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0F0A2F 0%, #1A123A 100%);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-    }
-    .register-container {
-      background: rgba(26, 18, 58, 0.9);
-      padding: 3rem;
-      border-radius: 1rem;
-      border: 2px solid #7B2CBF;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      width: 100%;
-      max-width: 500px;
-    }
-    .logo {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 800;
-      background: linear-gradient(to right, #FF004D, #FFD700);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 2rem;
-    }
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: #FFD700;
-      font-weight: 600;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 0.8rem;
-      border: 1px solid #7B2CBF;
-      border-radius: 0.5rem;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-    .form-group input:focus {
-      outline: none;
-      border-color: #FFD700;
-      box-shadow: 0 0 10px rgba(255,215,0,0.3);
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    .btn-register {
-      width: 100%;
-      padding: 1rem;
-      background: linear-gradient(45deg, #7B2CBF, #00C2FF);
-      color: white;
-      border: none;
-      border-radius: 0.5rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .btn-register:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    }
-    .links {
-      text-align: center;
-      margin-top: 1.5rem;
-    }
-    .links a {
-      color: #FFD700;
-      text-decoration: none;
-      margin: 0 1rem;
-    }
-    .links a:hover {
-      text-decoration: underline;
-    }
-    .error-message {
-      background: rgba(255,0,77,0.2);
-      border: 1px solid #FF004D;
-      color: #FF6B6B;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-    .help-text {
-      font-size: 0.9rem;
-      color: #ccc;
-      margin-top: 0.5rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="register-container">
-    <div class="logo">SOIRÉE CLASH</div>
-    
-    {% if form.errors %}
-    <div class="error-message">
-      {% for field, errors in form.errors.items %}
-        {% for error in errors %}
-          {{ error }}<br>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inscription - Soirée Clash{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient text-white text-center py-4">
+                    <h2 class="mb-0">
+                        <span class="gradient-text">🚀 Créer mon compte</span>
+                    </h2>
+                    <p class="mb-0 mt-2">Rejoignez Soirée Clash et commencez à parier sur vos champions !</p>
+                </div>
+                
+                <div class="card-body p-5">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.username.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-user me-2"></i>Nom d'utilisateur *
+                                </label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.username.errors %}
+                                            <span class="text-danger">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">Choisissez un nom d'utilisateur unique</small>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.email.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-envelope me-2"></i>Email *
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.email.errors %}
+                                            <span class="text-danger">{{ error }}</span>
         {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">Votre email pour la connexion et les notifications</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-user me-2"></i>Prénom *
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.first_name.errors %}
+                                            <span class="text-danger">{{ error }}</span>
       {% endfor %}
     </div>
     {% endif %}
-    
-    <form method="post">
-      {% csrf_token %}
-      <div class="form-group">
-        <label for="id_username">Nom d'utilisateur</label>
-        {{ form.username }}
-        <div class="help-text">150 caractères maximum. Lettres, chiffres et @/./+/-/_ uniquement.</div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-user me-2"></i>Nom *
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.last_name.errors %}
+                                            <span class="text-danger">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
       </div>
       
-      <div class="form-group">
-        <label for="id_password1">Mot de passe</label>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.password1.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-lock me-2"></i>Mot de passe *
+                                </label>
         {{ form.password1 }}
-        <div class="help-text">
-          Votre mot de passe ne peut pas être trop similaire à vos autres informations personnelles.<br>
-          Votre mot de passe doit contenir au moins 8 caractères.<br>
-          Votre mot de passe ne peut pas être un mot de passe couramment utilisé.<br>
-          Votre mot de passe ne peut pas être entièrement numérique.
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.password1.errors %}
+                                            <span class="text-danger">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <small class="form-text text-muted">Au moins 8 caractères avec lettres et chiffres</small>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.password2.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-lock me-2"></i>Confirmer le mot de passe *
+                                </label>
+                                {{ form.password2 }}
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.password2.errors %}
+                                            <span class="text-danger">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
         </div>
       </div>
       
-      <div class="form-group">
-        <label for="id_password2">Confirmation du mot de passe</label>
-        {{ form.password2 }}
-        <div class="help-text">Entrez le même mot de passe que précédemment, pour vérification.</div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>
+                                Créer mon compte et commencer
+                            </button>
       </div>
       
-      <button type="submit" class="btn-register">Créer mon compte</button>
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-2">Déjà inscrit ?</p>
+                            <a href="{% url 'app:login' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-sign-in-alt me-2"></i>
+                                Se connecter
+                            </a>
+                        </div>
     </form>
-    
-    <div class="links">
-      <a href="{% url 'app:login' %}">Déjà un compte ? Se connecter</a>
-      <a href="{% url 'app:index' %}">Retour à l'accueil</a>
+                </div>
+            </div>
+            
+                         <!-- Informations sur les fonctionnalités -->
+             <div class="card mt-4 border-0 bg-light">
+                 <div class="card-body">
+                     <h5 class="card-title text-primary">
+                         <i class="fas fa-star me-2"></i>
+                         Informations Importantes
+                     </h5>
+                     <div class="row">
+                         <div class="col-md-4 text-center mb-3">
+                             <div class="feature-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                 <i class="fas fa-coins fa-2x"></i>
+                             </div>
+                             <h6 class="mt-3 fw-bold">💰 Système de Paris</h6>
+                             <p class="text-muted small">Placez des paris sur vos participants préférés avec des cotes de 2. Les paris sont fermés à 17h00 pour les événements du jour.</p>
+                         </div>
+                         <div class="col-md-4 text-center mb-3">
+                             <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                 <i class="fas fa-trophy fa-2x"></i>
+                             </div>
+                             <h6 class="mt-3 fw-bold">🏆 Suivi en Temps Réel</h6>
+                             <p class="text-muted small">Suivez les classements quotidiens, découvrez les vainqueurs et les performances des participants en direct.</p>
+                         </div>
+                         <div class="col-md-4 text-center mb-3">
+                             <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                 <i class="fas fa-user-plus fa-2x"></i>
+                             </div>
+                             <h6 class="mt-3 fw-bold">🚀 Participation Flexible</h6>
+                             <p class="text-muted small">Vous pouvez aussi devenir participant dans un établissement pour rejoindre la compétition si vous le souhaitez.</p>
+                         </div>
+                     </div>
+                     
+                     <!-- Nouvelles fonctionnalités -->
+                     <div class="row mt-4">
+                         <div class="col-md-6 text-center mb-3">
+                             <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                 <i class="fas fa-bell fa-2x"></i>
+                             </div>
+                             <h6 class="mt-3 fw-bold">🔔 Notifications Intelligentes</h6>
+                             <p class="text-muted small">Recevez des alertes sur les résultats de vos paris, les nouveaux participants et les événements importants.</p>
+                         </div>
+                         <div class="col-md-6 text-center mb-3">
+                             <div class="feature-icon bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                 <i class="fas fa-chart-line fa-2x"></i>
+                             </div>
+                             <h6 class="mt-3 fw-bold">📊 Statistiques Personnelles</h6>
+                             <p class="text-muted small">Accédez à votre historique de paris, vos gains et vos performances pour optimiser vos stratégies.</p>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+            
+                         <!-- Différence avec l'inscription participant -->
+             <div class="card mt-4 border-0 bg-primary text-white">
+                 <div class="card-body text-center">
+                     <h5 class="card-title">
+                         <i class="fas fa-info-circle me-2"></i>
+                         🎯 Comprendre la Différence
+                     </h5>
+                     <div class="row mt-4">
+                         <div class="col-md-6">
+                             <div class="difference-card bg-white text-dark p-3 rounded mb-3">
+                                 <h6 class="text-primary fw-bold">
+                                     <i class="fas fa-user me-2"></i>
+                                     Ce Compte (Général)
+                                 </h6>
+                                 <ul class="list-unstyled small text-muted">
+                                     <li><i class="fas fa-check text-success me-2"></i>Placer des paris sur les participants</li>
+                                     <li><i class="fas fa-check text-success me-2"></i>Suivre les classements en temps réel</li>
+                                     <li><i class="fas fa-check text-success me-2"></i>Accéder aux statistiques et résultats</li>
+                                     <li><i class="fas fa-check text-success me-2"></i>Recevoir des notifications</li>
+                                 </ul>
+                             </div>
+                         </div>
+                         <div class="col-md-6">
+                             <div class="difference-card bg-white text-dark p-3 rounded mb-3">
+                                 <h6 class="text-success fw-bold">
+                                     <i class="fas fa-running me-2"></i>
+                                     Inscription Participant
+                                 </h6>
+                                 <ul class="list-unstyled small text-muted">
+                                     <li><i class="fas fa-check text-success me-2"></i>Rejoindre la compétition active</li>
+                                     <li><i class="fas fa-check text-success me-2"></i>Participer aux événements d'un établissement</li>
+                                     <li><i class="fas fa-check text-success me-2"></i>Gagner des trophées et monter en classement</li>
+                                     <li><i class="fas fa-check text-success me-2"></i>Être éligible aux paris des autres utilisateurs</li>
+                                 </ul>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="mt-4">
+                         <a href="{% url 'app:inscription_participant' %}" class="btn btn-outline-light btn-lg">
+                             <i class="fas fa-running me-2"></i>
+                             Je veux aussi participer à la compétition
+                         </a>
+                     </div>
+                 </div>
+             </div>
+        </div>
     </div>
   </div>
-</body>
-</html>
+
+<style>
+.gradient-text {
+    background: linear-gradient(45deg, #FF004D, #FFD700, #00C2FF, #7B2CBF);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 3s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.card-header {
+    background: linear-gradient(135deg, #FF004D 0%, #7B2CBF 100%);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #FF004D 0%, #7B2CBF 100%);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 0, 77, 0.3);
+}
+
+.form-control:focus {
+    border-color: #FF004D;
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 77, 0.25);
+}
+
+.messages-container .alert {
+    border-radius: 15px;
+    border: none;
+}
+
+.message-icon {
+    font-size: 1.2em;
+}
+
+            .bg-primary {
+                background: linear-gradient(135deg, #7B2CBF 0%, #00C2FF 100%) !important;
+            }
+            
+            /* Animations pour les icônes des fonctionnalités */
+            .feature-icon {
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .feature-icon::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                transition: all 0.6s ease;
+            }
+            
+            .feature-icon:hover {
+                transform: translateY(-8px) scale(1.1);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            }
+            
+            .feature-icon:hover::before {
+                width: 120px;
+                height: 120px;
+            }
+            
+            /* Animation d'apparition des éléments */
+            .feature-icon {
+                animation: fadeInUp 0.8s ease forwards;
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            
+            .feature-icon:nth-child(1) { animation-delay: 0.1s; }
+            .feature-icon:nth-child(2) { animation-delay: 0.2s; }
+            .feature-icon:nth-child(3) { animation-delay: 0.3s; }
+            .feature-icon:nth-child(4) { animation-delay: 0.4s; }
+            .feature-icon:nth-child(5) { animation-delay: 0.5s; }
+            
+            @keyframes fadeInUp {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            /* Animation des titres */
+            .feature-icon + h6 {
+                animation: slideInLeft 0.8s ease forwards;
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            
+            .feature-icon:nth-child(1) + h6 { animation-delay: 0.2s; }
+            .feature-icon:nth-child(2) + h6 { animation-delay: 0.3s; }
+            .feature-icon:nth-child(3) + h6 { animation-delay: 0.4s; }
+            .feature-icon:nth-child(4) + h6 { animation-delay: 0.5s; }
+            .feature-icon:nth-child(5) + h6 { animation-delay: 0.6s; }
+            
+            @keyframes slideInLeft {
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+            
+            /* Animation des descriptions */
+            .feature-icon + h6 + p {
+                animation: slideInRight 0.8s ease forwards;
+                opacity: 0;
+                transform: translateX(20px);
+                animation-delay: 0.3s;
+            }
+            
+            @keyframes slideInRight {
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+            
+            /* Effet de pulsation sur les icônes */
+            .feature-icon i {
+                animation: pulse 2s infinite;
+            }
+            
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+            
+            /* Animation du titre principal */
+            .card-title {
+                animation: glow 2s ease-in-out infinite alternate;
+            }
+            
+            @keyframes glow {
+                from { text-shadow: 0 0 5px rgba(123, 44, 191, 0.5); }
+                to { text-shadow: 0 0 20px rgba(123, 44, 191, 0.8), 0 0 30px rgba(123, 44, 191, 0.6); }
+            }
+            
+            /* Styles pour les cartes de différence */
+            .difference-card {
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                position: relative;
+                overflow: hidden;
+                border: 2px solid transparent;
+            }
+            
+            .difference-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(123, 44, 191, 0.1), transparent);
+                transition: left 0.6s ease;
+            }
+            
+            .difference-card:hover {
+                transform: translateY(-5px) scale(1.02);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                border-color: rgba(123, 44, 191, 0.3);
+            }
+            
+            .difference-card:hover::before {
+                left: 100%;
+            }
+            
+            /* Animation d'apparition des cartes de différence */
+            .difference-card {
+                animation: slideInUp 1s ease forwards;
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            
+            .difference-card:nth-child(1) { animation-delay: 0.8s; }
+            .difference-card:nth-child(2) { animation-delay: 1s; }
+            
+            /* Animation du bouton */
+            .btn-outline-light {
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .btn-outline-light::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.6s ease;
+            }
+            
+            .btn-outline-light:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+            }
+            
+            .btn-outline-light:hover::before {
+                left: 100%;
+            }
+            
+                         /* Animation du bouton */
+             .btn-outline-light {
+                 animation: fadeInUp 1.2s ease forwards;
+                 opacity: 0;
+                 transform: translateY(30px);
+             }
+             
+             /* Amélioration de la visibilité des animations */
+             .feature-icon {
+                 animation-play-state: running !important;
+                 animation-fill-mode: both !important;
+             }
+             
+             /* Animation plus visible */
+             @keyframes fadeInUp {
+                 from {
+                     opacity: 0;
+                     transform: translateY(50px);
+                 }
+                 to {
+                     opacity: 1;
+                     transform: translateY(0);
+                 }
+             }
+             
+             @keyframes slideInLeft {
+                 from {
+                     opacity: 0;
+                     transform: translateX(-50px);
+                 }
+                 to {
+                     opacity: 1;
+                     transform: translateX(0);
+                 }
+             }
+             
+             @keyframes slideInRight {
+                 from {
+                     opacity: 0;
+                     transform: translateX(50px);
+                 }
+                 to {
+                     opacity: 1;
+                     transform: translateX(0);
+                 }
+             }
+             
+             @keyframes slideInUp {
+                 from {
+                     opacity: 0;
+                     transform: translateY(60px);
+                 }
+                 to {
+                     opacity: 1;
+                     transform: translateY(0);
+                 }
+             }
+             
+             /* Animation du titre principal plus visible */
+             .gradient-text {
+                 animation: gradient-shift 3s ease-in-out infinite, glow 2s ease-in-out infinite alternate !important;
+             }
+             
+             /* Effet de rebond sur les icônes */
+             .feature-icon:hover {
+                 animation: bounce 0.6s ease !important;
+             }
+             
+             @keyframes bounce {
+                 0%, 20%, 53%, 80%, 100% { transform: translateY(0) scale(1.1); }
+                 40%, 43% { transform: translateY(-20px) scale(1.1); }
+                 70% { transform: translateY(-10px) scale(1.1); }
+                 90% { transform: translateY(-5px) scale(1.1); }
+             }
+         </style>
+         
+         <script>
+             // Forcer l'activation des animations
+             document.addEventListener('DOMContentLoaded', function() {
+                 // Activer toutes les animations
+                 const animatedElements = document.querySelectorAll('.feature-icon, .difference-card, .btn-outline-light');
+                 
+                 animatedElements.forEach((element, index) => {
+                     // Forcer le redémarrage des animations
+                     element.style.animation = 'none';
+                     element.offsetHeight; // Trigger reflow
+                     
+                     // Réactiver les animations avec des délais
+                     setTimeout(() => {
+                         element.style.animation = '';
+                         element.classList.add('animate-in');
+                     }, index * 100);
+                 });
+                 
+                 // Animation du titre principal
+                 const title = document.querySelector('.gradient-text');
+                 if (title) {
+                     title.style.animation = 'gradient-shift 3s ease-in-out infinite, glow 2s ease-in-out infinite alternate';
+                 }
+                 
+                 // Effet de survol amélioré
+                 const featureIcons = document.querySelectorAll('.feature-icon');
+                 featureIcons.forEach(icon => {
+                     icon.addEventListener('mouseenter', function() {
+                         this.style.transform = 'translateY(-8px) scale(1.1)';
+                         this.style.boxShadow = '0 15px 35px rgba(0, 0, 0, 0.3)';
+                     });
+                     
+                     icon.addEventListener('mouseleave', function() {
+                         this.style.transform = 'translateY(0) scale(1)';
+                         this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.1)';
+                     });
+                 });
+             });
+             
+             // Animation au scroll
+             function animateOnScroll() {
+                 const elements = document.querySelectorAll('.feature-icon, .difference-card');
+                 elements.forEach(element => {
+                     const elementTop = element.getBoundingClientRect().top;
+                     const elementVisible = 150;
+                     
+                     if (elementTop < window.innerHeight - elementVisible) {
+                         element.style.opacity = '1';
+                         element.style.transform = 'translateY(0)';
+                     }
+                 });
+             }
+             
+             window.addEventListener('scroll', animateOnScroll);
+             
+             // Animation initiale
+             window.addEventListener('load', function() {
+                 setTimeout(animateOnScroll, 100);
+             });
+         </script>
+         
+         {% endblock %}

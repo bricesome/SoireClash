@@ -30,6 +30,38 @@ class DemandeAdhesionAdmin(admin.ModelAdmin):
                     actif=True
                 )
                 
+                # Copier la vidéo et la miniature si elles existent
+                if demande.video_etablissement:
+                    import shutil
+                    import os
+                    from django.conf import settings
+                    
+                    # Créer le dossier de destination s'il n'existe pas
+                    os.makedirs(os.path.join(settings.MEDIA_ROOT, 'videos/etablissements/'), exist_ok=True)
+                    
+                    # Copier la vidéo
+                    nom_fichier_video = os.path.basename(demande.video_etablissement.name)
+                    chemin_destination_video = os.path.join(settings.MEDIA_ROOT, 'videos/etablissements/', nom_fichier_video)
+                    shutil.copy2(demande.video_etablissement.path, chemin_destination_video)
+                    
+                    # Mettre à jour le chemin dans le service
+                    service.video_etablissement = f'videos/etablissements/{nom_fichier_video}'
+                
+                if demande.miniature_video:
+                    # Créer le dossier de destination s'il n'existe pas
+                    os.makedirs(os.path.join(settings.MEDIA_ROOT, 'miniatures/videos/'), exist_ok=True)
+                    
+                    # Copier la miniature
+                    nom_fichier_miniature = os.path.basename(demande.miniature_video.name)
+                    chemin_destination_miniature = os.path.join(settings.MEDIA_ROOT, 'miniatures/videos/', nom_fichier_miniature)
+                    shutil.copy2(demande.miniature_video.path, chemin_destination_miniature)
+                    
+                    # Mettre à jour le chemin dans le service
+                    service.miniature_video = f'miniatures/videos/{nom_fichier_miniature}'
+                
+                # Sauvegarder le service avec les vidéos
+                service.save()
+                
                 # Créer le compte utilisateur
                 user = User.objects.create_user(
                     username=demande.pseudo,
@@ -131,11 +163,17 @@ class DemandeAdhesionAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ['nom', 'type', 'localisation', 'proprietaire', 'types_boissons_enregistres', 'actif', 'date_creation']
+    list_display = ['nom', 'type', 'localisation', 'proprietaire', 'types_boissons_enregistres', 'actif', 'date_creation', 'a_video']
     list_filter = ['type', 'actif', 'types_boissons_enregistres', 'date_creation']
     search_fields = ['nom', 'localisation', 'proprietaire__username']
     readonly_fields = ['date_creation', 'derniere_mise_a_jour_boissons']
     actions = ['activer_services', 'desactiver_services']
+    
+    def a_video(self, obj):
+        """Indique si l'établissement a une vidéo"""
+        return bool(obj.video_etablissement)
+    a_video.boolean = True
+    a_video.short_description = 'Vidéo'
     
     def activer_services(self, request, queryset):
         queryset.update(actif=True)
@@ -218,7 +256,12 @@ class ProfileAdmin(admin.ModelAdmin):
     search_fields = ['user__username', 'pseudo', 'tel']
     list_filter = ['user__is_active']
     exclude = ['nom', 'prenom']  # Masquer les champs dupliqués
-    readonly_fields = ['user']
+    
+    def get_readonly_fields(self, request, obj=None):
+        """Le champ user est en lecture seule seulement lors de l'édition, pas lors de la création"""
+        if obj:  # Édition d'un profil existant
+            return ['user']
+        return []  # Création d'un nouveau profil
 
 
 @admin.register(Gestionnaire)
@@ -228,6 +271,12 @@ class GestionnaireAdmin(admin.ModelAdmin):
     search_fields = ['user__username', 'pseudo', 'tel', 'service__nom']
     exclude = ['nom', 'prenom']  # Masquer les champs dupliqués
     actions = ['reinitialiser_mots_de_passe']
+    
+    def get_readonly_fields(self, request, obj=None):
+        """Le champ user est en lecture seule seulement lors de l'édition, pas lors de la création"""
+        if obj:  # Édition d'un gestionnaire existant
+            return ['user']
+        return []  # Création d'un nouveau gestionnaire
     
     def reinitialiser_mots_de_passe(self, request, queryset):
         for gestionnaire in queryset:
@@ -245,6 +294,12 @@ class ParticipantAdmin(admin.ModelAdmin):
     readonly_fields = ['date_inscription']
     exclude = ['nom', 'prenom']  # Masquer les champs dupliqués
     actions = ['activer_participants', 'desactiver_participants']
+    
+    def get_readonly_fields(self, request, obj=None):
+        """Le champ user est en lecture seule seulement lors de l'édition, pas lors de la création"""
+        if obj:  # Édition d'un participant existant
+            return ['user', 'date_inscription']
+        return ['date_inscription']  # Création d'un nouveau participant
     
     def activer_participants(self, request, queryset):
         queryset.update(actif=True)

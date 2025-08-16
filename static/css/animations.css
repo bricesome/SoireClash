@@ -6,9 +6,33 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 200px; /* Hauteur limitée pour ne couvrir que le titre */
   pointer-events: none;
   overflow: hidden;
+  transition: opacity 0.5s ease-out;
+}
+
+/* Animation discrete qui ne cache pas le contenu */
+.crystal-container.discrete {
+  opacity: 0.3;
+}
+
+.crystal-container.discrete .crystal-shards {
+  animation: shards-rotate 20s linear infinite;
+}
+
+.crystal-container.discrete .electric-arcs::before,
+.crystal-container.discrete .electric-arcs::after {
+  animation: electric-pulse 4s ease-in-out infinite;
+}
+
+.crystal-container.discrete .crystal-core {
+  animation: core-vibrate 1s ease-in-out infinite;
+}
+
+.crystal-container.discrete .energy-pulses::before,
+.crystal-container.discrete .energy-pulses::after {
+  animation: energy-bounce 8s ease-in-out infinite;
 }
 
 .crystal-shards {
@@ -18,7 +42,7 @@
   background-image: 
     linear-gradient(45deg, transparent 40%, #00C2FF 40%, #00C2FF 60%, transparent 60%),
     linear-gradient(-45deg, transparent 40%, #FFD700 40%, #FFD700 60%, transparent 60%);
-  background-size: 50px 50px;
+  background-size: 30px 30px; /* Taille réduite */
   animation: shards-rotate 10s linear infinite;
 }
 
@@ -31,8 +55,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 400px;
-  height: 400px;
+  width: 200px; /* Taille réduite */
+  height: 200px; /* Taille réduite */
   transform: translate(-50%, -50%);
 }
 
@@ -77,12 +101,12 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 150px;
-  height: 150px;
+  width: 80px; /* Taille réduite */
+  height: 80px; /* Taille réduite */
   background: radial-gradient(circle, #FFD700 0%, #FF004D 30%, #00C2FF 70%, transparent 100%);
   border-radius: 50%;
   animation: core-vibrate 0.5s ease-in-out infinite;
-  box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); /* Ombre réduite */
 }
 
 @keyframes core-vibrate {
@@ -100,8 +124,8 @@
 .energy-pulses::after {
   content: '';
   position: absolute;
-  width: 6px;
-  height: 6px;
+  width: 4px; /* Taille réduite */
+  height: 4px; /* Taille réduite */
   background: #FFD700;
   border-radius: 50%;
   animation: energy-bounce 4s ease-in-out infinite;
@@ -164,6 +188,12 @@
 @keyframes char-crystal {
   0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
   50% { transform: translateY(-6px) scale(1.1) rotate(2deg); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Sous-titre cristal */

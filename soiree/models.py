@@ -27,6 +27,20 @@ class DemandeAdhesion(models.Model):
     telephone_gestionnaire = models.CharField(max_length=20)
     email_gestionnaire = models.EmailField()
     
+    # Vidéo de l'établissement
+    video_etablissement = models.FileField(
+        upload_to='videos/demandes/',
+        blank=True,
+        null=True,
+        help_text="Vidéo de présentation de l'établissement (MP4, AVI, MOV recommandés)"
+    )
+    miniature_video = models.ImageField(
+        upload_to='miniatures/demandes/',
+        blank=True,
+        null=True,
+        help_text="Miniature de la vidéo (recommandé: 16:9, max 2MB)"
+    )
+    
     date_demande = models.DateTimeField(auto_now_add=True)
     statut = models.CharField(max_length=20, choices=[
         ('en_attente', 'En attente'),
@@ -60,6 +74,20 @@ class Service(models.Model):
     types_boissons_enregistres = models.BooleanField(default=False, 
         help_text="Les types de boissons ont-ils été enregistrés ?")
     derniere_mise_a_jour_boissons = models.DateTimeField(null=True, blank=True)
+    
+    # Champ vidéo pour l'établissement
+    video_etablissement = models.FileField(
+        upload_to='videos/etablissements/',
+        blank=True,
+        null=True,
+        help_text="Vidéo de présentation de l'établissement (MP4, AVI, MOV recommandés)"
+    )
+    miniature_video = models.ImageField(
+        upload_to='miniatures/videos/',
+        blank=True,
+        null=True,
+        help_text="Miniature de la vidéo (recommandé: 16:9, max 2MB)"
+    )
 
     def __str__(self):
         return f"{self.nom} ({self.get_type_display()})"
@@ -154,7 +182,7 @@ class Gestionnaire(models.Model):
     nom = models.CharField(max_length=20, blank=True)
     prenom = models.CharField(max_length=50, blank=True)
     avatar = models.ImageField(upload_to="avatar", verbose_name="Photo ou avatar", blank=True, null=True)
-    tel = models.CharField(max_length=20, unique=True, blank=False, verbose_name="Numéro téléphone")
+    tel = models.CharField(max_length=20, unique=False, blank=False, verbose_name="Numéro téléphone")
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     fonction = models.CharField(max_length=20, choices=FONCTION)
     mot_de_passe_reinitialise = models.BooleanField(default=False)
