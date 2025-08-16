@@ -9,10 +9,40 @@
         <div class="col-md-8">
             <div class="card shadow-lg border-0">
                 <div class="card-header bg-gradient text-white text-center py-4">
-                    <h2 class="mb-0">
-                        <span class="gradient-text">🎯 Inscription Participant</span>
+                    <div class="crystal-container">
+                        <div class="crystal-shards"></div>
+                        <div class="electric-arcs"></div>
+                        <div class="crystal-core"></div>
+                        <div class="energy-pulses"></div>
+                    </div>
+                    
+                    <h2 class="mb-0 crystal-title">
+                        <span class="crystal-char" data-char="🎯">🎯</span>
+                        <span class="crystal-char" data-char="I">I</span>
+                        <span class="crystal-char" data-char="n">n</span>
+                        <span class="crystal-char" data-char="s">s</span>
+                        <span class="crystal-char" data-char="c">c</span>
+                        <span class="crystal-char" data-char="r">r</span>
+                        <span class="crystal-char" data-char="i">i</span>
+                        <span class="crystal-char" data-char="p">p</span>
+                        <span class="crystal-char" data-char="t">t</span>
+                        <span class="crystal-char" data-char="i">i</span>
+                        <span class="crystal-char" data-char="o">o</span>
+                        <span class="crystal-char" data-char="n">n</span>
+                        <span class="crystal-char" data-char=" "> </span>
+                        <span class="crystal-char" data-char="P">P</span>
+                        <span class="crystal-char" data-char="a">a</span>
+                        <span class="crystal-char" data-char="r">r</span>
+                        <span class="crystal-char" data-char="t">t</span>
+                        <span class="crystal-char" data-char="i">i</span>
+                        <span class="crystal-char" data-char="c">c</span>
+                        <span class="crystal-char" data-char="i">i</span>
+                        <span class="crystal-char" data-char="p">p</span>
+                        <span class="crystal-char" data-char="a">a</span>
+                        <span class="crystal-char" data-char="n">n</span>
+                        <span class="crystal-char" data-char="t">t</span>
                     </h2>
-                    <p class="mb-0 mt-2">Rejoignez la compétition et devenez le champion de votre établissement !</p>
+                    <p class="mb-0 mt-2 crystal-subtitle">Rejoignez la compétition et devenez le champion de votre établissement !</p>
                 </div>
                 
                 <div class="card-body p-5">
@@ -112,6 +142,26 @@
                                 </div>
                             {% endif %}
                             <small class="form-text text-muted">Choisissez l'établissement où vous souhaitez participer</small>
+                        </div>
+                        
+                        <!-- Champ photo du participant -->
+                        <div class="mb-4">
+                            <label for="{{ form.photo.id_for_label }}" class="form-label fw-bold">
+                                <i class="fas fa-camera me-2"></i>Votre Photo (Optionnel)
+                            </label>
+                            {{ form.photo }}
+                            {% if form.photo.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.photo.errors %}
+                                        <span class="text-danger">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                📸 Ajoutez votre photo pour personnaliser votre profil. 
+                                Format recommandé : carré, max 2MB. 
+                                L'image sera automatiquement redimensionnée à 300x300 pixels.
+                            </small>
                         </div>
                         
                         <!-- Section des boissons disponibles -->
@@ -375,14 +425,26 @@
             // Données des boissons par établissement
             const boissonsParEtablissement = {{ boissons_par_etablissement|safe }};
             
+            console.log('🔍 Données des boissons reçues:', boissonsParEtablissement);
+            
             // Fonction pour afficher les boissons d'un établissement
             function afficherBoissons(etablissementId) {
+                console.log('🔍 Affichage des boissons pour l\'établissement:', etablissementId);
+                
                 const sectionBoissons = document.getElementById('boissons-disponibles');
                 const listeBoissons = document.getElementById('liste-boissons');
+                
+                if (!sectionBoissons || !listeBoissons) {
+                    console.error('❌ Éléments HTML non trouvés');
+                    return;
+                }
                 
                 if (etablissementId && boissonsParEtablissement[etablissementId]) {
                     const etablissement = boissonsParEtablissement[etablissementId];
                     const boissons = etablissement.boissons;
+                    
+                    console.log('🔍 Établissement trouvé:', etablissement);
+                    console.log('🔍 Boissons:', boissons);
                     
                     if (boissons && boissons.length > 0) {
                         // Afficher la section
@@ -451,6 +513,8 @@
                             sectionBoissons.style.transform = 'translateY(0)';
                         }, 100);
                         
+                        console.log('✅ Boissons affichées avec succès');
+                        
                     } else {
                         // Aucune boisson disponible
                         sectionBoissons.style.display = 'block';
@@ -460,27 +524,36 @@
                                 <p>Aucune boisson enregistrée pour cet établissement</p>
                             </div>
                         `;
+                        console.log('⚠️ Aucune boisson disponible');
                     }
                 } else {
                     // Masquer la section si aucun établissement sélectionné
                     sectionBoissons.style.display = 'none';
+                    console.log('❌ Établissement non trouvé ou pas de données');
                 }
             }
             
             // Écouter les changements de sélection d'établissement
             document.addEventListener('DOMContentLoaded', function() {
+                console.log('🔍 DOM chargé, initialisation...');
+                
                 const serviceSelect = document.getElementById('service-select');
+                console.log('🔍 Select service trouvé:', serviceSelect);
                 
                 if (serviceSelect) {
                     // Afficher les boissons de l'établissement sélectionné par défaut
                     if (serviceSelect.value) {
+                        console.log('🔍 Établissement sélectionné par défaut:', serviceSelect.value);
                         afficherBoissons(serviceSelect.value);
                     }
                     
                     // Écouter les changements
                     serviceSelect.addEventListener('change', function() {
+                        console.log('🔍 Changement d\'établissement:', this.value);
                         afficherBoissons(this.value);
                     });
+                } else {
+                    console.error('❌ Select service non trouvé');
                 }
             });
         </script>

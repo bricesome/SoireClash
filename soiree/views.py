@@ -29,6 +29,7 @@ from .forms import (
 )
 from .utils import is_pseudo_unique, generate_random_password, ensure_media_directories, copy_file_to_service, save_recorded_video
 from .forms import CustomUserRegistrationForm
+import json
 
 
 def is_admin(user):
@@ -248,12 +249,34 @@ def inscription_participant(request):
                         pseudo=pseudo,
                         nom=form.cleaned_data['nom'],
                         prenom=form.cleaned_data['prenom'],
-                        tel=''  # Sera rempli plus tard
+                        tel=None  # Le téléphone sera rempli plus tard
                     )
                     
                     # Créer le participant
                     participant = form.save(commit=False)
                     participant.user = user
+                    
+                    # Traiter la photo si elle existe
+                    if form.cleaned_data.get('photo'):
+                        try:
+                            # Importer la fonction de traitement des photos
+                            from .utils import process_participant_photo, ensure_photo_directories
+                            
+                            # S'assurer que les dossiers photos existent
+                            ensure_photo_directories()
+                            
+                            # Traiter et redimensionner la photo
+                            processed_photo = process_participant_photo(form.cleaned_data['photo'])
+                            if processed_photo:
+                                participant.photo = processed_photo
+                                print(f"✅ Photo du participant traitée et redimensionnée: {processed_photo.name}")
+                            else:
+                                print("⚠️ Échec du traitement de la photo, utilisation de l'original")
+                        except Exception as e:
+                            print(f"❌ Erreur lors du traitement de la photo: {e}")
+                            # En cas d'erreur, utiliser la photo originale
+                            participant.photo = form.cleaned_data['photo']
+                    
                     participant.save()
                     
                     # Connecter automatiquement l'utilisateur
@@ -282,8 +305,8 @@ def inscription_participant(request):
                         """
                         
                         send_mail(
-                            subject=subject,
-                            message=message,
+                            subject,
+                            message,
                             from_email=settings.DEFAULT_FROM_EMAIL,
                             recipient_list=[email],
                             fail_silently=False,
@@ -333,6 +356,9 @@ def inscription_participant(request):
                 'boissons': list(types_boissons.values('categorie', 'prix_vente')),
                 'systeme': 'prix_fixes'
             }
+    
+    # Débogage : afficher les données des boissons
+    print(f"🔍 Données des boissons préparées: {boissons_par_etablissement}")
     
     context = {
         'form': form,
@@ -1019,3 +1045,89 @@ def api_consommations(request):
         'consommations': list(consommations),
         'periode': periode,
     })
+
+
+def test_boissons(request):
+    """Vue de test pour vérifier les données des boissons"""
+    # Récupérer tous les établissements avec leurs boissons
+    services = Service.objects.filter(actif=True, types_boissons_enregistres=True)
+    
+    boissons_par_etablissement = {}
+    for service in services:
+        types_boissons = TypeBoisson.objects.filter(service=service, actif=True).order_by('categorie')
+        
+        if service.type == 'boite':
+            boissons_par_etablissement[service.id] = {
+                'nom': service.nom,
+                'type': service.get_type_display(),
+                'type_etablissement': 'boite',
+                'boissons': list(types_boissons.values('categorie')),
+                'systeme': 'enchères'
+            }
+        else:
+            boissons_par_etablissement[service.id] = {
+                'nom': service.nom,
+                'type': service.get_type_display(),
+                'type_etablissement': 'maquis',
+                'boissons': list(types_boissons.values('categorie', 'prix_vente')),
+                'systeme': 'prix_fixes'
+            }
+    
+    context = {
+        'services': services,
+        'boissons_par_etablissement': boissons_par_etablissement,
+        'json_data': json.dumps(boissons_par_etablissement, indent=2)
+    }
+    
+    return render(request, 'test_boissons.html', context)
+
+
+def test_gain_participant(request):
+    """Vue de test pour simuler un gain de participant et afficher une vidéo d'établissement"""
+    
+    # Simuler un gain de participant
+    gain_simule = {
+        'participant': {
+            'nom': 'Test Participant',
+            'pseudo': 'TestUser123',
+            'montant_gagne': 15000,
+            'etablissement': 'Club Test',
+            'date_gain': timezone.now().strftime('%d/%m/%Y à %H:%M'),
+            'type_trophee': 'Trophée du Jour'
+        },
+        'etablissement': {
+            'nom': 'Club Test',
+            'type': 'boite',
+            'localisation': 'Zone 4, Ouagadougou',
+            'description': 'Un établissement de test pour démontrer les fonctionnalités',
+            'video_url': '/media/videos/etablissements/video_3e96e0cc_video_enregistree_d0d0582a.webm'
+        },
+        'statistiques': {
+            'total_participants': 45,
+            'total_etablissements': 12,
+            'gain_moyen': 8500,
+            'gain_max': 25000
+        }
+    }
+    
+    # Récupérer une vraie vidéo d'établissement si elle existe
+    try:
+        service_avec_video = Service.objects.filter(
+            video_etablissement__isnull=False,
+            video_etablissement__gt=''
+        ).first()
+        
+        if service_avec_video and service_avec_video.video_etablissement:
+            gain_simule['etablissement']['video_url'] = service_avec_video.video_etablissement.url
+            gain_simule['etablissement']['nom'] = service_avec_video.nom
+            gain_simule['etablissement']['type'] = service_avec_video.type
+            gain_simule['etablissement']['localisation'] = service_avec_video.localisation
+    except Exception as e:
+        print(f"Erreur lors de la récupération de la vidéo: {e}")
+    
+    context = {
+        'gain_simule': gain_simule,
+        'titre_page': 'Test Gain Participant - Soirée Clash'
+    }
+    
+    return render(request, 'test_gain_participant.html', context)

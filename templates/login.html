@@ -23,7 +23,93 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.3);
       width: 100%;
       max-width: 400px;
+      position: relative;
+      overflow: hidden;
     }
+    
+    /* Animations cristal électrique */
+    .crystal-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    .crystal-shards {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      top: -50px;
+      left: 20%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: floatShards 8s infinite;
+    }
+    
+    .electric-arcs {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      top: 30%;
+      left: 50%;
+      background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, rgba(255,215,0,0) 70%);
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: floatArcs 10s infinite;
+    }
+    
+    .crystal-core {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      top: 60%;
+      left: 80%;
+      background: radial-gradient(circle, rgba(123,44,191,0.1) 0%, rgba(123,44,191,0) 70%);
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: pulseCore 6s infinite;
+    }
+    
+    .energy-pulses {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      top: 10%;
+      left: 10%;
+      background: radial-gradient(circle, rgba(0,255,0,0.05) 0%, rgba(0,255,0,0) 70%);
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: pulseEnergy 12s infinite;
+    }
+    
+    @keyframes floatShards {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+    
+    @keyframes floatArcs {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(10px) rotate(-5deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+    
+    @keyframes pulseCore {
+      0% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 0.5; }
+    }
+    
+    @keyframes pulseEnergy {
+      0% { transform: scale(0.8); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+      100% { transform: scale(0.8); opacity: 0.5; }
+    }
+    
     .logo {
       text-align: center;
       font-size: 2rem;
@@ -32,9 +118,29 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 2rem;
+      position: relative;
+      z-index: 1;
     }
+    
+    .crystal-title {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .crystal-char {
+      display: inline-block;
+      transition: transform 0.5s ease, text-shadow 0.3s ease;
+    }
+    
+    .crystal-title:hover .crystal-char {
+      transform: translateY(-5px);
+      text-shadow: 0 0 20px rgba(255,215,0,0.8);
+    }
+    
     .form-group {
       margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
     }
     .form-group label {
       display: block;
@@ -51,11 +157,13 @@
       color: #fff;
       font-size: 1rem;
       box-sizing: border-box;
+      transition: all 0.3s ease;
     }
     .form-group input:focus {
       outline: none;
       border-color: #FFD700;
       box-shadow: 0 0 10px rgba(255,215,0,0.3);
+      transform: translateY(-2px);
     }
     .btn-login {
       width: 100%;
@@ -68,6 +176,8 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
     }
     .btn-login:hover {
       transform: translateY(-2px);
@@ -76,14 +186,18 @@
     .links {
       text-align: center;
       margin-top: 1.5rem;
+      position: relative;
+      z-index: 1;
     }
     .links a {
       color: #FFD700;
       text-decoration: none;
       margin: 0 1rem;
+      transition: all 0.3s ease;
     }
     .links a:hover {
       text-decoration: underline;
+      text-shadow: 0 0 10px rgba(255,215,0,0.5);
     }
     .error-message {
       background: rgba(255,0,77,0.2);
@@ -93,12 +207,34 @@
       border-radius: 0.5rem;
       margin-bottom: 1.5rem;
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <div class="logo">SOIRÉE CLASH</div>
+    <div class="crystal-container">
+      <div class="crystal-shards"></div>
+      <div class="electric-arcs"></div>
+      <div class="crystal-core"></div>
+      <div class="energy-pulses"></div>
+    </div>
+    
+    <div class="logo crystal-title">
+      <span class="crystal-char" data-char="S">S</span>
+      <span class="crystal-char" data-char="O">O</span>
+      <span class="crystal-char" data-char="I">I</span>
+      <span class="crystal-char" data-char="R">R</span>
+      <span class="crystal-char" data-char="É">É</span>
+      <span class="crystal-char" data-char="E">E</span>
+      <span class="crystal-char" data-char=" "> </span>
+      <span class="crystal-char" data-char="C">C</span>
+      <span class="crystal-char" data-char="L">L</span>
+      <span class="crystal-char" data-char="A">A</span>
+      <span class="crystal-char" data-char="S">S</span>
+      <span class="crystal-char" data-char="H">H</span>
+    </div>
     
     {% if form.errors %}
     <div class="error-message">

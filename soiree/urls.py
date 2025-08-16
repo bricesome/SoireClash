@@ -30,4 +30,8 @@ urlpatterns = [
     # API endpoints
     path("api/classements/", views.api_classements, name='api_classements'),
     path("api/consommations/", views.api_consommations, name='api_consommations'),
+    
+    # Vue de test
+    path("test-boissons/", views.test_boissons, name='test_boissons'),
+    path("test-gain-participant/", views.test_gain_participant, name='test_gain_participant'),
 ]

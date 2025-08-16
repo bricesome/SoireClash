@@ -4,8 +4,42 @@
 
 {% block content %}
 <div class="hero-section">
-  <h1 class="page-title">🍺 Gestion des Consommations</h1>
-  <p class="page-subtitle">Enregistrez les consommations des participants de votre établissement</p>
+  <div class="crystal-container">
+    <div class="crystal-shards"></div>
+    <div class="electric-arcs"></div>
+    <div class="crystal-core"></div>
+    <div class="energy-pulses"></div>
+  </div>
+  
+  <h1 class="page-title crystal-title">
+    <span class="crystal-char" data-char="🍺">🍺</span>
+    <span class="crystal-char" data-char="G">G</span>
+    <span class="crystal-char" data-char="e">e</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char="t">t</span>
+    <span class="crystal-char" data-char="i">i</span>
+    <span class="crystal-char" data-char="o">o</span>
+    <span class="crystal-char" data-char="n">n</span>
+    <span class="crystal-char" data-char=" "> </span>
+    <span class="crystal-char" data-char="d">d</span>
+    <span class="crystal-char" data-char="e">e</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char=" "> </span>
+    <span class="crystal-char" data-char="C">C</span>
+    <span class="crystal-char" data-char="o">o</span>
+    <span class="crystal-char" data-char="n">n</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char="o">o</span>
+    <span class="crystal-char" data-char="m">m</span>
+    <span class="crystal-char" data-char="m">m</span>
+    <span class="crystal-char" data-char="a">a</span>
+    <span class="crystal-char" data-char="t">t</span>
+    <span class="crystal-char" data-char="i">i</span>
+    <span class="crystal-char" data-char="o">o</span>
+    <span class="crystal-char" data-char="n">n</span>
+    <span class="crystal-char" data-char="s">s</span>
+  </h1>
+  <p class="page-subtitle crystal-subtitle">Enregistrez les consommations des participants de votre établissement</p>
 </div>
 
 <!-- Informations de l'établissement -->
@@ -211,6 +245,58 @@
   background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
   border-radius: 1rem;
   margin-bottom: 2rem;
+  position: relative; /* Added for crystal animation positioning */
+  overflow: hidden; /* Added for crystal animation overflow */
+}
+
+.crystal-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allow clicks to pass through */
+  z-index: -1; /* Ensure it's behind other content */
+}
+
+.crystal-shards, .electric-arcs, .crystal-core, .energy-pulses {
+  position: absolute;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: pulse 8s infinite;
+}
+
+.crystal-shards {
+  width: 100px;
+  height: 100px;
+  top: -50px;
+  left: 20%;
+  animation-delay: -2s;
+}
+
+.electric-arcs {
+  width: 200px;
+  height: 200px;
+  top: 30%;
+  left: 50%;
+  animation-delay: -4s;
+}
+
+.crystal-core {
+  width: 150px;
+  height: 150px;
+  top: 60%;
+  left: 80%;
+  animation-delay: -6s;
+}
+
+.energy-pulses {
+  width: 300px;
+  height: 300px;
+  top: 10%;
+  left: 10%;
+  animation-delay: -8s;
 }
 
 .page-title {
@@ -222,7 +308,32 @@
   margin-bottom: 1rem;
 }
 
+.crystal-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #FF004D, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+  position: relative; /* Added for crystal animation positioning */
+  overflow: hidden; /* Added for crystal animation overflow */
+}
+
+.crystal-char {
+  display: inline-block;
+  transition: transform 0.5s ease;
+}
+
+.crystal-title:hover .crystal-char {
+  transform: translateY(-10px);
+}
+
 .page-subtitle {
+  font-size: 1.2rem;
+  color: #FFD700;
+}
+
+.crystal-subtitle {
   font-size: 1.2rem;
   color: #FFD700;
 }
@@ -590,6 +701,21 @@
   .preview-item {
     flex-direction: column;
     gap: 0.5rem;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.7;
   }
 }
 </style>

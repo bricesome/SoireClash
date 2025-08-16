@@ -86,6 +86,17 @@
           {% endif %}
           
           <div class="trophee-content">
+            <!-- Photo du gagnant -->
+            <div class="trophee-winner-photo">
+              {% if trophee.gagnant.photo %}
+                <img src="{{ trophee.gagnant.photo.url }}" alt="Photo de {{ trophee.gagnant.pseudo }}" class="winner-photo">
+              {% else %}
+                <div class="winner-photo-placeholder">
+                  <i class="fas fa-user"></i>
+                </div>
+              {% endif %}
+            </div>
+            
             <div class="trophee-winner">
               {{ trophee.gagnant.nom }} {{ trophee.gagnant.prenom }}
             </div>
@@ -122,6 +133,17 @@
               <div class="trophee-type">{{ trophee.get_type_trophee_display }}</div>
             </div>
             <div class="trophee-content">
+              <!-- Photo du gagnant -->
+              <div class="trophee-winner-photo">
+                {% if trophee.gagnant.photo %}
+                  <img src="{{ trophee.gagnant.photo.url }}" alt="Photo de {{ trophee.gagnant.pseudo }}" class="winner-photo">
+                {% else %}
+                  <div class="winner-photo-placeholder">
+                    <i class="fas fa-user"></i>
+                  </div>
+                {% endif %}
+              </div>
+              
               <div class="trophee-winner">{{ trophee.gagnant.nom }} {{ trophee.gagnant.prenom }}</div>
               <div class="trophee-pseudo">dit "{{ trophee.gagnant.pseudo }}"</div>
               <div class="trophee-etablissement">{{ trophee.etablissement.nom }}</div>
@@ -149,6 +171,17 @@
               <div class="trophee-type">{{ trophee.get_type_trophee_display }}</div>
             </div>
             <div class="trophee-content">
+              <!-- Photo du gagnant -->
+              <div class="trophee-winner-photo">
+                {% if trophee.gagnant.photo %}
+                  <img src="{{ trophee.gagnant.photo.url }}" alt="Photo de {{ trophee.gagnant.pseudo }}" class="winner-photo">
+                {% else %}
+                  <div class="winner-photo-placeholder">
+                    <i class="fas fa-user"></i>
+                  </div>
+                {% endif %}
+              </div>
+              
               <div class="trophee-winner">{{ trophee.gagnant.nom }} {{ trophee.gagnant.prenom }}</div>
               <div class="trophee-pseudo">dit "{{ trophee.gagnant.pseudo }}"</div>
               <div class="trophee-etablissement">{{ trophee.etablissement.nom }}</div>
@@ -166,7 +199,7 @@
 </div>
 
 <!-- Informations sur les trophées -->
-<div class="section info-section">
+<div class="section info-section trophee-info-section">
   <h2 class="section-title">Comment gagner un trophée ?</h2>
   <div class="info-grid">
     <div class="info-card">
@@ -439,6 +472,41 @@
     font-size: 2.5rem;
     color: #FFD700;
     text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+  }
+  
+  /* Styles pour les photos des gagnants */
+  .trophee-winner-photo {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .winner-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #FFD700;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .winner-photo:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
+  }
+  
+  .winner-photo-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #FF004D, #FFD700);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2rem;
+    border: 3px solid #FFD700;
+    margin: 0 auto;
   }
 }
 </style>

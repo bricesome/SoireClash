@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titre_page }}{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+  <div class="crystal-container">
+    <div class="crystal-shards"></div>
+    <div class="electric-arcs"></div>
+    <div class="crystal-core"></div>
+    <div class="energy-pulses"></div>
+  </div>
+  
+  <h1 class="page-title crystal-title">
+    <span class="crystal-char" data-char="🎉">🎉</span>
+    <span class="crystal-char" data-char="T">T</span>
+    <span class="crystal-char" data-char="e">e</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char="t">t</span>
+    <span class="crystal-char" data-char=" "> </span>
+    <span class="crystal-char" data-char="G">G</span>
+    <span class="crystal-char" data-char="a">a</span>
+    <span class="crystal-char" data-char="i">i</span>
+    <span class="crystal-char" data-char="n">n</span>
+  </h1>
+  <p class="lead text-center mb-4 crystal-subtitle">Simulation d'un gain de participant avec vidéo d'établissement</p>
+</div>
+
+<div class="container mt-5">
+  <!-- Section Gain du Participant -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="card gain-card">
+        <div class="card-header bg-success text-white text-center">
+          <h2 class="mb-0">
+            <i class="fas fa-trophy me-2"></i>
+            🏆 Félicitations ! 🏆
+          </h2>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="participant-info">
+                <h3 class="text-primary">{{ gain_simule.participant.nom }}</h3>
+                <p class="text-muted">Pseudo: <strong>{{ gain_simule.participant.pseudo }}</strong></p>
+                <div class="gain-amount">
+                  <span class="amount-label">Gain:</span>
+                  <span class="amount-value">{{ gain_simule.participant.montant_gagne|floatformat:0 }} FCFA</span>
+                </div>
+                <p class="text-success">
+                  <i class="fas fa-calendar me-2"></i>
+                  {{ gain_simule.participant.date_gain }}
+                </p>
+                <p class="text-info">
+                  <i class="fas fa-medal me-2"></i>
+                  {{ gain_simule.participant.type_trophee }}
+                </p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="etablissement-info">
+                <h4 class="text-warning">Établissement Gagnant</h4>
+                <p><strong>{{ gain_simule.etablissement.nom }}</strong></p>
+                <p class="badge bg-primary">{{ gain_simule.etablissement.type|title }}</p>
+                <p><i class="fas fa-map-marker-alt me-2"></i>{{ gain_simule.etablissement.localisation }}</p>
+                <p class="text-muted">{{ gain_simule.etablissement.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Vidéo de l'Établissement -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="card video-card">
+        <div class="card-header bg-primary text-white text-center">
+          <h3 class="mb-0">
+            <i class="fas fa-video me-2"></i>
+            🎥 Vidéo de l'Établissement
+          </h3>
+        </div>
+        <div class="card-body">
+          <div class="video-container">
+            <video 
+              controls 
+              class="etablissement-video"
+              preload="metadata">
+              <source src="{{ gain_simule.etablissement.video_url }}" type="video/webm">
+              <source src="{{ gain_simule.etablissement.video_url }}" type="video/mp4">
+              Votre navigateur ne supporte pas la lecture de vidéos.
+            </video>
+          </div>
+          <div class="video-info mt-3">
+            <p class="text-center">
+              <strong>{{ gain_simule.etablissement.nom }}</strong> - 
+              Découvrez l'ambiance et les services de cet établissement exceptionnel !
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Statistiques -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="card stats-card">
+        <div class="card-header bg-info text-white text-center">
+          <h3 class="mb-0">
+            <i class="fas fa-chart-bar me-2"></i>
+            📊 Statistiques Générales
+          </h3>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-md-3">
+              <div class="stat-item">
+                <div class="stat-number">{{ gain_simule.statistiques.total_participants }}</div>
+                <div class="stat-label">Participants Actifs</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-item">
+                <div class="stat-number">{{ gain_simule.statistiques.total_etablissements }}</div>
+                <div class="stat-label">Établissements</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-item">
+                <div class="stat-number">{{ gain_simule.statistiques.gain_moyen|floatformat:0 }}</div>
+                <div class="stat-label">Gain Moyen (FCFA)</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stat-item">
+                <div class="stat-number">{{ gain_simule.statistiques.gain_max|floatformat:0 }}</div>
+                <div class="stat-label">Gain Max (FCFA)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Actions -->
+  <div class="row mb-5">
+    <div class="col-12 text-center">
+      <div class="action-buttons">
+        <a href="{% url 'app:classements' %}" class="btn btn-primary btn-lg me-3">
+          <i class="fas fa-trophy me-2"></i>
+          Voir les Classements
+        </a>
+        <a href="{% url 'app:trophees' %}" class="btn btn-warning btn-lg me-3">
+          <i class="fas fa-medal me-2"></i>
+          Voir les Trophées
+        </a>
+        <a href="{% url 'app:etablissements' %}" class="btn btn-info btn-lg">
+          <i class="fas fa-building me-2"></i>
+          Voir les Établissements
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Styles spécifiques pour la page de test gain */
+.gain-card {
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.gain-card .card-header {
+  background: linear-gradient(45deg, #28a745, #20c997) !important;
+  border: none;
+}
+
+.gain-amount {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.amount-label {
+  font-size: 1.2rem;
+  color: #6c757d;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.amount-value {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #28a745;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+.video-card {
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.etablissement-video {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stats-card {
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.stat-item {
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #17a2b8;
+  margin-bottom: 10px;
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.action-buttons {
+  margin-top: 30px;
+}
+
+.action-buttons .btn {
+  border-radius: 25px;
+  padding: 12px 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.action-buttons .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.participant-info h3,
+.etablissement-info h4 {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.badge {
+  font-size: 0.9rem;
+  padding: 8px 16px;
+}
+
+/* Animations pour les cartes */
+.gain-card,
+.video-card,
+.stats-card {
+  animation: card-float 6s ease-in-out infinite;
+}
+
+.gain-card { animation-delay: 0s; }
+.video-card { animation-delay: 1s; }
+.stats-card { animation-delay: 2s; }
+
+@keyframes card-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(0.5deg); }
+  50% { transform: translateY(-5px) rotate(0deg); }
+  75% { transform: translateY(-3px) rotate(-0.5deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .amount-value {
+    font-size: 2rem;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+  
+  .action-buttons .btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+}
+</style>
+{% endblock %}

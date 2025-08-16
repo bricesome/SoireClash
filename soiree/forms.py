@@ -75,7 +75,7 @@ class CustomUserRegistrationForm(UserCreationForm):
                 pseudo=user.username,
                 nom=user.last_name,
                 prenom=user.first_name,
-                tel=''  # Sera rempli plus tard
+                tel=None  # Le téléphone sera rempli plus tard
             )
         
         return user
@@ -159,7 +159,7 @@ class ParticipantForm(forms.ModelForm):
     
     class Meta:
         model = Participant
-        fields = ['pseudo', 'nom', 'prenom', 'service']
+        fields = ['pseudo', 'nom', 'prenom', 'service', 'photo']
         widgets = {
             'pseudo': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -176,6 +176,12 @@ class ParticipantForm(forms.ModelForm):
             'service': forms.Select(attrs={
                 'class': 'form-control',
                 'id': 'service-select'
+            }),
+            'photo': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*',
+                'id': 'photo-upload',
+                'placeholder': 'Votre photo (optionnel)'
             })
         }
 

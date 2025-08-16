@@ -4,8 +4,51 @@
 
 {% block content %}
 <div class="hero-section">
-  <h1 class="page-title">🏪 Gestion des Établissements</h1>
-  <p class="page-subtitle">Gérez vos établissements et leurs informations</p>
+  <div class="crystal-container">
+    <div class="crystal-shards"></div>
+    <div class="electric-arcs"></div>
+    <div class="crystal-core"></div>
+    <div class="energy-pulses"></div>
+  </div>
+  
+  <h1 class="page-title crystal-title">
+    <span class="crystal-char" data-char="🏪">🏪</span>
+    <span class="crystal-char" data-char="G">G</span>
+    <span class="crystal-char" data-char="e">e</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char="t">t</span>
+    <span class="crystal-char" data-char="i">i</span>
+    <span class="crystal-char" data-char="o">o</span>
+    <span class="crystal-char" data-char="n">n</span>
+    <span class="crystal-char" data-char=" "> </span>
+    <span class="crystal-char" data-char="d">d</span>
+    <span class="crystal-char" data-char="e">e</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char=" "> </span>
+    <span class="crystal-char" data-char="É">É</span>
+    <span class="crystal-char" data-char="t">t</span>
+    <span class="crystal-char" data-char="a">a</span>
+    <span class="crystal-char" data-char="b">b</span>
+    <span class="crystal-char" data-char="l">l</span>
+    <span class="crystal-char" data-char="i">i</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char="e">e</span>
+    <span class="crystal-char" data-char="m">m</span>
+    <span class="crystal-char" data-char="e">e</span>
+    <span class="crystal-char" data-char="n">n</span>
+    <span class="crystal-char" data-char="t">t</span>
+    <span class="crystal-char" data-char="s">s</span>
+  </h1>
+  
+  <p class="page-subtitle crystal-subtitle">
+    <span class="subtitle-crystal">Gérez</span>
+    <span class="subtitle-crystal">vos</span>
+    <span class="subtitle-crystal">établissements</span>
+    <span class="subtitle-crystal">et</span>
+    <span class="subtitle-crystal">leurs</span>
+    <span class="subtitle-crystal">informations</span>
+  </p>
 </div>
 
 <!-- Liste des établissements -->
@@ -200,6 +243,82 @@
   background: linear-gradient(135deg, rgba(255,0,77,0.1) 0%, rgba(255,215,0,0.1) 100%);
   border-radius: 1rem;
   margin-bottom: 2rem;
+  position: relative; /* Added for crystal animation positioning */
+  overflow: hidden; /* Added for crystal animation overflow */
+}
+
+.crystal-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allow clicks to pass through */
+  z-index: -1; /* Ensure it's behind other content */
+}
+
+.crystal-shards {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+  animation: floatShards 15s infinite linear;
+}
+
+.electric-arcs {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%);
+  animation: floatArcs 10s infinite linear;
+}
+
+.crystal-core {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulseCore 5s infinite ease-in-out;
+}
+
+.energy-pulses {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%);
+  animation: pulseEnergy 8s infinite ease-in-out;
+}
+
+@keyframes floatShards {
+  0% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(5deg); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(10px) rotate(-5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+@keyframes floatArcs {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(10deg); }
+  50% { transform: scale(1) rotate(0deg); }
+  75% { transform: scale(1.1) rotate(-10deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes pulseCore {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+}
+
+@keyframes pulseEnergy {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 0.8; }
 }
 
 .page-title {
@@ -211,9 +330,47 @@
   margin-bottom: 1rem;
 }
 
+.crystal-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #FF004D, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+  position: relative; /* Added for crystal animation positioning */
+  overflow: hidden; /* Added for crystal animation overflow */
+}
+
+.crystal-char {
+  display: inline-block;
+  transform-origin: center;
+  transition: transform 0.1s ease-in-out;
+}
+
+.crystal-title:hover .crystal-char {
+  transform: scale(1.1);
+}
+
 .page-subtitle {
   font-size: 1.2rem;
   color: #FFD700;
+}
+
+.crystal-subtitle {
+  font-size: 1.2rem;
+  color: #FFD700;
+  position: relative; /* Added for crystal animation positioning */
+  overflow: hidden; /* Added for crystal animation overflow */
+}
+
+.subtitle-crystal {
+  display: inline-block;
+  transform-origin: center;
+  transition: transform 0.1s ease-in-out;
+}
+
+.crystal-subtitle:hover .subtitle-crystal {
+  transform: scale(1.1);
 }
 
 .section {

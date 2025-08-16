@@ -38,6 +38,101 @@
   </p>
 </div>
 
+<!-- Classement des participants -->
+<div class="section">
+  <h2 class="section-title">Classement des Participants</h2>
+  
+  <!-- Top participants maquis -->
+  <div class="classement-category">
+    <h3 class="category-title">👥 Top Participants - Maquis</h3>
+    <div class="participants-grid">
+      {% if top_participants_maquis %}
+        {% for participant in top_participants_maquis %}
+          <div class="participant-card {% if forloop.counter <= 3 %}top-{{ forloop.counter }}{% endif %}">
+            <div class="participant-rank">
+              <span class="rank-number">{{ forloop.counter }}</span>
+              {% if forloop.counter == 1 %}
+                <div class="rank-trophy">🥇</div>
+              {% elif forloop.counter == 2 %}
+                <div class="rank-trophy">🥈</div>
+              {% elif forloop.counter == 3 %}
+                <div class="rank-trophy">🥉</div>
+              {% endif %}
+            </div>
+            <div class="participant-avatar">
+              {% if participant.user.profile.avatar %}
+                <img src="{{ participant.user.profile.avatar.url }}" alt="Avatar de {{ participant.pseudo }}">
+              {% else %}
+                <div class="avatar-placeholder">{{ participant.pseudo|first|upper }}</div>
+              {% endif %}
+            </div>
+            <div class="participant-info">
+              <div class="participant-pseudo">{{ participant.pseudo }}</div>
+              <div class="participant-name">{{ participant.nom }} {{ participant.prenom }}</div>
+              <div class="participant-etablissement">{{ participant.service.nom }}</div>
+            </div>
+            <div class="participant-score">
+              <div class="score-amount">{{ participant.total_depenses|default:0|floatformat:0 }} FCFA</div>
+              <div class="score-label">Total dépenses</div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">👥</div>
+          <h3>Aucun participant maquis classé</h3>
+          <p>Aucun participant de maquis n'a encore de consommations enregistrées.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <!-- Top participants boîtes de nuit -->
+  <div class="classement-category">
+    <h3 class="category-title">👥 Top Participants - Boîtes de Nuit</h3>
+    <div class="participants-grid">
+      {% if top_participants_boites %}
+        {% for participant in top_participants_boites %}
+          <div class="participant-card {% if forloop.counter <= 3 %}top-{{ forloop.counter }}{% endif %}">
+            <div class="participant-rank">
+              <span class="rank-number">{{ forloop.counter }}</span>
+              {% if forloop.counter == 1 %}
+                <div class="rank-trophy">🥇</div>
+              {% elif forloop.counter == 2 %}
+                <div class="rank-trophy">🥈</div>
+              {% elif forloop.counter == 3 %}
+                <div class="rank-trophy">🥉</div>
+              {% endif %}
+            </div>
+            <div class="participant-avatar">
+              {% if participant.user.profile.avatar %}
+                <img src="{{ participant.user.profile.avatar.url }}" alt="Avatar de {{ participant.pseudo }}">
+              {% else %}
+                <div class="avatar-placeholder">{{ participant.pseudo|first|upper }}</div>
+              {% endif %}
+            </div>
+            <div class="participant-info">
+              <div class="participant-pseudo">{{ participant.pseudo }}</div>
+              <div class="participant-name">{{ participant.nom }} {{ participant.prenom }}</div>
+              <div class="participant-etablissement">{{ participant.service.nom }}</div>
+            </div>
+            <div class="participant-score">
+              <div class="score-amount">{{ participant.total_depenses|default:0|floatformat:0 }} FCFA</div>
+              <div class="score-label">Total dépenses</div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">👥</div>
+          <h3>Aucun participant boîte de nuit classé</h3>
+          <p>Aucun participant de boîte de nuit n'a encore de consommations enregistrées.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
 <!-- Classement des établissements -->
 <div class="section">
   <h2 class="section-title">Classement des Établissements</h2>
@@ -153,101 +248,6 @@
           <div class="empty-icon">🎉</div>
           <h3>Aucune boîte de nuit classée</h3>
           <p>Aucune boîte de nuit n'a encore de ventes enregistrées.</p>
-        </div>
-      {% endif %}
-    </div>
-  </div>
-</div>
-
-<!-- Classement des participants -->
-<div class="section">
-  <h2 class="section-title">Classement des Participants</h2>
-  
-  <!-- Top participants maquis -->
-  <div class="classement-category">
-    <h3 class="category-title">👥 Top Participants - Maquis</h3>
-    <div class="participants-grid">
-      {% if top_participants_maquis %}
-        {% for participant in top_participants_maquis %}
-          <div class="participant-card {% if forloop.counter <= 3 %}top-{{ forloop.counter }}{% endif %}">
-            <div class="participant-rank">
-              <span class="rank-number">{{ forloop.counter }}</span>
-              {% if forloop.counter == 1 %}
-                <div class="rank-trophy">🥇</div>
-              {% elif forloop.counter == 2 %}
-                <div class="rank-trophy">🥈</div>
-              {% elif forloop.counter == 3 %}
-                <div class="rank-trophy">🥉</div>
-              {% endif %}
-            </div>
-            <div class="participant-avatar">
-              {% if participant.user.profile.avatar %}
-                <img src="{{ participant.user.profile.avatar.url }}" alt="Avatar de {{ participant.pseudo }}">
-              {% else %}
-                <div class="avatar-placeholder">{{ participant.pseudo|first|upper }}</div>
-              {% endif %}
-            </div>
-            <div class="participant-info">
-              <div class="participant-pseudo">{{ participant.pseudo }}</div>
-              <div class="participant-name">{{ participant.nom }} {{ participant.prenom }}</div>
-              <div class="participant-etablissement">{{ participant.service.nom }}</div>
-            </div>
-            <div class="participant-score">
-              <div class="score-amount">{{ participant.total_depenses|default:0|floatformat:0 }} FCFA</div>
-              <div class="score-label">Total dépenses</div>
-            </div>
-          </div>
-        {% endfor %}
-      {% else %}
-        <div class="empty-state">
-          <div class="empty-icon">👥</div>
-          <h3>Aucun participant maquis classé</h3>
-          <p>Aucun participant de maquis n'a encore de consommations enregistrées.</p>
-        </div>
-      {% endif %}
-    </div>
-  </div>
-  
-  <!-- Top participants boîtes de nuit -->
-  <div class="classement-category">
-    <h3 class="category-title">👥 Top Participants - Boîtes de Nuit</h3>
-    <div class="participants-grid">
-      {% if top_participants_boites %}
-        {% for participant in top_participants_boites %}
-          <div class="participant-card {% if forloop.counter <= 3 %}top-{{ forloop.counter }}{% endif %}">
-            <div class="participant-rank">
-              <span class="rank-number">{{ forloop.counter }}</span>
-              {% if forloop.counter == 1 %}
-                <div class="rank-trophy">🥇</div>
-              {% elif forloop.counter == 2 %}
-                <div class="rank-trophy">🥈</div>
-              {% elif forloop.counter == 3 %}
-                <div class="rank-trophy">🥉</div>
-              {% endif %}
-            </div>
-            <div class="participant-avatar">
-              {% if participant.user.profile.avatar %}
-                <img src="{{ participant.user.profile.avatar.url }}" alt="Avatar de {{ participant.pseudo }}">
-              {% else %}
-                <div class="avatar-placeholder">{{ participant.pseudo|first|upper }}</div>
-              {% endif %}
-            </div>
-            <div class="participant-info">
-              <div class="participant-pseudo">{{ participant.pseudo }}</div>
-              <div class="participant-name">{{ participant.nom }} {{ participant.prenom }}</div>
-              <div class="participant-etablissement">{{ participant.service.nom }}</div>
-            </div>
-            <div class="participant-score">
-              <div class="score-amount">{{ participant.total_depenses|default:0|floatformat:0 }} FCFA</div>
-              <div class="score-label">Total dépenses</div>
-            </div>
-          </div>
-        {% endfor %}
-      {% else %}
-        <div class="empty-state">
-          <div class="empty-icon">👥</div>
-          <h3>Aucun participant boîte de nuit classé</h3>
-          <p>Aucun participant de boîte de nuit n'a encore de consommations enregistrées.</p>
         </div>
       {% endif %}
     </div>

@@ -10,11 +10,12 @@
   pointer-events: none;
   overflow: hidden;
   transition: opacity 0.5s ease-out;
+  opacity: 0.8; /* Plus visible par défaut */
 }
 
 /* Animation discrete qui ne cache pas le contenu */
 .crystal-container.discrete {
-  opacity: 0.3;
+  opacity: 0.6;
 }
 
 .crystal-container.discrete .crystal-shards {
@@ -44,6 +45,7 @@
     linear-gradient(-45deg, transparent 40%, #FFD700 40%, #FFD700 60%, transparent 60%);
   background-size: 30px 30px; /* Taille réduite */
   animation: shards-rotate 10s linear infinite;
+  opacity: 0.7; /* Plus visible */
 }
 
 @keyframes shards-rotate {
@@ -66,7 +68,7 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 2px solid transparent;
+  border: 3px solid transparent; /* Bordure plus épaisse */
   border-radius: 50%;
   animation: electric-pulse 2s ease-in-out infinite;
 }
@@ -86,13 +88,13 @@
 @keyframes electric-pulse {
   0%, 100% { 
     transform: scale(1) rotate(0deg); 
-    opacity: 0.3;
-    filter: drop-shadow(0 0 10px currentColor);
+    opacity: 0.6;
+    filter: drop-shadow(0 0 15px currentColor);
   }
   50% { 
-    transform: scale(1.2) rotate(180deg); 
+    transform: scale(1.3) rotate(180deg); 
     opacity: 1;
-    filter: drop-shadow(0 0 30px currentColor);
+    filter: drop-shadow(0 0 40px currentColor);
   }
 }
 
@@ -101,17 +103,18 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80px; /* Taille réduite */
-  height: 80px; /* Taille réduite */
+  width: 100px; /* Taille augmentée */
+  height: 100px; /* Taille augmentée */
   background: radial-gradient(circle, #FFD700 0%, #FF004D 30%, #00C2FF 70%, transparent 100%);
   border-radius: 50%;
   animation: core-vibrate 0.5s ease-in-out infinite;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); /* Ombre réduite */
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.9); /* Ombre plus visible */
+  opacity: 0.9; /* Plus visible */
 }
 
 @keyframes core-vibrate {
   0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.1); }
+  50% { transform: translate(-50%, -50%) scale(1.2); }
 }
 
 .energy-pulses {
@@ -124,11 +127,12 @@
 .energy-pulses::after {
   content: '';
   position: absolute;
-  width: 4px; /* Taille réduite */
-  height: 4px; /* Taille réduite */
+  width: 6px; /* Taille augmentée */
+  height: 6px; /* Taille augmentée */
   background: #FFD700;
   border-radius: 50%;
   animation: energy-bounce 4s ease-in-out infinite;
+  box-shadow: 0 0 15px #FFD700; /* Ombre ajoutée */
 }
 
 .energy-pulses::before {
@@ -144,8 +148,8 @@
 }
 
 @keyframes energy-bounce {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
-  50% { transform: translateY(-30px) scale(1.8); opacity: 1; }
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+  50% { transform: translateY(-40px) scale(2); opacity: 1; }
 }
 
 /* Titre cristal */
@@ -690,6 +694,244 @@
   }
 }
 
+/* ===== 4. ANIMATIONS SPÉCIALES POUR LES SECTIONS D'INFORMATIONS ===== */
+
+/* Section Informations Importantes */
+.info-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.info-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, 
+    rgba(255, 0, 77, 0.05) 0%, 
+    rgba(255, 215, 0, 0.05) 25%, 
+    rgba(0, 194, 255, 0.05) 50%, 
+    rgba(123, 44, 191, 0.05) 75%, 
+    rgba(255, 0, 77, 0.05) 100%);
+  background-size: 400% 400%;
+  animation: info-gradient-shift 8s ease infinite;
+  z-index: -1;
+}
+
+@keyframes info-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Cartes d'information animées */
+.info-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  animation: info-card-float 6s ease-in-out infinite;
+}
+
+.info-card:nth-child(1) { animation-delay: 0s; }
+.info-card:nth-child(2) { animation-delay: 1s; }
+.info-card:nth-child(3) { animation-delay: 2s; }
+.info-card:nth-child(4) { animation-delay: 3s; }
+
+@keyframes info-card-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-5px) rotate(0.5deg); }
+  50% { transform: translateY(-8px) rotate(0deg); }
+  75% { transform: translateY(-5px) rotate(-0.5deg); }
+}
+
+.info-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 15px 35px rgba(255, 215, 0, 0.3);
+}
+
+/* Icônes d'information animées */
+.info-icon {
+  position: relative;
+  animation: info-icon-pulse 3s ease-in-out infinite;
+}
+
+.info-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, currentColor 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0.3;
+  animation: info-icon-glow 2s ease-in-out infinite;
+}
+
+@keyframes info-icon-pulse {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(5deg); }
+}
+
+@keyframes info-icon-glow {
+  0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+/* Section Comment fonctionnent les classements */
+.classement-category {
+  position: relative;
+  overflow: hidden;
+}
+
+.classement-category::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #FFD700, #00C2FF, transparent);
+  animation: classement-line-sweep 4s ease-in-out infinite;
+}
+
+@keyframes classement-line-sweep {
+  0% { left: -100%; opacity: 0; }
+  50% { left: 0%; opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+/* Cartes de participants animées */
+.participant-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.participant-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 215, 0, 0.1) 50%, 
+    transparent 100%);
+  transition: left 0.6s ease;
+}
+
+.participant-card:hover::before {
+  left: 100%;
+}
+
+.participant-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(123, 44, 191, 0.4);
+}
+
+/* Top 3 participants avec animations spéciales */
+.participant-card.top-1 {
+  animation: top1-glow 2s ease-in-out infinite;
+}
+
+.participant-card.top-2 {
+  animation: top2-glow 2s ease-in-out infinite;
+}
+
+.participant-card.top-3 {
+  animation: top3-glow 2s ease-in-out infinite;
+}
+
+@keyframes top1-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 8px 25px rgba(255, 215, 0, 0.3);
+    border-color: #FFD700;
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 8px 35px rgba(255, 215, 0, 0.5);
+    border-color: #FFA500;
+  }
+}
+
+@keyframes top2-glow {
+  0%, 100% { 
+    box-shadow: 0 0 15px rgba(192, 192, 192, 0.5), 0 8px 20px rgba(192, 192, 192, 0.3);
+    border-color: #C0C0C0;
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(192, 192, 192, 0.8), 0 8px 30px rgba(192, 192, 192, 0.5);
+    border-color: #A0A0A0;
+  }
+}
+
+@keyframes top3-glow {
+  0%, 100% { 
+    box-shadow: 0 0 15px rgba(205, 127, 50, 0.5), 0 8px 20px rgba(205, 127, 50, 0.3);
+    border-color: #CD7F32;
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(205, 127, 50, 0.8), 0 8px 30px rgba(205, 127, 50, 0.5);
+    border-color: #B8860B;
+  }
+}
+
+/* Section Comment gagner un trophée */
+.trophee-info-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.trophee-info-section::before {
+  content: '🏆';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  font-size: 8rem;
+  opacity: 0.1;
+  animation: trophee-float 6s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes trophee-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+/* Section Règles des Paris */
+.pari-rules-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.pari-rules-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(255, 0, 77, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0, 194, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+  animation: pari-rules-bg 10s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes pari-rules-bg {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+    opacity: 0.5;
+  }
+  50% { 
+    transform: scale(1.1) rotate(180deg);
+    opacity: 0.8;
+  }
+}
+
 /* ===== HOVER EFFECTS GÉNÉRAUX ===== */
 .crystal-char:hover,
 .sound-char:hover,
@@ -741,6 +983,14 @@
   .firework {
     width: 6px;
     height: 6px;
+  }
+  
+  .info-card {
+    animation: none;
+  }
+  
+  .participant-card {
+    animation: none;
   }
 }
 

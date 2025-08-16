@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Test Boissons - Soirée Clash{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+  <div class="crystal-container">
+    <div class="crystal-shards"></div>
+    <div class="electric-arcs"></div>
+    <div class="crystal-core"></div>
+    <div class="energy-pulses"></div>
+  </div>
+  
+  <h1 class="page-title crystal-title">
+    <span class="crystal-char" data-char="🧪">🧪</span>
+    <span class="crystal-char" data-char="T">T</span>
+    <span class="crystal-char" data-char="e">e</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char="t">t</span>
+    <span class="crystal-char" data-char=" "> </span>
+    <span class="crystal-char" data-char="d">d</span>
+    <span class="crystal-char" data-char="e">e</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char=" "> </span>
+    <span class="crystal-char" data-char="B">B</span>
+    <span class="crystal-char" data-char="o">o</span>
+    <span class="crystal-char" data-char="i">i</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char="s">s</span>
+    <span class="crystal-char" data-char="o">o</span>
+    <span class="crystal-char" data-char="n">n</span>
+    <span class="crystal-char" data-char="s">s</span>
+  </h1>
+  <p class="page-subtitle crystal-subtitle">Vérifiez les données des boissons de votre établissement</p>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3>📊 Établissements avec Boissons</h3>
+                </div>
+                <div class="card-body">
+                    {% if services %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nom</th>
+                                        <th>Type</th>
+                                        <th>Localisation</th>
+                                        <th>Boissons</th>
+                                        <th>Statut</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for service in services %}
+                                    <tr>
+                                        <td>{{ service.id }}</td>
+                                        <td>{{ service.nom }}</td>
+                                        <td>{{ service.get_type_display }}</td>
+                                        <td>{{ service.localisation }}</td>
+                                        <td>
+                                            {% for boisson in service.typeboisson_set.all %}
+                                                <span class="badge bg-primary me-1">{{ boisson.get_categorie_display }}</span>
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% if service.types_boissons_enregistres %}
+                                                <span class="badge bg-success">✅ Actif</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">⚠️ Inactif</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h4>🔍 Données JSON des Boissons</h4>
+                            <pre class="bg-light p-3 rounded"><code>{{ boissons_par_etablissement|pprint }}</code></pre>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Aucun établissement avec des boissons trouvé.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

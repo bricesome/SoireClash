@@ -165,7 +165,7 @@ class Profile(models.Model):
     nom = models.CharField(max_length=20, blank=True)
     prenom = models.CharField(max_length=50, blank=True)
     avatar = models.ImageField(upload_to="avatar", verbose_name="Photo ou avatar", blank=True, null=True)
-    tel = models.CharField(max_length=20, unique=True, blank=False, verbose_name="Numéro téléphone")
+    tel = models.CharField(max_length=20, unique=True, blank=True, null=True, verbose_name="Numéro téléphone")
 
     def __str__(self):
         return self.pseudo
@@ -206,6 +206,14 @@ class Participant(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     date_inscription = models.DateTimeField(auto_now_add=True)
     actif = models.BooleanField(default=True)
+    
+    # Photo du participant
+    photo = models.ImageField(
+        upload_to='photos/participants/',
+        blank=True,
+        null=True,
+        help_text="Photo du participant (recommandé: format carré, max 2MB)"
+    )
 
     def __str__(self):
         return f"{self.pseudo} - {self.service.nom}"
